@@ -14,7 +14,7 @@ namespace Runner.Player
             Center,
             Right
         }
-
+        
         [SerializeField] private PlayerCollider _collider;
         [SerializeField] private float _TEMP_gameSpeed = 1f;
         [Header("Moving")]
@@ -64,7 +64,7 @@ namespace Runner.Player
 
             DOTween.Kill(_laneTween, complete: false);
 
-            _laneTween = transform.DOMoveX(lane * _laneOffset, _laneChangeSpeed).SetEase(Ease.Linear);
+            _laneTween = transform.DOMoveX(lane * _laneOffset, _laneChangeSpeed).SetEase(Ease.OutCubic);
             _lane = (PlayerLane)lane;
         }
         
