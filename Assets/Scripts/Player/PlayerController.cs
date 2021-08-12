@@ -1,7 +1,7 @@
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace Runner.Player
@@ -16,36 +16,27 @@ namespace Runner.Player
         }
 
         [SerializeField] private PlayerCollider _collider;
+        [SerializeField] private float _TEMP_gameSpeed = 1f;
         [Header("Moving")]
         [SerializeField] private float _laneOffset = 4f;
         [SerializeField] private float _laneChangeSpeed = 4f;
+        [Header("Jumping")]
         [SerializeField] private float _jumpLength = 4f;
         [SerializeField] private float _jumpHeight = 4f;
+        [Header("Sliding")]
         [SerializeField] private float _slideLength = 4f;
 
-
         private PlayerLane _lane = PlayerLane.Center;
-        private Vector3 _targetPos = Vector3.zero;
+        private Tween _laneTween;
+        private Tween _slideTween;
+        private Sequence _jumpSequence;
+        private Sequence _slideSequence;
         
-        private bool _isJumping;
-        private float _jumpStart; // Stop jumping after some distance so if the game goes faster we'll be able to scale the jump
-
-        private bool _isSliding;
-        private float _slideStart; // Same as jumping
-
-        private float _TEMP_progress = 0f;
+        private float SpeedMod => 1 / _TEMP_gameSpeed;
+        private bool IsJumping => _jumpSequence != null && !_jumpSequence.IsComplete();
+        private bool IsSliding => _slideSequence != null && !_slideSequence.IsComplete();
 
         void Update()
-        {
-            _TEMP_progress += Time.deltaTime;
-
-            UpdateInput();
-            UpdatePosition();
-            
-            Debug.DrawLine(transform.position, _targetPos, Color.red);
-        }
-
-        private void UpdateInput()
         {
             if (Input.GetKeyDown(KeyCode.A))
             {
@@ -66,77 +57,58 @@ namespace Runner.Player
             }
         }
         
-        private void UpdateJump()
-        {
-            if (!_isJumping) return;
-
-            float progress = (_TEMP_progress - _jumpStart) / _jumpLength;
-
-            if (progress >= 1f)
-            {
-                _isJumping = false;
-                _targetPos.y = 0f;
-                return;
-            }
-
-            _targetPos.y = Mathf.Sin(progress * Mathf.PI) * _jumpHeight;
-        }
-
-        private void UpdateSlide()
-        {
-            float progress = (_TEMP_progress - _slideStart) / _slideLength;
-
-            if (progress >= 1f)
-            {
-                _isSliding = false;
-                _collider.StopSliding();
-            }
-        }
-
-        private void UpdatePosition()
-        {
-            UpdateSlide();
-            UpdateJump();
-
-            transform.position = Vector3.MoveTowards(transform.position, _targetPos, Time.deltaTime * _laneChangeSpeed);
-        }
-
         private void ChangeSide(int sideDelta)
         {
             int lane = (int)_lane + sideDelta;
             if (!Enum.IsDefined(typeof(PlayerLane), lane)) return;
 
-            _targetPos.x = lane * _laneOffset;
+            DOTween.Kill(_laneTween, complete: false);
+
+            _laneTween = transform.DOMoveX(lane * _laneOffset, _laneChangeSpeed).SetEase(Ease.Linear);
             _lane = (PlayerLane)lane;
         }
         
         private void Jump()
         {
-            if (_isSliding)
-            {
-                _isSliding = false;
-                _collider.StopSliding();
-            }
+            if (IsJumping || _slideTween != null) return;
 
-            if (_isJumping) return;
+            _slideTween.Kill(complete: false);
+            _jumpSequence.Kill(complete: false);
 
-            _isJumping = true;
-            _jumpStart = _TEMP_progress;
+            var speed = SpeedMod * 0.5f;
+
+            var sequence = DOTween.Sequence();
+            sequence.Append(transform.DOMoveY(_jumpHeight, _jumpLength * speed).SetEase(Ease.OutSine));
+            sequence.Append(transform.DOMoveY(0f, _jumpLength * speed).SetEase(Ease.InSine));
+            sequence.OnComplete(() => _jumpSequence = null);
+
+            _jumpSequence = sequence;
         }
-        
+
         private void Slide()
         {
-            if (_isJumping)
+            if (IsJumping && _slideTween == null)
             {
-                _isJumping = false;
-                _targetPos.y = 0f;
+                _jumpSequence.Kill(complete:false);
+                _jumpSequence = null;
+
+                _slideTween = transform.DOMoveY(0, 0.25f) // TODO Better calculate duration
+                    .SetEase(Ease.Linear)
+                    .OnComplete(() => _slideTween = null);
             }
 
-            if (_isSliding) return;
-            _isSliding = true;
-            _slideStart = _TEMP_progress;
+            if (IsSliding) return;
 
             _collider.StartSliding();
+
+            _slideSequence = DOTween.Sequence();
+            _slideSequence
+                .SetDelay(SpeedMod * _slideLength)
+                .OnComplete(() =>
+                {
+                    _collider.StopSliding();
+                    _slideSequence = null;
+                });
         }
     }
 }
