@@ -16,6 +16,7 @@ namespace Runner.Player
         }
         
         [SerializeField] private PlayerCollider _collider;
+        [SerializeField] private float _rayLength = 10f;
         [SerializeField] private float _TEMP_gameSpeed = 1f;
         [Header("Moving")]
         [SerializeField] private AnimationCurve _curve;
@@ -28,6 +29,10 @@ namespace Runner.Player
         [Header("Sliding")]
         [SerializeField] private float _slideLength = 4f;
 
+        public Vector3 rayStart;
+        public float groundOffset = 0.5f;
+
+        private float _groundDist = 0f;
         private PlayerLane _lane = PlayerLane.Center;
         private Tween _laneTween;
         private Tween _slideTween;
@@ -37,6 +42,8 @@ namespace Runner.Player
         private float SpeedMod => 1 / _TEMP_gameSpeed;
         private bool IsJumping => _jumpSequence != null && !_jumpSequence.IsComplete();
         private bool IsSliding => _slideSequence != null && !_slideSequence.IsComplete();
+        
+        public float GroundYOffset => _groundDist - groundOffset;
 
         void Update()
         {
@@ -57,17 +64,37 @@ namespace Runner.Player
             {
                 Slide();
             }
-
+            
             UpdateGroundOffset();
+        }
+
+        public void OnHitObstacle(Collision collision)
+        {
+            Debug.Log("DEATH");
+        }
+
+        public void OnHitCollectable(Collision collision)
+        {
+            Debug.Log("COLLECTABLE");
         }
 
         private void UpdateGroundOffset()
         {
-            Debug.Log(_collider.GroundYOffset);
+            var pos = transform.position;
+            Debug.DrawLine(pos, -transform.up * _rayLength, Color.green);
+
+            if (Physics.Raycast(pos, -transform.up, out RaycastHit ray, _rayLength))
+            {
+                _groundDist = pos.y - ray.point.y;
+                Debug.DrawLine(pos, ray.point, Color.red);
+            }
+
+            Debug.Log(GroundYOffset);
+
             if (IsJumping)
             {
-                Debug.Log($"{transform.position.y} {_collider.GroundYOffset}");
-                if (_collider.GroundYOffset < 0f && _jumpSequence.ElapsedPercentage() > 0.1f)
+                Debug.Log($"{transform.position.y} {GroundYOffset}");
+                if ((GroundYOffset < 0f && _jumpSequence.ElapsedPercentage() > 0.1f))
                 {
                     _jumpSequence.Kill(complete: false);
                     _jumpSequence = null;
@@ -77,7 +104,7 @@ namespace Runner.Player
                     return;
                 }
             }
-            transform.Translate(new Vector3(0f, -_collider.GroundYOffset * _gravitation * Time.deltaTime, 0f));
+            transform.Translate(0f, -GroundYOffset * _gravitation * Time.deltaTime, 0f);
         }
         
         private void ChangeSide(int sideDelta)
@@ -102,7 +129,7 @@ namespace Runner.Player
 
             var sequence = DOTween.Sequence();
             sequence.Append(transform.DOMoveY(transform.position.y + _jumpHeight, _jumpLength * speed).SetEase(Ease.OutSine));
-            sequence.Append(transform.DOMoveY(transform.position.y + _collider.GroundYOffset, _jumpLength * speed).SetEase(Ease.InSine));
+            sequence.Append(transform.DOMoveY(transform.position.y + GroundYOffset, _jumpLength * speed).SetEase(Ease.InSine));
             sequence.OnComplete(() => _jumpSequence = null);
 
             _jumpSequence = sequence;
@@ -133,5 +160,6 @@ namespace Runner.Player
                     _slideSequence = null;
                 });
         }
+
     }
 }
