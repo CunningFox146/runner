@@ -39,7 +39,7 @@ namespace Runner.Player
 
         void Update()
         {
-            transform.Translate(new Vector3(0f, _collider.GroundDistance, 1f * 5f * Time.deltaTime));
+            transform.Translate(new Vector3(0f, _collider.GroundYOffset, 1f * 5f * Time.deltaTime));
 
             if (Input.GetKeyDown(KeyCode.A))
             {
