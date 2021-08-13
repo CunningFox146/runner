@@ -21,6 +21,7 @@ namespace Runner.Player
         [SerializeField] private AnimationCurve _curve;
         [SerializeField] private float _laneOffset = 4f;
         [SerializeField] private float _laneChangeSpeed = 4f;
+        [SerializeField] private float _gravitation = 10f;
         [Header("Jumping")]
         [SerializeField] private float _jumpLength = 4f;
         [SerializeField] private float _jumpHeight = 4f;
@@ -39,8 +40,6 @@ namespace Runner.Player
 
         void Update()
         {
-            transform.Translate(new Vector3(0f, _collider.GroundYOffset, 1f * 5f * Time.deltaTime));
-
             if (Input.GetKeyDown(KeyCode.A))
             {
                 ChangeSide(-1);
@@ -58,6 +57,27 @@ namespace Runner.Player
             {
                 Slide();
             }
+
+            UpdateGroundOffset();
+        }
+
+        private void UpdateGroundOffset()
+        {
+            Debug.Log(_collider.GroundYOffset);
+            if (IsJumping)
+            {
+                Debug.Log($"{transform.position.y} {_collider.GroundYOffset}");
+                if (_collider.GroundYOffset < 0f && _jumpSequence.ElapsedPercentage() > 0.1f)
+                {
+                    _jumpSequence.Kill(complete: false);
+                    _jumpSequence = null;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            transform.Translate(new Vector3(0f, -_collider.GroundYOffset * _gravitation * Time.deltaTime, 0f));
         }
         
         private void ChangeSide(int sideDelta)
@@ -81,8 +101,8 @@ namespace Runner.Player
             var speed = SpeedMod * 0.5f;
 
             var sequence = DOTween.Sequence();
-            sequence.Append(transform.DOMoveY(_jumpHeight, _jumpLength * speed).SetEase(Ease.OutSine));
-            sequence.Append(transform.DOMoveY(0f, _jumpLength * speed).SetEase(Ease.InSine));
+            sequence.Append(transform.DOMoveY(transform.position.y + _jumpHeight, _jumpLength * speed).SetEase(Ease.OutSine));
+            sequence.Append(transform.DOMoveY(transform.position.y + _collider.GroundYOffset, _jumpLength * speed).SetEase(Ease.InSine));
             sequence.OnComplete(() => _jumpSequence = null);
 
             _jumpSequence = sequence;

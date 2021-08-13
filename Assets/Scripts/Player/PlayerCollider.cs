@@ -18,7 +18,7 @@ namespace Runner.Player
         private float _groundDist = 0f;
         private float _groundOffset = 1f;
 
-        public float GroundYOffset => -_groundDist + _groundOffset;
+        public float GroundYOffset => _groundDist - _groundOffset;
 
         void Awake()
         {
@@ -47,7 +47,6 @@ namespace Runner.Player
                 Debug.Log(GroundYOffset);
                 Debug.DrawLine(point, ray.point, Color.red);
             }
-            //Debug.DrawLine(point, point + new Vector3(0f, -10f, 0f), Color.red);
         }
 
         public void StartSliding()

@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 705895ea473a36e4ab77e3c04ff644a5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _slideScale: 0.5
-  _rayOffset: {x: 0, y: 0, z: 0}
+  _rayLength: 10
 --- !u!1 &9025042204114240311
 GameObject:
   m_ObjectHideFlags: 0
