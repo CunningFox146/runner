@@ -94,6 +94,7 @@ namespace Runner.Player
         public void OnHitObstacle(Collision collision)
         {
             Debug.Log("DEATH");
+            enabled = false;
         }
 
         public void OnHitCollectable(Collision collision)
