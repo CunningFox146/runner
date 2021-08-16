@@ -3,6 +3,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Runner.Player
 {
@@ -17,6 +18,7 @@ namespace Runner.Player
         
         [SerializeField] private PlayerCollider _collider;
         [SerializeField] private float _rayLength = 10f;
+        [SerializeField] private Text _debugText;
         [SerializeField] private float _TEMP_gameSpeed = 1f;
         [Header("Moving")]
         [SerializeField] private AnimationCurve _curve;
@@ -30,7 +32,7 @@ namespace Runner.Player
         [SerializeField] private float _slideLength = 4f;
 
         public Vector3 rayStart;
-        public float groundOffset = 0.5f;
+        public float groundOffset = 1f;
 
         private float _groundDist = 0f;
         private PlayerLane _lane = PlayerLane.Center;
@@ -43,10 +45,13 @@ namespace Runner.Player
         private bool IsJumping => _jumpSequence != null && !_jumpSequence.IsComplete();
         private bool IsSliding => _slideSequence != null && !_slideSequence.IsComplete();
         
-        public float GroundYOffset => _groundDist - groundOffset;
+        public float GroundYOffset => _groundDist + groundOffset;
 
         void Update()
         {
+            //QualitySettings.vSyncCount = 0;
+            //Application.targetFrameRate = 10;
+
             if (Input.GetKeyDown(KeyCode.A))
             {
                 ChangeSide(-1);
@@ -68,10 +73,11 @@ namespace Runner.Player
 
         void FixedUpdate()
         {
-            var pos = transform.position;
+            var pos = transform.TransformPoint(rayStart);
+            float lastY = GroundYOffset;
             Debug.DrawLine(pos, -transform.up * _rayLength, Color.green);
 
-            if (Physics.Raycast(pos, -transform.up, out RaycastHit ray, _rayLength))
+            if (Physics.Raycast(pos, -transform.up, out RaycastHit ray, _rayLength, 1 << 6))
             {
                 _groundDist = pos.y - ray.point.y;
                 Debug.DrawLine(pos, ray.point, Color.red);
@@ -79,6 +85,9 @@ namespace Runner.Player
 
             Debug.Log(GroundYOffset);
 
+            _debugText.text = GroundYOffset.ToString();
+            float r = Mathf.Abs(GroundYOffset - lastY);
+            _debugText.color = new Color(r, 1f- lastY, 1f- lastY);
             UpdateGroundOffset();
         }
 
@@ -107,6 +116,7 @@ namespace Runner.Player
                     return;
                 }
             }
+            Debug.DrawLine(transform.position, transform.position + new Vector3(0f, -GroundYOffset * _gravitation * Time.deltaTime, 0f), Color.blue);
             transform.Translate(0f, -GroundYOffset * _gravitation * Time.deltaTime, 0f);
         }
         

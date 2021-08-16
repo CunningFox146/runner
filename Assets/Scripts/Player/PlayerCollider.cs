@@ -28,13 +28,13 @@ namespace Runner.Player
             var min = _collider.center - _collider.size * 0.5f;
             var max = _collider.center + _collider.size * 0.5f;
 
-            _controller.groundOffset = max.y;
-            _controller.rayStart = transform.TransformPoint(new Vector3(min.x + max.x, max.y, max.z));  // The front top center side of box collider
+            _controller.groundOffset = -max.y * 2f;
+            _controller.rayStart = new Vector3(min.x + max.x, max.y, max.z);  // The front top center side of box collider
         }
 
         void OnCollisionEnter(Collision collision)
         {
-            if (collision.contacts[0].point.y > transform.position.y + _controller.GroundYOffset) return;
+            //if (collision.contacts[0].point.y > transform.position.y + _controller.GroundYOffset) return;
             if (collision.gameObject.CompareTag("Obstacle"))
             {
                 _controller.OnHitObstacle(collision);

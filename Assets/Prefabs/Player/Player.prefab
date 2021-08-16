@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 4993548603134002184}
   - component: {fileID: 1322203700289528437}
   - component: {fileID: 4657162425212425109}
+  - component: {fileID: 7999101135765834493}
   m_Layer: 0
   m_Name: Collider
   m_TagString: Untagged
@@ -139,7 +140,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _slideScale: 0.5
-  _rayLength: 10
+  _controller: {fileID: 0}
+--- !u!54 &7999101135765834493
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419445269508172786}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 2
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &9025042204114240311
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 4657162425212425109}
+  _rayLength: 10
   _TEMP_gameSpeed: 1
   _curve:
     serializedVersion: 2
@@ -222,6 +240,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   _laneOffset: 4
   _laneChangeSpeed: 0.25
+  _gravitation: 10
   _jumpLength: 1
   _jumpHeight: 4
   _slideLength: 1
+  rayStart: {x: 0, y: 0, z: 0}
+  groundOffset: 0.5
