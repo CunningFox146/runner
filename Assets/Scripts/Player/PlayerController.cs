@@ -64,7 +64,21 @@ namespace Runner.Player
             {
                 Slide();
             }
-            
+        }
+
+        void FixedUpdate()
+        {
+            var pos = transform.position;
+            Debug.DrawLine(pos, -transform.up * _rayLength, Color.green);
+
+            if (Physics.Raycast(pos, -transform.up, out RaycastHit ray, _rayLength))
+            {
+                _groundDist = pos.y - ray.point.y;
+                Debug.DrawLine(pos, ray.point, Color.red);
+            }
+
+            Debug.Log(GroundYOffset);
+
             UpdateGroundOffset();
         }
 
@@ -80,21 +94,10 @@ namespace Runner.Player
 
         private void UpdateGroundOffset()
         {
-            var pos = transform.position;
-            Debug.DrawLine(pos, -transform.up * _rayLength, Color.green);
-
-            if (Physics.Raycast(pos, -transform.up, out RaycastHit ray, _rayLength))
-            {
-                _groundDist = pos.y - ray.point.y;
-                Debug.DrawLine(pos, ray.point, Color.red);
-            }
-
-            Debug.Log(GroundYOffset);
-
             if (IsJumping)
             {
                 Debug.Log($"{transform.position.y} {GroundYOffset}");
-                if ((GroundYOffset < 0f && _jumpSequence.ElapsedPercentage() > 0.1f))
+                if (GroundYOffset < 0f && _jumpSequence.ElapsedPercentage() > 0.1f)
                 {
                     _jumpSequence.Kill(complete: false);
                     _jumpSequence = null;
