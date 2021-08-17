@@ -204,7 +204,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collider: {fileID: 4657162425212425109}
   _rayLength: 10
-  _debugText: {fileID: 0}
   _TEMP_gameSpeed: 1
   _curve:
     serializedVersion: 2
@@ -241,7 +240,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _laneOffset: 4
   _laneChangeSpeed: 0.25
-  _gravitation: 10
+  _gravitation: 5
   _jumpLength: 1
   _jumpHeight: 4
   _slideLength: 1

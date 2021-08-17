@@ -24,12 +24,12 @@ namespace Runner.Player
         {
             _centerStart = _collider.center;
             _sizeStart = _collider.size;
-            
-            var min = _collider.center - _collider.size * 0.5f;
-            var max = _collider.center + _collider.size * 0.5f;
 
-            _controller.groundOffset = -max.y * 2f;
-            _controller.rayStart = new Vector3(min.x + max.x, max.y, max.z);  // The front top center side of box collider
+            var min = _collider.center - _collider.size;
+            var max = _collider.center + _collider.size;
+
+            _controller.groundOffset = -max.y;
+            _controller.rayStart = new Vector3(0f, max.y, max.z * 0.5f);
         }
 
         void OnCollisionEnter(Collision collision)
@@ -37,11 +37,11 @@ namespace Runner.Player
             //if (collision.contacts[0].point.y > transform.position.y + _controller.GroundYOffset) return;
             if (collision.gameObject.CompareTag("Obstacle"))
             {
-                _controller.OnHitObstacle(collision);
+                //_controller.OnHitObstacle(collision);
             }
             else if (collision.gameObject.CompareTag("Collectable"))
             {
-                _controller.OnHitCollectable(collision);
+                //_controller.OnHitCollectable(collision);
             }
         }
         
