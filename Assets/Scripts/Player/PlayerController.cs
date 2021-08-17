@@ -109,7 +109,7 @@ namespace Runner.Player
             {
                 float progress = Mathf.Min((_TEMP_progress - _jumpStart) / _jumpLength, 1f);
                 Debug.Log($"{_groundDist}; {transform.position.y}");
-                if (progress >= 1f || (_groundDist >= 0.5f + transform.position.y && ticks > 1))
+                if (progress >= 1f || (_groundDist >= transform.position.y - 0.5f && ticks > 1))
                 {
                     Debug.Log("STOP");
                     _isJumping = false;
