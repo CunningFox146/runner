@@ -51,16 +51,14 @@ namespace Runner.Player
 
             UpdateInput();
 
-            Debug.Log($"_targetPos: {_targetPos}; _groundDist: {_groundDist}");
+            //Debug.Log($"_targetPos: {_targetPos}; _groundDist: {_groundDist}");
             var target = new Vector3(_targetPos.x, 0.5f + _targetPos.y, _targetPos.z);
             if (!_isJumping)
             {
-                target.y -= _groundDist;
+                target.y += _groundDist;
             }
-            //Debug.DrawLine(transform.position, target, Color.cyan);
-            var pos = Vector3.MoveTowards(transform.position, target, _laneChangeSpeed * Time.deltaTime);
-            pos.y = Mathf.Max(pos.y, _groundDist);
-            transform.position = pos;
+            
+            transform.position = Vector3.MoveTowards(transform.position, target, _laneChangeSpeed * Time.deltaTime); ;
         }
 
         void FixedUpdate()
@@ -70,13 +68,15 @@ namespace Runner.Player
 
         private void UpdateYOffset()
         {
-            var pos = transform.position;//transform.TransformPoint(rayStart);
+            var pos = transform.position;
+            var start = new Vector3(pos.x, _rayLength, pos.z);
+            
             //float lastY = GroundYOffset;
 
-            if (Physics.Raycast(pos, -transform.up, out RaycastHit ray, _rayLength, 1 << 6))
+            if (Physics.Raycast(start, -transform.up, out RaycastHit hit, _rayLength, 1 << 6))
             {
-                _groundDist = pos.y - ray.point.y - 0.5f;
-                Debug.DrawLine(pos, ray.point, Color.cyan);
+                Debug.DrawLine(start, hit.point, Color.cyan);
+                _groundDist = hit.point.y;
             }
         }
 
@@ -103,20 +103,22 @@ namespace Runner.Player
 
         private IEnumerator JumpCoroutine()
         {
-            float targetHeight = transform.position.y + _jumpHeight;
+            int ticks = 0;
+            float startPos = 0.5f + _groundDist;
             while (_isJumping)
             {
                 float progress = Mathf.Min((_TEMP_progress - _jumpStart) / _jumpLength, 1f);
-                Debug.Log($"{_groundDist}, {targetHeight}");
-                if (progress >= 1f || _groundDist > targetHeight)
+                Debug.Log($"{_groundDist}; {transform.position.y}");
+                if (progress >= 1f || (_groundDist >= 0.5f + transform.position.y && ticks > 1))
                 {
+                    Debug.Log("STOP");
                     _isJumping = false;
                     _targetPos.y = 0f;
                     yield break;
                 }
 
-                _targetPos.y = Mathf.Sin(progress * Mathf.PI) * _jumpHeight;
-
+                _targetPos.y = startPos + Mathf.Sin(progress * Mathf.PI) * _jumpHeight;
+                ticks++;
                 yield return null;
             }
         }
