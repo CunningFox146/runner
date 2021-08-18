@@ -48,18 +48,6 @@ namespace Runner.Player
             UpdateYOffset();
         }
 
-        void OnTriggerEnter(Collider collider)
-        {
-            if (collider.gameObject.CompareTag("Obstacle"))
-            {
-                OnHitObstacle(collider);
-            }
-            else if (collider.gameObject.CompareTag("Collectable"))
-            {
-                OnHitCollectable(collider);
-            }
-        }
-
         void Update()
         {
             _TEMP_progress += Time.deltaTime;
@@ -208,16 +196,11 @@ namespace Runner.Player
             _collider.StartSliding();
         }
 
-        public void OnHitObstacle(Collider collision)
+        public void OnHitObstacle(GameObject obstacle)
         {
             Debug.Log("DEATH");
-            enabled = false;
-        }
 
-        public void OnHitCollectable(Collider collision)
-        {
-            Debug.Log("COLLECT");
-            Destroy(collision.gameObject);
+            enabled = false;
         }
     }
 }
