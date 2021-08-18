@@ -31,19 +31,6 @@ namespace Runner.Player
             _controller.groundOffset = -max.y;
             _controller.rayStart = new Vector3(0f, max.y, max.z * 0.5f);
         }
-
-        void OnCollisionEnter(Collision collision)
-        {
-            //if (collision.contacts[0].point.y > transform.position.y + _controller.GroundYOffset) return;
-            if (collision.gameObject.CompareTag("Obstacle"))
-            {
-                //_controller.OnHitObstacle(collision);
-            }
-            else if (collision.gameObject.CompareTag("Collectable"))
-            {
-                //_controller.OnHitCollectable(collision);
-            }
-        }
         
         public void StartSliding()
         {

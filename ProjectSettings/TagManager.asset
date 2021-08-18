@@ -4,17 +4,17 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Obstacle
   - Collectable
+  - Obstacle
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Wakable
-  - 
+  - Interactable
   - 
   - 
   - 

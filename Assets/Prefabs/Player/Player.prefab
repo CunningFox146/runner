@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3220304752017503102}
   - component: {fileID: 2695043424928075989}
   - component: {fileID: 7466136237361892951}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,8 +92,7 @@ GameObject:
   - component: {fileID: 4993548603134002184}
   - component: {fileID: 1322203700289528437}
   - component: {fileID: 4657162425212425109}
-  - component: {fileID: 7999101135765834493}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,22 +140,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slideScale: 0.5
   _controller: {fileID: 4589358814450089997}
---- !u!54 &7999101135765834493
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1419445269508172786}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!1 &9025042204114240311
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,7 +150,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1304784037180671966}
   - component: {fileID: 4589358814450089997}
-  m_Layer: 0
+  - component: {fileID: 1609659822623044450}
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,9 +191,25 @@ MonoBehaviour:
   _yOffset: 0.5
   _TEMP_progress: 0
   _laneOffset: 4
-  _laneChangeSpeed: 40
+  _laneChangeSpeed: 30
   _jumpLength: 1
   _jumpHeight: 4
   _slideLength: 1
   groundOffset: 0.5
   rayStart: {x: 0, y: 0, z: 0}
+--- !u!54 &1609659822623044450
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9025042204114240311}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 2

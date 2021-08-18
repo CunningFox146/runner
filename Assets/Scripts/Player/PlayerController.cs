@@ -15,6 +15,8 @@ namespace Runner.Player
             Right
         }
 
+        private readonly int WalkableMask = 1 << 6;
+
         [SerializeField] private PlayerCollider _collider;
         [SerializeField] private float _rayLength;
         [SerializeField] private float _yOffset = 0.5f;
@@ -46,6 +48,18 @@ namespace Runner.Player
             UpdateYOffset();
         }
 
+        void OnTriggerEnter(Collider collider)
+        {
+            if (collider.gameObject.CompareTag("Obstacle"))
+            {
+                OnHitObstacle(collider);
+            }
+            else if (collider.gameObject.CompareTag("Collectable"))
+            {
+                OnHitCollectable(collider);
+            }
+        }
+
         void Update()
         {
             _TEMP_progress += Time.deltaTime;
@@ -70,7 +84,7 @@ namespace Runner.Player
         {
             var start = new Vector3(point.x, _rayLength, point.z);
 
-            if (Physics.Raycast(start, -transform.up, out RaycastHit hit, _rayLength, 1 << 6))
+            if (Physics.Raycast(start, -transform.up, out RaycastHit hit, _rayLength, WalkableMask))
             {
                 return hit.point.y;
             }
@@ -82,8 +96,9 @@ namespace Runner.Player
         {
             var pos = transform.position;
             float point = GetGroundOffsetAtPoint(pos);
-            Debug.DrawLine(pos, new Vector3(pos.x, point, pos.z), Color.cyan);
             _groundDist = point;
+
+            Debug.DrawLine(pos, new Vector3(pos.x, point, pos.z), Color.cyan);
         }
 
         private void UpdateInput()
@@ -114,10 +129,9 @@ namespace Runner.Player
             while (_isJumping)
             {
                 float progress = Mathf.Min((_TEMP_progress - _jumpStart) / _jumpLength, 1f);
-                Debug.Log($"{_groundDist}; {transform.position.y}");
-                if (progress >= 1f || (_groundDist >= transform.position.y - _yOffset && ticks > 1))
+                bool isTooLow = _groundDist >= transform.position.y - _yOffset;
+                if (progress >= 1f || (isTooLow && ticks > 1))
                 {
-                    Debug.Log("STOP");
                     _isJumping = false;
                     _targetPos.y = 0f;
                     yield break;
@@ -139,6 +153,7 @@ namespace Runner.Player
                 {
                     _isSliding = false;
                     _collider.StopSliding();
+                    yield break;
                 }
 
                 yield return null;
@@ -191,6 +206,18 @@ namespace Runner.Player
             StartCoroutine(SlideCoroutine());
 
             _collider.StartSliding();
+        }
+
+        public void OnHitObstacle(Collider collision)
+        {
+            Debug.Log("DEATH");
+            enabled = false;
+        }
+
+        public void OnHitCollectable(Collider collision)
+        {
+            Debug.Log("COLLECT");
+            Destroy(collision.gameObject);
         }
     }
 }
