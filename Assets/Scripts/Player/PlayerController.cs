@@ -17,6 +17,7 @@ namespace Runner.Player
 
         [SerializeField] private PlayerCollider _collider;
         [SerializeField] private float _rayLength;
+        [SerializeField] private float _yOffset = 0.5f;
         [SerializeField] private float _TEMP_progress = 0f;
         [Header("Moving")]
         [SerializeField] private float _laneOffset = 4f;
@@ -50,9 +51,8 @@ namespace Runner.Player
             _TEMP_progress += Time.deltaTime;
 
             UpdateInput();
-
-            //Debug.Log($"_targetPos: {_targetPos}; _groundDist: {_groundDist}");
-            var target = new Vector3(_targetPos.x, 0.5f + _targetPos.y, _targetPos.z);
+            
+            var target = new Vector3(_targetPos.x, _yOffset + _targetPos.y, _targetPos.z);
             if (!_isJumping)
             {
                 target.y += _groundDist;
@@ -66,18 +66,24 @@ namespace Runner.Player
             UpdateYOffset();
         }
 
-        private void UpdateYOffset()
+        private float GetGroundOffsetAtPoint(Vector3 point)
         {
-            var pos = transform.position;
-            var start = new Vector3(pos.x, _rayLength, pos.z);
-            
-            //float lastY = GroundYOffset;
+            var start = new Vector3(point.x, _rayLength, point.z);
 
             if (Physics.Raycast(start, -transform.up, out RaycastHit hit, _rayLength, 1 << 6))
             {
-                Debug.DrawLine(start, hit.point, Color.cyan);
-                _groundDist = hit.point.y;
+                return hit.point.y;
             }
+
+            return _rayLength;
+        }
+
+        private void UpdateYOffset()
+        {
+            var pos = transform.position;
+            float point = GetGroundOffsetAtPoint(pos);
+            Debug.DrawLine(pos, new Vector3(pos.x, point, pos.z), Color.cyan);
+            _groundDist = point;
         }
 
         private void UpdateInput()
@@ -104,12 +110,12 @@ namespace Runner.Player
         private IEnumerator JumpCoroutine()
         {
             int ticks = 0;
-            float startPos = 0.5f + _groundDist;
+            float startPos = _yOffset + _groundDist;
             while (_isJumping)
             {
                 float progress = Mathf.Min((_TEMP_progress - _jumpStart) / _jumpLength, 1f);
                 Debug.Log($"{_groundDist}; {transform.position.y}");
-                if (progress >= 1f || (_groundDist >= transform.position.y - 0.5f && ticks > 1))
+                if (progress >= 1f || (_groundDist >= transform.position.y - _yOffset && ticks > 1))
                 {
                     Debug.Log("STOP");
                     _isJumping = false;
@@ -144,7 +150,15 @@ namespace Runner.Player
             int lane = (int)_lane + sideDelta;
             if (!Enum.IsDefined(typeof(PlayerLane), lane)) return;
 
-            _targetPos.x = lane * _laneOffset;
+            float pos = lane * _laneOffset;
+            float offset = GetGroundOffsetAtPoint(new Vector3(pos, 0f, transform.position.z));
+            if (offset > transform.position.y)
+            {
+                //Do something
+                Debug.Log("SIDE IS TOO HIGH");
+                return;
+            };
+            _targetPos.x = pos;
             _lane = (PlayerLane)lane;
         }
 

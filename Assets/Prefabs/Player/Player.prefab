@@ -204,45 +204,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _collider: {fileID: 4657162425212425109}
   _rayLength: 10
-  _TEMP_gameSpeed: 1
-  _curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.34766966
-      value: 0.91798544
-      inSlope: 1.1029091
-      outSlope: 1.1029091
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  _yOffset: 0.5
+  _TEMP_progress: 0
   _laneOffset: 4
-  _laneChangeSpeed: 0.25
-  _gravitation: 5
+  _laneChangeSpeed: 40
   _jumpLength: 1
   _jumpHeight: 4
   _slideLength: 1
-  rayStart: {x: 0, y: 0, z: 0}
   groundOffset: 0.5
+  rayStart: {x: 0, y: 0, z: 0}
