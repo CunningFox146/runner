@@ -53,16 +53,9 @@ namespace Runner.Player
             _TEMP_progress += Time.deltaTime;
 
             UpdateInput();
-            
-            var target = new Vector3(_targetPos.x, _yOffset + _targetPos.y, _targetPos.z);
-            if (!_isJumping)
-            {
-                target.y += _groundDist;
-            }
-            
-            transform.position = Vector3.MoveTowards(transform.position, target, _laneChangeSpeed * Time.deltaTime); ;
+            UpdatePosition();
         }
-
+        
         void FixedUpdate()
         {
             UpdateYOffset();
@@ -79,16 +72,18 @@ namespace Runner.Player
 
             return _rayLength;
         }
-
-        private void UpdateYOffset()
+        
+        private void UpdatePosition()
         {
-            var pos = transform.position;
-            float point = GetGroundOffsetAtPoint(pos);
-            _groundDist = point;
+            var target = new Vector3(_targetPos.x, _yOffset + _targetPos.y, _targetPos.z);
+            if (!_isJumping)
+            {
+                target.y += _groundDist;
+            }
 
-            Debug.DrawLine(pos, new Vector3(pos.x, point, pos.z), Color.cyan);
+            transform.position = Vector3.MoveTowards(transform.position, target, _laneChangeSpeed * Time.deltaTime);
         }
-
+        
         private void UpdateInput()
         {
             if (Input.GetKeyDown(KeyCode.A))
@@ -108,6 +103,15 @@ namespace Runner.Player
             {
                 Slide();
             }
+        }
+
+        private void UpdateYOffset()
+        {
+            var pos = transform.position;
+            float point = GetGroundOffsetAtPoint(pos);
+            _groundDist = point;
+
+            Debug.DrawLine(pos, new Vector3(pos.x, point, pos.z), Color.cyan);
         }
 
         private IEnumerator JumpCoroutine()
