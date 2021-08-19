@@ -86,20 +86,20 @@ namespace Runner.Player
         
         private void UpdateInput()
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.A) || SwipeManager.SwipeLeft)
             {
                 ChangeSide(-1);
             }
-            else if (Input.GetKeyDown(KeyCode.D))
+            else if (Input.GetKeyDown(KeyCode.D) || SwipeManager.SwipeRight)
             {
                 ChangeSide(1);
             }
 
-            if (Input.GetKeyDown(KeyCode.W))
+            if (Input.GetKeyDown(KeyCode.W) || SwipeManager.SwipeUp)
             {
                 Jump();
             }
-            else if (Input.GetKeyDown(KeyCode.S))
+            else if (Input.GetKeyDown(KeyCode.S) || SwipeManager.SwipeDown)
             {
                 Slide();
             }
