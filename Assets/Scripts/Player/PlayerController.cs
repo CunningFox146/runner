@@ -19,7 +19,6 @@ namespace Runner.Player
 
         [SerializeField] private PlayerCollider _collider;
         [SerializeField] private float _rayLength;
-        [SerializeField] private float _yOffset = 0.5f;
         [SerializeField] private float _TEMP_progress = 0f;
         [Header("Moving")]
         [SerializeField] private float _laneOffset = 4f;
@@ -65,8 +64,9 @@ namespace Runner.Player
         {
             var start = new Vector3(point.x, _rayLength, point.z);
 
-            if (Physics.Raycast(start, -transform.up, out RaycastHit hit, _rayLength, WalkableMask))
+            if (Physics.Raycast(start, Vector3.down, out RaycastHit hit, _rayLength, WalkableMask))
             {
+                Debug.DrawLine(start, hit.point, Color.red);
                 return hit.point.y;
             }
 
@@ -75,7 +75,7 @@ namespace Runner.Player
         
         private void UpdatePosition()
         {
-            var target = new Vector3(_targetPos.x, _yOffset + _targetPos.y, _targetPos.z);
+            var target = new Vector3(_targetPos.x, _targetPos.y, _targetPos.z);
             if (!_isJumping)
             {
                 target.y += _groundDist;
@@ -117,11 +117,11 @@ namespace Runner.Player
         private IEnumerator JumpCoroutine()
         {
             int ticks = 0;
-            float startPos = _yOffset + _groundDist;
+            float startPos = _groundDist;
             while (_isJumping)
             {
                 float progress = Mathf.Min((_TEMP_progress - _jumpStart) / _jumpLength, 1f);
-                bool isTooLow = _groundDist >= transform.position.y - _yOffset;
+                bool isTooLow = _groundDist >= transform.position.y;
                 if (progress >= 1f || (isTooLow && ticks > 1))
                 {
                     _isJumping = false;
@@ -159,10 +159,10 @@ namespace Runner.Player
 
             float pos = lane * _laneOffset;
             float offset = GetGroundOffsetAtPoint(new Vector3(pos, 0f, transform.position.z));
-            if (offset > transform.position.y)
+            if (offset > transform.position.y + 0.25f) // Fix that if you figure out why offset sometimes is different even on the same platforms
             {
                 //Do something
-                Debug.Log("SIDE IS TOO HIGH");
+                Debug.Log($"{offset} > {transform.position.y}");
                 return;
             };
             _targetPos.x = pos;
