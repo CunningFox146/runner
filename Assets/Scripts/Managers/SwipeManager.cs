@@ -19,6 +19,7 @@ public class SwipeManager : Singleton<SwipeManager>
     public static bool SwipeLeft { get; private set; }
     public static bool SwipeUp { get; private set; }
     public static bool SwipeDown { get; private set; }
+    public static bool IsTapping { get; private set; }
 
     private bool IsTouching => IsMobile ? Input.touchCount > 0 : Input.GetMouseButton(0);
     private Vector2 TouchPosition => IsMobile ? Input.GetTouch(0).position : (Vector2)Input.mousePosition;
@@ -55,7 +56,7 @@ public class SwipeManager : Singleton<SwipeManager>
 
             if (Mathf.Abs(dist.x) < _tapRange || Mathf.Abs(dist.y) < _tapRange)
             {
-                Debug.Log("Tap");
+                IsTapping = true;
             }
         }
 
@@ -111,5 +112,6 @@ public class SwipeManager : Singleton<SwipeManager>
         SwipeLeft = false;
         SwipeUp = false;
         SwipeDown = false;
+        IsTapping = false;
     }
 }

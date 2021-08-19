@@ -17,9 +17,9 @@ namespace Runner.Managers
         }
 
         // Update is called once per frame
-        void Update()
+        void LateUpdate()
         {
-            transform.position = Vector3.MoveTowards(transform.position, _offset + _player.transform.position,
+            transform.position = Vector3.Lerp(transform.position, _offset + _player.transform.position,
                 Time.deltaTime * _moveSpeed);
         }
     }
