@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Runner.Player
 {
@@ -15,41 +16,58 @@ namespace Runner.Player
             Right
         }
 
+        public enum PlayerState
+        {
+            Running,
+            Falling,
+            Jump,
+            Slide,
+            Death
+        }
+
         private readonly int WalkableMask = 1 << 6;
 
         [SerializeField] private PlayerCollider _collider;
-        [SerializeField] private float _rayLength;
         [SerializeField] private float _TEMP_progress = 0f;
+        [SerializeField] private Text debugText;
         [Header("Moving")]
         [SerializeField] private float _laneOffset = 4f;
-        [SerializeField] private float _laneChangeSpeed = 4f; //Coordinates
+        [SerializeField] private float _laneChangeTime = 1f;
+        [SerializeField] private AnimationCurve _fallingCurve;
         [Header("Jump")]
-        [SerializeField] private float _jumpLength = 4f; //Seconds
+        [SerializeField] private float _jumpTime = 1;
         [SerializeField] private float _jumpHeight = 4f;
+        [SerializeField] private AnimationCurve _jumpingCurve;
         [Header("Slide")]
-        [SerializeField] private float _slideLength = 4f; //Seconds
-
-        public float groundOffset;
-        public Vector3 rayStart;
-        private float _groundDist;
-
+        [SerializeField] private float _slideSpeed = 4f; //Coordinates
+        [SerializeField] private AnimationCurve _slidingCurve;
+        [Header("Fall")]
+        [SerializeField] private float _fallSpeed = 4f; //Coordinates
+        
         private PlayerLane _lane = PlayerLane.Center;
+        private PlayerState _state = PlayerState.Running;
+
         private Vector3 _targetPos = Vector3.zero;
 
-        private bool _isJumping;
-        private float _jumpStart; // Stop jumping after some distance so if the game goes faster we'll be able to scale the jump
+        private Coroutine _fallCoroutine;
+        private Coroutine _jumpCoroutine;
+        private Coroutine _slideCoroutine;
+        private Coroutine _sideCoroutine;
 
-        private bool _isSliding;
-        private float _slideStart; // Same as jumping
+        private bool _isGrounded;
+        private Vector3 _groundPos;
+
+        private string DebugString => $"State: {_state}\nIsGrounded: {_isGrounded.ToString()}";
 
         void Start()
         {
-            UpdateYOffset();
+            _groundPos = CheckGround();
         }
 
         void Update()
         {
             _TEMP_progress += Time.deltaTime;
+            debugText.text = DebugString;
 
             UpdateInput();
             UpdatePosition();
@@ -57,33 +75,9 @@ namespace Runner.Player
         
         void FixedUpdate()
         {
-            UpdateYOffset();
+            _groundPos = CheckGround();
         }
 
-        private float GetGroundOffsetAtPoint(Vector3 point)
-        {
-            var start = new Vector3(point.x, _rayLength, point.z);
-
-            if (Physics.Raycast(start, Vector3.down, out RaycastHit hit, _rayLength, WalkableMask))
-            {
-                Debug.DrawLine(start, hit.point, Color.red);
-                return hit.point.y;
-            }
-
-            return _rayLength;
-        }
-        
-        private void UpdatePosition()
-        {
-            var target = new Vector3(_targetPos.x, _targetPos.y, _targetPos.z);
-            if (!_isJumping)
-            {
-                target.y += _groundDist;
-            }
-
-            transform.position = Vector3.MoveTowards(transform.position, target, _laneChangeSpeed * Time.deltaTime);
-        }
-        
         private void UpdateInput()
         {
             if (Input.GetKeyDown(KeyCode.A) || SwipeManager.SwipeLeft)
@@ -105,101 +99,188 @@ namespace Runner.Player
             }
         }
 
-        private void UpdateYOffset()
-        {
-            var pos = transform.position;
-            float point = GetGroundOffsetAtPoint(pos);
-            _groundDist = point;
-
-            Debug.DrawLine(pos, new Vector3(pos.x, point, pos.z), Color.cyan);
-        }
-
-        private IEnumerator JumpCoroutine()
-        {
-            int ticks = 0;
-            float startPos = _groundDist;
-            while (_isJumping)
-            {
-                float progress = Mathf.Min((_TEMP_progress - _jumpStart) / _jumpLength, 1f);
-                bool isTooLow = _groundDist >= transform.position.y;
-                if (progress >= 1f || (isTooLow && ticks > 1))
-                {
-                    _isJumping = false;
-                    _targetPos.y = 0f;
-                    yield break;
-                }
-
-                _targetPos.y = startPos + Mathf.Sin(progress * Mathf.PI) * _jumpHeight;
-                ticks++;
-                yield return null;
-            }
-        }
-
-        private IEnumerator SlideCoroutine()
-        {
-            while (_isSliding)
-            {
-                float progress = (_TEMP_progress - _slideStart) / _slideLength;
-
-                if (progress >= 1f)
-                {
-                    _isSliding = false;
-                    _collider.StopSliding();
-                    yield break;
-                }
-
-                yield return null;
-            }
-        }
-        
         private void ChangeSide(int sideDelta)
         {
             int lane = (int)_lane + sideDelta;
             if (!Enum.IsDefined(typeof(PlayerLane), lane)) return;
 
-            float pos = lane * _laneOffset;
-            float offset = GetGroundOffsetAtPoint(new Vector3(pos, 0f, transform.position.z));
-            if (offset > transform.position.y + 0.25f) // Fix that if you figure out why offset sometimes is different even on the same platforms
-            {
-                //Do something
-                Debug.Log($"{offset} > {transform.position.y}");
-                return;
-            };
-            _targetPos.x = pos;
+            //float offset = CheckGround(new Vector3(pos, 0f, transform.position.z));
+            //if (offset > transform.position.y + 0.25f) // Fix that if you figure out why offset sometimes is different even on the same platforms
+            //{
+            //    //Do something
+            //    Debug.Log($"{offset} > {transform.position.y}");
+            //    return;
+            //};
+
             _lane = (PlayerLane)lane;
+
+            if (_sideCoroutine != null)
+            {
+                StopCoroutine(_sideCoroutine);
+                _sideCoroutine = null;
+            }
+
+            _sideCoroutine = StartCoroutine(SideCoroutine(lane));
         }
 
         private void Jump()
         {
-            if (_isSliding)
+            if (_state == PlayerState.Slide)
             {
-                _isSliding = false;
+                _state = PlayerState.Running;
                 _collider.StopSliding();
             }
 
-            if (_isJumping) return;
+            if (_state == PlayerState.Jump) return;
+            _state = PlayerState.Jump;
 
-            _isJumping = true;
-            _jumpStart = _TEMP_progress;
-            StartCoroutine(JumpCoroutine());
+
+            if (_jumpCoroutine != null)
+            {
+                StopCoroutine(_jumpCoroutine);
+                _jumpCoroutine = null;
+            }
+
+            _jumpCoroutine = StartCoroutine(JumpingCoroutine());
         }
 
         private void Slide()
         {
-            if (_isJumping)
+            if (_state == PlayerState.Jump)
             {
-                _isJumping = false;
+                _state = PlayerState.Running;
                 _targetPos.y = 0f;
             }
 
-            if (_isSliding) return;
-            _isSliding = true;
-            _slideStart = _TEMP_progress;
-            StartCoroutine(SlideCoroutine());
+            if (_state == PlayerState.Slide) return;
+            _state = PlayerState.Slide;
+
+            if (_sideCoroutine != null)
+            {
+                StopCoroutine(_sideCoroutine);
+                _sideCoroutine = null;
+            }
+
+            _sideCoroutine = StartCoroutine(SlidingCoroutine());
 
             _collider.StartSliding();
         }
 
+        private Vector3 CheckGround()
+        {
+            float rayLength = 0.5f;
+            float minDist = 0.1f;
+            var rayStart = transform.position + new Vector3(0f, rayLength, 0f);
+
+            if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 20f, WalkableMask))
+            {
+                Debug.DrawLine(rayStart, hit.point, Color.red);
+                _isGrounded = Vector3.Distance(rayStart, hit.point) < rayLength + minDist;
+                
+                return hit.point;
+            }
+
+            throw new UnityException("Failed to get ground!");
+        }
+        
+        private void UpdatePosition()
+        {
+            if (_state == PlayerState.Jump) return;
+
+            if (!_isGrounded)
+            {
+                _fallCoroutine ??= StartCoroutine(FallingCoroutine());
+                return;
+            }
+
+            var pos = transform.position;
+            transform.position = new Vector3(pos.x, Mathf.MoveTowards(pos.y, _groundPos.y, Time.deltaTime * 10f), pos.z);
+        }
+
+        IEnumerator JumpingCoroutine()
+        {
+            float startHeight = transform.position.y;
+            float endHeight = transform.position.y + _jumpHeight;
+            float timer = 0f;
+
+            while (true)
+            {
+                timer = Mathf.Min(timer + Time.deltaTime, _jumpTime);
+                float delta = _jumpingCurve.Evaluate(timer / _jumpTime);
+
+                transform.position = new Vector3(transform.position.x,
+                    Mathf.Lerp(startHeight, endHeight, delta),
+                    transform.position.z);
+
+                yield return null;
+
+                if (Mathf.Approximately(timer, _jumpTime)) break;
+            }
+
+            _state = PlayerState.Running;
+            _jumpCoroutine = null;
+        }
+
+        IEnumerator FallingCoroutine()
+        {
+            float startHeight = transform.position.y;
+            float endHeight = 0f;
+            float timer = 0f;
+            float fallTime = transform.position.y / _fallSpeed;
+
+            _state = PlayerState.Falling;
+
+            while (true)
+            {
+                timer = Mathf.Min(timer + Time.deltaTime, fallTime);
+                float delta = _fallingCurve.Evaluate(timer / fallTime);
+
+                transform.position = new Vector3(transform.position.x,
+                    Mathf.Lerp(startHeight, endHeight, delta),
+                    transform.position.z);
+
+                yield return null;
+
+                if (_isGrounded || Mathf.Approximately(timer, fallTime)) break;
+            }
+
+            _state = PlayerState.Running;
+            _fallCoroutine = null;
+        }
+
+        IEnumerator SideCoroutine(int lane)
+        {
+
+            float startPos = transform.position.x;
+            float endPos = lane * _laneOffset;
+            float timer = 0f;
+
+            while (true)
+            {
+                timer = Mathf.Min(timer + Time.deltaTime, _laneChangeTime);
+                float delta = _slidingCurve.Evaluate(timer / _laneChangeTime);
+
+                transform.position = new Vector3(Mathf.Lerp(startPos, endPos, delta),
+                    transform.position.y,
+                    transform.position.z);
+
+                yield return null;
+
+                if (Mathf.Approximately(timer, _laneChangeTime)) break;
+            }
+
+            _state = PlayerState.Running;
+            _sideCoroutine = null;
+        }
+
+        IEnumerator SlidingCoroutine()
+        {
+            yield return new WaitForSeconds(_slideSpeed);
+
+            _collider.StopSliding();
+            _slideCoroutine = null;
+        }
+        
         public void OnHitObstacle(GameObject obstacle)
         {
             Debug.Log("DEATH");

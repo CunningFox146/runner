@@ -27,9 +27,6 @@ namespace Runner.Player
 
             var min = _collider.center - _collider.size;
             var max = _collider.center + _collider.size;
-
-            _controller.groundOffset = -max.y;
-            _controller.rayStart = new Vector3(0f, max.y, max.z * 0.5f);
         }
         
         public void StartSliding()
