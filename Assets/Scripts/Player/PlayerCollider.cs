@@ -31,6 +31,7 @@ namespace Runner.Player
         
         public void StartSliding()
         {
+            StopSliding();
             _collider.size = new Vector3(_collider.size.x, _collider.size.y * _slideScale, _collider.size.z);
             _collider.center = _collider.center - new Vector3(0.0f, _collider.size.y * 0.5f, 0.0f); // Set collider's center on the center of the mesh
         }

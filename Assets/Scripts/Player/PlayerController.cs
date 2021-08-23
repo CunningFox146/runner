@@ -39,16 +39,15 @@ namespace Runner.Player
         [SerializeField] private float _jumpHeight = 4f;
         [SerializeField] private AnimationCurve _jumpingCurve;
         [Header("Slide")]
-        [SerializeField] private float _slideSpeed = 4f; //Coordinates
+        [SerializeField] private float _slideTime = 4f;
+        [SerializeField] private float _slideFallMult = 2f;
         [SerializeField] private AnimationCurve _slidingCurve;
         [Header("Fall")]
-        [SerializeField] private float _fallSpeed = 4f; //Coordinates
+        [SerializeField] private float _fallSpeed = 4f;
         
         private PlayerLane _lane = PlayerLane.Center;
         private PlayerState _state = PlayerState.Running;
-
-        private Vector3 _targetPos = Vector3.zero;
-
+        
         private Coroutine _fallCoroutine;
         private Coroutine _jumpCoroutine;
         private Coroutine _slideCoroutine;
@@ -57,7 +56,7 @@ namespace Runner.Player
         private bool _isGrounded;
         private Vector3 _groundPos;
 
-        private string DebugString => $"State: {_state}\nIsGrounded: {_isGrounded.ToString()}";
+        private string DebugString => $"State: {_state}\nIsGrounded: {_isGrounded.ToString()}\nGround:{_groundPos.ToString()}";
 
         void Start()
         {
@@ -89,7 +88,7 @@ namespace Runner.Player
                 ChangeSide(1);
             }
 
-            if (Input.GetKeyDown(KeyCode.W) || SwipeManager.SwipeUp)
+            if (Input.GetKey(KeyCode.W) || SwipeManager.SwipeUp)
             {
                 Jump();
             }
@@ -99,18 +98,24 @@ namespace Runner.Player
             }
         }
 
+        private bool CanChangeSide(Vector3 direction)
+        {
+            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _laneOffset, WalkableMask))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private void ChangeSide(int sideDelta)
         {
             int lane = (int)_lane + sideDelta;
-            if (!Enum.IsDefined(typeof(PlayerLane), lane)) return;
-
-            //float offset = CheckGround(new Vector3(pos, 0f, transform.position.z));
-            //if (offset > transform.position.y + 0.25f) // Fix that if you figure out why offset sometimes is different even on the same platforms
-            //{
-            //    //Do something
-            //    Debug.Log($"{offset} > {transform.position.y}");
-            //    return;
-            //};
+            if (!Enum.IsDefined(typeof(PlayerLane), lane) || !CanChangeSide(new Vector3(sideDelta, 0, 0f)))
+            {
+                //TODO Hit player
+                return;
+            };
 
             _lane = (PlayerLane)lane;
 
@@ -131,9 +136,15 @@ namespace Runner.Player
                 _collider.StopSliding();
             }
 
-            if (_state == PlayerState.Jump) return;
+            if (_state == PlayerState.Jump || !_isGrounded) return;
+            _isGrounded = false;
             _state = PlayerState.Jump;
 
+            if (_fallCoroutine != null)
+            {
+                StopCoroutine(_fallCoroutine);
+                _fallCoroutine = null;
+            }
 
             if (_jumpCoroutine != null)
             {
@@ -142,14 +153,15 @@ namespace Runner.Player
             }
 
             _jumpCoroutine = StartCoroutine(JumpingCoroutine());
+
         }
 
         private void Slide()
         {
-            if (_state == PlayerState.Jump)
+            if (_state == PlayerState.Jump && _jumpCoroutine != null)
             {
-                _state = PlayerState.Running;
-                _targetPos.y = 0f;
+                StopCoroutine(_jumpCoroutine);
+                _jumpCoroutine = null;
             }
 
             if (_state == PlayerState.Slide) return;
@@ -168,7 +180,7 @@ namespace Runner.Player
 
         private Vector3 CheckGround()
         {
-            float rayLength = 0.5f;
+            float rayLength = 1f;
             float minDist = 0.1f;
             var rayStart = transform.position + new Vector3(0f, rayLength, 0f);
 
@@ -205,6 +217,7 @@ namespace Runner.Player
 
             while (true)
             {
+                Debug.Log("JUMP");
                 timer = Mathf.Min(timer + Time.deltaTime, _jumpTime);
                 float delta = _jumpingCurve.Evaluate(timer / _jumpTime);
 
@@ -217,24 +230,30 @@ namespace Runner.Player
                 if (Mathf.Approximately(timer, _jumpTime)) break;
             }
 
-            _state = PlayerState.Running;
+            _state = PlayerState.Falling;
             _jumpCoroutine = null;
         }
 
         IEnumerator FallingCoroutine()
         {
             float startHeight = transform.position.y;
-            float endHeight = 0f;
             float timer = 0f;
             float fallTime = transform.position.y / _fallSpeed;
+
+            if (_state == PlayerState.Slide)
+            {
+                fallTime *= _slideFallMult;
+            }
 
             _state = PlayerState.Falling;
 
             while (true)
             {
-                timer = Mathf.Min(timer + Time.deltaTime, fallTime);
+                Debug.Log("FALL");
+                float endHeight = _groundPos.y;
+                timer = Mathf.Clamp(timer + Time.deltaTime, 0f, fallTime);
                 float delta = _fallingCurve.Evaluate(timer / fallTime);
-
+                
                 transform.position = new Vector3(transform.position.x,
                     Mathf.Lerp(startHeight, endHeight, delta),
                     transform.position.z);
@@ -250,13 +269,13 @@ namespace Runner.Player
 
         IEnumerator SideCoroutine(int lane)
         {
-
             float startPos = transform.position.x;
             float endPos = lane * _laneOffset;
             float timer = 0f;
 
             while (true)
             {
+                Debug.Log("SIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _laneChangeTime);
                 float delta = _slidingCurve.Evaluate(timer / _laneChangeTime);
 
@@ -275,8 +294,17 @@ namespace Runner.Player
 
         IEnumerator SlidingCoroutine()
         {
-            yield return new WaitForSeconds(_slideSpeed);
+            float timer = 0f;
+            while (true)
+            {
+                Debug.Log("SLIDE");
+                timer = Mathf.Min(timer + Time.deltaTime, _slideTime);
+                if (Mathf.Approximately(timer, _slideTime)) break;
 
+                yield return null;
+            }
+
+            _state = PlayerState.Running;
             _collider.StopSliding();
             _slideCoroutine = null;
         }
