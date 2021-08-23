@@ -662,7 +662,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4589358814450089997, guid: 251b87e6199adb04897fc1f9c59e6327, type: 3}
       propertyPath: _slideFallMult
-      value: 0.5
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 4589358814450089997, guid: 251b87e6199adb04897fc1f9c59e6327, type: 3}
       propertyPath: _laneChangeTime

@@ -130,10 +130,16 @@ namespace Runner.Player
 
         private void Jump()
         {
+            if (_slideCoroutine != null)
+            {
+                StopCoroutine(_slideCoroutine);
+                _slideCoroutine = null;
+                _collider.StopSliding();
+            }
+
             if (_state == PlayerState.Slide)
             {
                 _state = PlayerState.Running;
-                _collider.StopSliding();
             }
 
             if (_state == PlayerState.Jump || !_isGrounded) return;
@@ -167,15 +173,25 @@ namespace Runner.Player
             if (_state == PlayerState.Slide) return;
             _state = PlayerState.Slide;
 
-            if (_sideCoroutine != null)
+            if (_slideCoroutine != null)
             {
-                StopCoroutine(_sideCoroutine);
-                _sideCoroutine = null;
+                StopCoroutine(_slideCoroutine);
+                _slideCoroutine = null;
             }
-
-            _sideCoroutine = StartCoroutine(SlidingCoroutine());
+            
+            _slideCoroutine = StartCoroutine(SlidingCoroutine());
 
             _collider.StartSliding();
+            
+            // Apply fall multiplier
+            if (!_isGrounded)
+            {
+                if (_fallCoroutine != null)
+                {
+                    StopCoroutine(_fallCoroutine);
+                    _fallCoroutine = null;
+                }
+            }
         }
 
         private Vector3 CheckGround()
@@ -240,7 +256,7 @@ namespace Runner.Player
             float timer = 0f;
             float fallTime = transform.position.y / _fallSpeed;
 
-            if (_state == PlayerState.Slide)
+            if (_slideCoroutine != null)
             {
                 fallTime *= _slideFallMult;
             }
@@ -297,6 +313,10 @@ namespace Runner.Player
             float timer = 0f;
             while (true)
             {
+                if (_isGrounded)
+                {
+                    _state = PlayerState.Slide;
+                }
                 Debug.Log("SLIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _slideTime);
                 if (Mathf.Approximately(timer, _slideTime)) break;
