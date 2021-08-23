@@ -9,29 +9,15 @@ namespace Runner.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        public enum PlayerLane
-        {
-            Left = -1,
-            Center,
-            Right
-        }
-
-        public enum PlayerState
-        {
-            Running,
-            Falling,
-            Jump,
-            Slide,
-            Death
-        }
-
         private readonly int WalkableMask = 1 << 6;
 
         [SerializeField] private PlayerCollider _collider;
         [SerializeField] private float _TEMP_progress = 0f;
-        [SerializeField] private Text debugText;
+        [SerializeField] private Text _debugText;
+        [Header("Lanes")]
+        [SerializeField] private float[] _lanes;
+        [SerializeField] private int _lane;
         [Header("Moving")]
-        [SerializeField] private float _laneOffset = 4f;
         [SerializeField] private float _laneChangeTime = 1f;
         [SerializeField] private AnimationCurve _fallingCurve;
         [Header("Jump")]
@@ -45,7 +31,6 @@ namespace Runner.Player
         [Header("Fall")]
         [SerializeField] private float _fallSpeed = 4f;
         
-        private PlayerLane _lane = PlayerLane.Center;
         private PlayerState _state = PlayerState.Running;
         
         private Coroutine _fallCoroutine;
@@ -56,8 +41,17 @@ namespace Runner.Player
         private bool _isGrounded;
         private Vector3 _groundPos;
 
-        private string DebugString => $"State: {_state}\nIsGrounded: {_isGrounded.ToString()}\nGround:{_groundPos.ToString()}";
-
+        private string DebugString => $"State:{_state}\nIsGrounded:{_isGrounded.ToString()}\nGround:{_groundPos.ToString()}\nCurrentLane:{_lane}";
+        
+        public enum PlayerState
+        {
+            Running,
+            Falling,
+            Jump,
+            Slide,
+            Death
+        }
+        
         void Start()
         {
             _groundPos = CheckGround();
@@ -66,7 +60,7 @@ namespace Runner.Player
         void Update()
         {
             _TEMP_progress += Time.deltaTime;
-            debugText.text = DebugString;
+            _debugText.text = DebugString;
 
             UpdateInput();
             UpdatePosition();
@@ -100,7 +94,7 @@ namespace Runner.Player
 
         private bool CanChangeSide(Vector3 direction)
         {
-            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _laneOffset, WalkableMask))
+            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, 4f, WalkableMask))
             {
                 return false;
             }
@@ -110,14 +104,14 @@ namespace Runner.Player
 
         private void ChangeSide(int sideDelta)
         {
-            int lane = (int)_lane + sideDelta;
-            if (!Enum.IsDefined(typeof(PlayerLane), lane) || !CanChangeSide(new Vector3(sideDelta, 0, 0f)))
+            int lane = _lane + sideDelta;
+            if (lane < 0 || lane + 1 > _lanes.Length || !CanChangeSide(new Vector3(sideDelta, 0, 0f)))
             {
                 //TODO Hit player
                 return;
             };
 
-            _lane = (PlayerLane)lane;
+            _lane = lane;
 
             if (_sideCoroutine != null)
             {
@@ -125,7 +119,7 @@ namespace Runner.Player
                 _sideCoroutine = null;
             }
 
-            _sideCoroutine = StartCoroutine(SideCoroutine(lane));
+            _sideCoroutine = StartCoroutine(SideCoroutine());
         }
 
         private void Jump()
@@ -283,10 +277,10 @@ namespace Runner.Player
             _fallCoroutine = null;
         }
 
-        IEnumerator SideCoroutine(int lane)
+        IEnumerator SideCoroutine()
         {
             float startPos = transform.position.x;
-            float endPos = lane * _laneOffset;
+            float endPos = _lanes[_lane];
             float timer = 0f;
 
             while (true)
