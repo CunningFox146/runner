@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Runner.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,7 @@ namespace Runner.Player
         private readonly int WalkableMask = 1 << 6;
 
         [SerializeField] private PlayerCollider _collider;
+        [SerializeField] private Animator _animator;
         [SerializeField] private float _TEMP_progress = 0f;
         [SerializeField] private Text _debugText;
         [Header("Lanes")]
@@ -30,9 +32,13 @@ namespace Runner.Player
         [SerializeField] private AnimationCurve _slidingCurve;
         [Header("Fall")]
         [SerializeField] private float _fallSpeed = 4f;
-        
-        private PlayerState _state = PlayerState.Running;
-        
+
+        private Rigidbody _rb;
+
+        private PlayerState _state;
+        private int _stateHash;
+        private int _sideHash;
+
         private Coroutine _fallCoroutine;
         private Coroutine _jumpCoroutine;
         private Coroutine _slideCoroutine;
@@ -41,17 +47,35 @@ namespace Runner.Player
         private bool _isGrounded;
         private Vector3 _groundPos;
 
-        private string DebugString => $"State:{_state}\nIsGrounded:{_isGrounded.ToString()}\nGround:{_groundPos.ToString()}\nCurrentLane:{_lane}";
-        
+        private PlayerState State
+        {
+            get => _state;
+            set
+            {
+                _state = value;
+                _animator.SetInteger(_stateHash, (int)_state);
+            }
+        }
+        private string DebugString => $"State:{State}\nIsGrounded:{_isGrounded.ToString()}\nGround:{_groundPos.ToString()}\nCurrentLane:{_lane}";
+
         public enum PlayerState
         {
             Running,
-            Falling,
             Jump,
+            Falling,
             Slide,
             Death
         }
-        
+
+        void Awake()
+        {
+            _rb = GetComponent<Rigidbody>();
+            _stateHash = Animator.StringToHash("state");
+            _sideHash = Animator.StringToHash("sideChange");
+
+            State = PlayerState.Running;
+        }
+
         void Start()
         {
             _groundPos = CheckGround();
@@ -65,7 +89,7 @@ namespace Runner.Player
             UpdateInput();
             UpdatePosition();
         }
-        
+
         void FixedUpdate()
         {
             _groundPos = CheckGround();
@@ -113,6 +137,8 @@ namespace Runner.Player
 
             _lane = lane;
 
+            _animator.SetTrigger(_sideHash);
+
             if (_sideCoroutine != null)
             {
                 StopCoroutine(_sideCoroutine);
@@ -131,14 +157,14 @@ namespace Runner.Player
                 _collider.StopSliding();
             }
 
-            if (_state == PlayerState.Slide)
+            if (State == PlayerState.Slide)
             {
-                _state = PlayerState.Running;
+                State = PlayerState.Running;
             }
 
-            if (_state == PlayerState.Jump || !_isGrounded) return;
+            if (State == PlayerState.Jump || !_isGrounded) return;
             _isGrounded = false;
-            _state = PlayerState.Jump;
+            State = PlayerState.Jump;
 
             if (_fallCoroutine != null)
             {
@@ -158,25 +184,25 @@ namespace Runner.Player
 
         private void Slide()
         {
-            if (_state == PlayerState.Jump && _jumpCoroutine != null)
+            if (State == PlayerState.Jump && _jumpCoroutine != null)
             {
                 StopCoroutine(_jumpCoroutine);
                 _jumpCoroutine = null;
             }
 
-            if (_state == PlayerState.Slide) return;
-            _state = PlayerState.Slide;
+            if (State == PlayerState.Slide) return;
+            State = PlayerState.Slide;
 
             if (_slideCoroutine != null)
             {
                 StopCoroutine(_slideCoroutine);
                 _slideCoroutine = null;
             }
-            
+
             _slideCoroutine = StartCoroutine(SlidingCoroutine());
 
             _collider.StartSliding();
-            
+
             // Apply fall multiplier
             if (!_isGrounded)
             {
@@ -198,16 +224,16 @@ namespace Runner.Player
             {
                 Debug.DrawLine(rayStart, hit.point, Color.red);
                 _isGrounded = Vector3.Distance(rayStart, hit.point) < rayLength + minDist;
-                
+
                 return hit.point;
             }
 
             throw new UnityException("Failed to get ground!");
         }
-        
+
         private void UpdatePosition()
         {
-            if (_state == PlayerState.Jump) return;
+            if (State == PlayerState.Jump) return;
 
             if (!_isGrounded)
             {
@@ -240,7 +266,7 @@ namespace Runner.Player
                 if (Mathf.Approximately(timer, _jumpTime)) break;
             }
 
-            _state = PlayerState.Falling;
+            State = PlayerState.Falling;
             _jumpCoroutine = null;
         }
 
@@ -255,7 +281,7 @@ namespace Runner.Player
                 fallTime *= _slideFallMult;
             }
 
-            _state = PlayerState.Falling;
+            State = PlayerState.Falling;
 
             while (true)
             {
@@ -263,7 +289,7 @@ namespace Runner.Player
                 float endHeight = _groundPos.y;
                 timer = Mathf.Clamp(timer + Time.deltaTime, 0f, fallTime);
                 float delta = _fallingCurve.Evaluate(timer / fallTime);
-                
+
                 transform.position = new Vector3(transform.position.x,
                     Mathf.Lerp(startHeight, endHeight, delta),
                     transform.position.z);
@@ -273,7 +299,7 @@ namespace Runner.Player
                 if (_isGrounded || Mathf.Approximately(timer, fallTime)) break;
             }
 
-            _state = PlayerState.Running;
+            State = PlayerState.Running;
             _fallCoroutine = null;
         }
 
@@ -298,7 +324,7 @@ namespace Runner.Player
                 if (Mathf.Approximately(timer, _laneChangeTime)) break;
             }
 
-            _state = PlayerState.Running;
+            State = PlayerState.Running;
             _sideCoroutine = null;
         }
 
@@ -309,7 +335,7 @@ namespace Runner.Player
             {
                 if (_isGrounded)
                 {
-                    _state = PlayerState.Slide;
+                    State = PlayerState.Slide;
                 }
                 Debug.Log("SLIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _slideTime);
@@ -318,15 +344,43 @@ namespace Runner.Player
                 yield return null;
             }
 
-            _state = PlayerState.Running;
+            State = PlayerState.Running;
             _collider.StopSliding();
             _slideCoroutine = null;
         }
         
+
         public void OnHitObstacle(GameObject obstacle)
         {
-            Debug.Log("DEATH");
 
+            Debug.Log("DEATH");
+            if (_sideCoroutine != null)
+            {
+                StopCoroutine(_sideCoroutine);
+                _sideCoroutine = null;
+            }
+            if (_slideCoroutine != null)
+            {
+                StopCoroutine(_slideCoroutine);
+                _slideCoroutine = null;
+            }
+            if (_jumpCoroutine != null)
+            {
+                StopCoroutine(_jumpCoroutine);
+                _jumpCoroutine = null;
+            }
+
+            if (!_isGrounded)
+            {
+                CameraManager.Inst.isFollowing = false;
+                var dir = (Camera.main.transform.position - transform.position).normalized;
+                _rb.constraints = RigidbodyConstraints.None;
+                _rb.AddForce(dir * 15f, ForceMode.VelocityChange);
+                _rb.AddTorque(dir * 10f, ForceMode.VelocityChange);
+            }
+
+            State = PlayerState.Death;
+            test.Inst.speed = 0f;
             enabled = false;
         }
     }

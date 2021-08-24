@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Runner;
 using UnityEngine;
 
-public class test : MonoBehaviour
+public class test : Singleton<test>
 {
     public float speed = 5f;
 
