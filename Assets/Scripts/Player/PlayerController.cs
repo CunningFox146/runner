@@ -13,7 +13,7 @@ namespace Runner.Player
         private readonly int WalkableMask = 1 << 6;
 
         [SerializeField] private PlayerCollider _collider;
-        [SerializeField] private Animator _animator;
+        [SerializeField] private PlayerAnimation _animation;
         [SerializeField] private float _TEMP_progress = 0f;
         [SerializeField] private Text _debugText;
         [Header("Lanes")]
@@ -36,8 +36,6 @@ namespace Runner.Player
         private Rigidbody _rb;
 
         private PlayerState _state;
-        private int _stateHash;
-        private int _sideHash;
 
         private Coroutine _fallCoroutine;
         private Coroutine _jumpCoroutine;
@@ -53,7 +51,7 @@ namespace Runner.Player
             set
             {
                 _state = value;
-                _animator.SetInteger(_stateHash, (int)_state);
+                _animation.SetState((int)_state);
             }
         }
         private string DebugString => $"State:{State}\nIsGrounded:{_isGrounded.ToString()}\nGround:{_groundPos.ToString()}\nCurrentLane:{_lane}";
@@ -64,14 +62,14 @@ namespace Runner.Player
             Jump,
             Falling,
             Slide,
-            Death
+            Death,
+            SideChange,
         }
 
         void Awake()
         {
             _rb = GetComponent<Rigidbody>();
-            _stateHash = Animator.StringToHash("state");
-            _sideHash = Animator.StringToHash("sideChange");
+            _animation = GetComponent<PlayerAnimation>();
 
             State = PlayerState.Running;
         }
@@ -136,9 +134,7 @@ namespace Runner.Player
             };
 
             _lane = lane;
-
-            _animator.SetTrigger(_sideHash);
-
+            
             if (_sideCoroutine != null)
             {
                 StopCoroutine(_sideCoroutine);
@@ -309,8 +305,14 @@ namespace Runner.Player
             float endPos = _lanes[_lane];
             float timer = 0f;
 
+            if (_isGrounded)
+            {
+                State = PlayerState.SideChange;
+            }
+
             while (true)
             {
+
                 Debug.Log("SIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _laneChangeTime);
                 float delta = _slidingCurve.Evaluate(timer / _laneChangeTime);
