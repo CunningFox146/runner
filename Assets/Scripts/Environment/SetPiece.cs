@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Runner.Managers.ObjectPool;
 using UnityEngine;
 
 namespace Runner.Environment
 {
-    public class SetPiece : MonoBehaviour
+    public class SetPiece : MonoBehaviour, IPoolReaction
     {
         public static Action<SetPiece> OnSetPieceExit;
 
@@ -19,10 +20,10 @@ namespace Runner.Environment
         private bool _isExitPushed;
 
         public float Length => _pointEnd.position.z - _pointStart.position.z;
-
-
+        
         void Awake()
         {
+
             if (_isWarmingTiles)
             {
                 WarmTiles();
@@ -37,6 +38,8 @@ namespace Runner.Environment
                 _isExitPushed = true;
             }
         }
+
+        public void ObjectPooled(bool inPool) =>_isExitPushed = false;
 
         public List<Vector3> GetCachedTiles()
         {

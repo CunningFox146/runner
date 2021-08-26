@@ -15,7 +15,7 @@ namespace Runner.Util
             int length = array.Length;
             if (length == 1) return array[0];
 
-            int idx = Random.Range(0, length - 1);
+            int idx = Random.Range(0, length);
             return array[idx];
         }
 
