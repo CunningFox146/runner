@@ -13,7 +13,6 @@ namespace Runner.Player
         private readonly int WalkableMask = 1 << 6;
 
         [SerializeField] private PlayerCollider _collider;
-        [SerializeField] private PlayerAnimation _animation;
         [SerializeField] private float _TEMP_progress = 0f;
         [SerializeField] private Text _debugText;
         [Header("Lanes")]
@@ -34,6 +33,7 @@ namespace Runner.Player
         [SerializeField] private float _fallSpeed = 4f;
 
         private Rigidbody _rb;
+        private PlayerAnimation _animation;
 
         private PlayerState _state;
 
@@ -82,7 +82,10 @@ namespace Runner.Player
         void Update()
         {
             _TEMP_progress += Time.deltaTime;
-            _debugText.text = DebugString;
+            if (_debugText != null)
+            {
+                _debugText.text = DebugString;
+            }
 
             UpdateInput();
             UpdatePosition();
@@ -104,7 +107,7 @@ namespace Runner.Player
                 ChangeSide(1);
             }
 
-            if (Input.GetKey(KeyCode.W) || SwipeManager.SwipeUp)
+            if (Input.GetKeyDown(KeyCode.W) || SwipeManager.SwipeUp)
             {
                 Jump();
             }
@@ -114,25 +117,19 @@ namespace Runner.Player
             }
         }
 
-        private bool CanChangeSide(Vector3 direction)
-        {
-            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, 4f, WalkableMask))
-            {
-                return false;
-            }
-
-            return true;
-        }
+        private bool CanChangeSide(Vector3 direction) => !Physics.Raycast(
+            transform.position + new Vector3(0f, 0.1f, 0f),
+            direction, out RaycastHit hit, 4f, WalkableMask);
 
         private void ChangeSide(int sideDelta)
         {
             int lane = _lane + sideDelta;
-            if (lane < 0 || lane + 1 > _lanes.Length || !CanChangeSide(new Vector3(sideDelta, 0, 0f)))
+            if (lane < 0 || lane + 1 > _lanes.Length || !CanChangeSide(new Vector3(sideDelta, 0f, 0f)))
             {
                 //TODO Hit player
                 return;
             };
-
+            
             _lane = lane;
             
             if (_sideCoroutine != null)
