@@ -22,31 +22,34 @@ namespace Runner.Editor
             Handles.DrawLine(pos + new Vector3(size, 0f, -size), pos + new Vector3(size, 0f, size), thickness);
             Handles.DrawLine(pos + new Vector3(size, 0f, size), pos + new Vector3(-size, 0f, size), thickness);
             Handles.DrawLine(pos + new Vector3(-size, 0f, size), pos + new Vector3(-size, 0f, -size), thickness);
+            Handles.DrawLine(pos + new Vector3(-size, 0f, -size), pos + new Vector3(size, 0f, size), thickness);
+            Handles.DrawLine(pos + new Vector3(size, 0f, -size), pos + new Vector3(-size, 0f, size), thickness);
         }
+
+        private string FormatPos(Vector3 pos) => $"{pos.x:0.0}; {pos.z:0.0}";
 
         public void OnSceneGUI()
         {
             _target.UpdateSetLength();
             if (_target.length <= 0f) return;
 
-            GUIStyle styleMissing = new GUIStyle();
-            styleMissing.normal.textColor = Color.red;
-            GUIStyle styleFound = new GUIStyle();
-            styleFound.normal.textColor = Color.cyan;
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = Color.black;
 
             Handles.color = Color.red;
-            foreach (Vector3 pos in _target.CheckTiles())
+            foreach (Vector3 pos in _target.GetMissingTiles())
             {
-                DrawCube(pos, 2f);
-                Handles.Label(pos, $"{pos.x}; {pos.z}", styleMissing);
+                DrawCube(pos, 2f, 3f);
+                Handles.Label(pos, FormatPos(pos), style);
             }
+
             Handles.color = Color.yellow;
             foreach (Vector3 pos in _target.GetCachedTiles())
             {
-                DrawCube(pos, 2f, 5f);
-                Handles.Label(pos, $"{pos.x}; {pos.z}", styleFound);
+                DrawCube(pos, 2f, 1f);
+                Handles.Label(pos, FormatPos(pos), style);
             }
-            
+
         }
     }
 }

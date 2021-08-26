@@ -85,6 +85,8 @@ MonoBehaviour:
   _pointStart: {fileID: 5563930693053244342}
   _pointEnd: {fileID: 4056370230632578169}
   _tilesContainer: {fileID: 7583546557550177665}
+  _isWarmingTiles: 1
+  _warmingPrefab: {fileID: 4152991267084297929, guid: c880be9784a2757499dc5b6d39decfe4, type: 3}
   startPoint: {x: -6, y: 0, z: 0}
   length: 12
 --- !u!1 &4056370230632578169

@@ -10,13 +10,20 @@ namespace Runner.Environment
         [SerializeField] private GameObject _pointEnd;
         [SerializeField] private Transform _tilesContainer;
 
+        [SerializeField] bool _isWarmingTiles;
+        [SerializeField] GameObject _warmingPrefab;
+
         [HideInInspector] public Vector3 startPoint;
         [HideInInspector] public float length;
 
         void Awake()
         {
             UpdateSetLength();
-            //WarmTiles();
+
+            if (_isWarmingTiles)
+            {
+                WarmTiles();
+            }
         }
 
         public void UpdateSetLength()
@@ -39,10 +46,8 @@ namespace Runner.Environment
             return cache;
         }
 
-        public List<Vector3> CheckTiles()
+        public List<Vector3> GetMissingTiles()
         {
-            var cache = GetCachedTiles();
-
             float tileSize = 2f;
             var list = new List<Vector3>();
 
@@ -51,7 +56,8 @@ namespace Runner.Environment
                 for (float z = -1f; z <= 1f; z++)
                 {
                     var pos = new Vector3(x, 0f, z * tileSize);
-                    if (!cache.Contains(pos))
+                    // Can't use !cache.Contains(pos) here, so we use plain raycast
+                    if (!Physics.Raycast(pos + new Vector3(0f, 0.1f, 0f), Vector3.down, 0.2f))
                     {
                         list.Add(pos);
                     }
@@ -59,6 +65,14 @@ namespace Runner.Environment
             }
 
             return list;
+        }
+        
+        private void WarmTiles()
+        {
+            foreach (Vector3 pos in GetMissingTiles())
+            {
+                Instantiate(_warmingPrefab, _tilesContainer).transform.position = pos;
+            }
         }
     }
 }
