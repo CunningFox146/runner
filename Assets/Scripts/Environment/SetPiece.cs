@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,20 +7,34 @@ namespace Runner.Environment
 {
     public class SetPiece : MonoBehaviour
     {
-        private const int WalkableMask = 1 << 6;
+        public static Action<SetPiece> OnSetPieceExit;
 
         [SerializeField] private Transform _pointStart;
         [SerializeField] private Transform _pointEnd;
         [SerializeField] private Transform _tilesContainer;
 
-        [SerializeField] bool _isWarmingTiles;
-        [SerializeField] GameObject _warmingPrefab;
-        
+        [SerializeField] private bool _isWarmingTiles;
+        [SerializeField] private GameObject _warmingPrefab;
+
+        private bool _isExitPushed;
+
+        public float Length => _pointEnd.position.z - _pointStart.position.z;
+
+
         void Awake()
         {
             if (_isWarmingTiles)
             {
                 WarmTiles();
+            }
+        }
+
+        void Update()
+        {
+            if (_pointEnd.position.z <= 0f && !_isExitPushed)
+            {
+                OnSetPieceExit?.Invoke(this);
+                _isExitPushed = true;
             }
         }
 
@@ -59,7 +74,7 @@ namespace Runner.Environment
             
             for (float x = -tileSize; x <= tileSize; x+= tileSize)
             {
-                for (float z = _pointStart.position.z; z <= _pointEnd.transform.position.z; z += tileSize)
+                for (float z = _pointStart.position.z + tileSize * 0.5f; z < _pointEnd.position.z; z += tileSize)
                 {
                     var pos = new Vector3(x, 0f, z);
                     if (!IsTileCached(cache, pos))
