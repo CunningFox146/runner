@@ -30,9 +30,6 @@ namespace Runner.Editor
 
         public void OnSceneGUI()
         {
-            _target.UpdateSetLength();
-            if (_target.length <= 0f) return;
-
             GUIStyle style = new GUIStyle();
             style.normal.textColor = Color.black;
 

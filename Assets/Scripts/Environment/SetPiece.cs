@@ -6,32 +6,20 @@ namespace Runner.Environment
 {
     public class SetPiece : MonoBehaviour
     {
-        [SerializeField] private GameObject _pointStart;
-        [SerializeField] private GameObject _pointEnd;
+        private const int WalkableMask = 1 << 6;
+
+        [SerializeField] private Transform _pointStart;
+        [SerializeField] private Transform _pointEnd;
         [SerializeField] private Transform _tilesContainer;
 
         [SerializeField] bool _isWarmingTiles;
         [SerializeField] GameObject _warmingPrefab;
-
-        [HideInInspector] public Vector3 startPoint;
-        [HideInInspector] public float length;
-
+        
         void Awake()
         {
-            UpdateSetLength();
-
             if (_isWarmingTiles)
             {
                 WarmTiles();
-            }
-        }
-
-        public void UpdateSetLength()
-        {
-            if (_pointStart != null && _pointEnd != null)
-            {
-                startPoint = _pointStart.transform.position;
-                length = Vector3.Distance(startPoint, _pointEnd.transform.position);
             }
         }
 
@@ -46,18 +34,35 @@ namespace Runner.Environment
             return cache;
         }
 
+        // Round positions to properly check tiles
+        private bool IsTileCached(List<Vector3> cache, Vector3 pos)
+        {
+            pos = new Vector3(Mathf.Round(pos.x), 0f, Mathf.Round(pos.z));
+
+            foreach (Vector3 point in cache)
+            {
+                var rounded = new Vector3(Mathf.Round(point.x), 0f, Mathf.Round(point.z));
+                if (rounded == pos)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public List<Vector3> GetMissingTiles()
         {
             float tileSize = 2f;
             var list = new List<Vector3>();
-
-            for (float x = startPoint.x; x <= _pointEnd.transform.position.x; x += tileSize)
+            var cache = GetCachedTiles();
+            
+            for (float x = -tileSize; x <= tileSize; x+= tileSize)
             {
-                for (float z = -1f; z <= 1f; z++)
+                for (float z = _pointStart.position.z; z <= _pointEnd.transform.position.z; z += tileSize)
                 {
-                    var pos = new Vector3(x, 0f, z * tileSize);
-                    // Can't use !cache.Contains(pos) here, so we use plain raycast
-                    if (!Physics.Raycast(pos + new Vector3(0f, 0.1f, 0f), Vector3.down, 0.2f))
+                    var pos = new Vector3(x, 0f, z);
+                    if (!IsTileCached(cache, pos))
                     {
                         list.Add(pos);
                     }
