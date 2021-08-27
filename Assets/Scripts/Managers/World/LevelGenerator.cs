@@ -17,6 +17,7 @@ namespace Runner.Managers.World
         [SerializeField] private int _startPos;
 
         private SetPiece _lastPiece;
+        private GameObject _lastPrefab;
 
         private bool _isWarming;
         private Queue<SetPiece> _cache;
@@ -55,7 +56,12 @@ namespace Runner.Managers.World
 
         private void ReleaseSet()
         {
-            var prefab = ArrayUtil.GetRandomItem(_setPieces);
+            GameObject prefab = null;
+            do
+            {
+                prefab = ArrayUtil.GetRandomItem(_setPieces);
+            } while (prefab == _lastPrefab);
+
             var obj = ObjectPooler.Inst.GetObject(prefab);
             var setPiece = obj.GetComponent<SetPiece>();
 
@@ -66,6 +72,7 @@ namespace Runner.Managers.World
 
             _cache.Enqueue(setPiece);
             _lastPiece = setPiece;
+            _lastPrefab = prefab;
         }
 
         private void RemoveLastSet()
