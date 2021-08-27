@@ -9,6 +9,8 @@ namespace Runner.Managers.World
 {
     public class LevelGenerator : MonoBehaviour
     {
+        public static readonly float TileSize = 2f;
+
         [SerializeField] private GameObject[] _setPieces;
         [SerializeField] private int _warmCount;
         [SerializeField] private int _maxCacheSize;
@@ -54,14 +56,13 @@ namespace Runner.Managers.World
         private void ReleaseSet()
         {
             var prefab = ArrayUtil.GetRandomItem(_setPieces);
-            var piece = ObjectPooler.Inst.GetObject(prefab);
-            var setPiece = piece.GetComponent<SetPiece>();
-            var pieceLength = setPiece.Length;
-            float lastPos = _lastPiece ? _lastPiece.transform.position.z : _startPos;
-            float lastLength = _lastPiece ? _lastPiece.Length : 0f;
+            var obj = ObjectPooler.Inst.GetObject(prefab);
+            var setPiece = obj.GetComponent<SetPiece>();
 
-            piece.transform.position = new Vector3(0f, 0f, lastPos + (lastLength + pieceLength) * 0.5f);
-            piece.transform.parent = transform;
+            float offset = _lastPiece ? _lastPiece.pointEnd.position.z : _startPos;
+
+            obj.transform.position = new Vector3(0f, 0f, offset - setPiece.pointStart.position.z);
+            obj.transform.parent = transform;
 
             _cache.Enqueue(setPiece);
             _lastPiece = setPiece;

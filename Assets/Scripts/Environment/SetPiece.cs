@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Runner.Managers.ObjectPool;
+using Runner.Managers.World;
 using Runner.Util;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -12,8 +13,9 @@ namespace Runner.Environment
     {
         public static Action<SetPiece> OnSetPieceExit;
 
-        [SerializeField] private Transform _pointStart;
-        [SerializeField] private Transform _pointEnd;
+        [SerializeField] public Transform pointStart;
+        [SerializeField] public Transform pointEnd;
+
         [SerializeField] private Transform _tilesContainer;
 
         [SerializeField] private bool _isWarmingTiles;
@@ -21,10 +23,8 @@ namespace Runner.Environment
 
         [SerializeField] private float _grassChance = 0.5f;
         [SerializeField] private GameObject[] _grass;
-
+        
         private bool _isExitPushed;
-
-        public float Length => _pointEnd.position.z - _pointStart.position.z;
         
         void Awake()
         {
@@ -42,7 +42,7 @@ namespace Runner.Environment
 
         void Update()
         {
-            if (_pointEnd.position.z <= 0f && !_isExitPushed)
+            if (pointEnd.position.z <= 0f && !_isExitPushed)
             {
                 OnSetPieceExit?.Invoke(this);
                 _isExitPushed = true;
@@ -87,7 +87,7 @@ namespace Runner.Environment
             
             for (float x = -tileSize; x <= tileSize; x+= tileSize)
             {
-                for (float z = _pointStart.position.z + tileSize * 0.5f; z < _pointEnd.position.z; z += tileSize)
+                for (float z = pointStart.position.z + tileSize * 0.5f; z < pointEnd.position.z; z += tileSize)
                 {
                     var pos = new Vector3(x, 0f, z);
                     if (!IsTileCached(cache, pos))

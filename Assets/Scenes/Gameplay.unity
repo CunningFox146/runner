@@ -169,8 +169,8 @@ MonoBehaviour:
   _setPieces:
   - {fileID: 1551715639334487887, guid: 820f72f44a6778d4b8ecb4677e388014, type: 3}
   - {fileID: 8558179270232581510, guid: 7cdb99098f7ae9148ae560ae50b93f38, type: 3}
-  _warmCount: 10
-  _maxCacheSize: 11
+  _warmCount: 5
+  _maxCacheSize: 6
   _startPos: -5
 --- !u!1 &385813057
 GameObject:
@@ -403,7 +403,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9025042204114240311, guid: 251b87e6199adb04897fc1f9c59e6327, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 251b87e6199adb04897fc1f9c59e6327, type: 3}

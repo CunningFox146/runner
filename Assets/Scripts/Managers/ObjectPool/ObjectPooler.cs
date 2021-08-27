@@ -74,6 +74,7 @@ namespace Runner.Managers.ObjectPool
             _pool[prefab].Enqueue(obj);
             obj.SetActive(false);
             obj.transform.parent = transform;
+            obj.transform.position = Vector3.zero;
         }
         
     }

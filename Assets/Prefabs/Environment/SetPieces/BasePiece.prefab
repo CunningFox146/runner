@@ -76,11 +76,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d30dd2cd35b1cb24f8f4fa0dadb2578f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pointStart: {fileID: 1418350409406049648}
-  _pointEnd: {fileID: 1355210291233052249}
+  pointStart: {fileID: 1418350409406049648}
+  pointEnd: {fileID: 1355210291233052249}
   _tilesContainer: {fileID: 7583546557550177665}
   _isWarmingTiles: 1
   _warmingPrefab: {fileID: 4152991267084297929, guid: c880be9784a2757499dc5b6d39decfe4, type: 3}
+  _grassChance: 0.5
+  _grass: []
 --- !u!1 &4056370230632578169
 GameObject:
   m_ObjectHideFlags: 0
