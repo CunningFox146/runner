@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Runner.Managers.ObjectPool;
+using Runner.Util;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Runner.Environment
 {
@@ -17,6 +19,9 @@ namespace Runner.Environment
         [SerializeField] private bool _isWarmingTiles;
         [SerializeField] private GameObject _warmingPrefab;
 
+        [SerializeField] private float _grassChance = 0.5f;
+        [SerializeField] private GameObject[] _grass;
+
         private bool _isExitPushed;
 
         public float Length => _pointEnd.position.z - _pointStart.position.z;
@@ -27,6 +32,11 @@ namespace Runner.Environment
             if (_isWarmingTiles)
             {
                 WarmTiles();
+            }
+
+            if (_grass != null && _grass.Length > 0)
+            {
+                Decorate();
             }
         }
 
@@ -41,25 +51,25 @@ namespace Runner.Environment
 
         public void ObjectPooled(bool inPool) =>_isExitPushed = false;
 
-        public List<Vector3> GetCachedTiles()
+        public List<Transform> GetCachedTiles()
         {
-            var cache = new List<Vector3>();
+            var cache = new List<Transform>();
             foreach (Transform child in _tilesContainer)
             {
-                cache.Add(child.position);
+                cache.Add(child);
             }
 
             return cache;
         }
 
         // Round positions to properly check tiles
-        private bool IsTileCached(List<Vector3> cache, Vector3 pos)
+        private bool IsTileCached(List<Transform> cache, Vector3 pos)
         {
             pos = new Vector3(Mathf.Round(pos.x), 0f, Mathf.Round(pos.z));
 
-            foreach (Vector3 point in cache)
+            foreach (Transform tile in cache)
             {
-                var rounded = new Vector3(Mathf.Round(point.x), 0f, Mathf.Round(point.z));
+                var rounded = new Vector3(Mathf.Round(tile.position.x), 0f, Mathf.Round(tile.position.z));
                 if (rounded == pos)
                 {
                     return true;
@@ -95,6 +105,18 @@ namespace Runner.Environment
             foreach (Vector3 pos in GetMissingTiles())
             {
                 Instantiate(_warmingPrefab, _tilesContainer).transform.position = pos;
+            }
+        }
+
+        private void Decorate()
+        {
+            const float spacing = 0.9f; // tile scale is 2f
+            foreach (Transform tile in GetCachedTiles())
+            {
+                if (!RandomUtil.RandomBool(_grassChance)) continue;
+
+                var grass = Instantiate(ArrayUtil.GetRandomItem(_grass), tile);
+                grass.transform.localPosition = new Vector3(Random.Range(-spacing, spacing), 0f, Random.Range(-spacing, spacing));
             }
         }
     }

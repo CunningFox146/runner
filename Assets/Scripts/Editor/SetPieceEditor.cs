@@ -41,8 +41,9 @@ namespace Runner.Editor
             }
 
             Handles.color = Color.yellow;
-            foreach (Vector3 pos in _target.GetCachedTiles())
+            foreach (Transform tile in _target.GetCachedTiles())
             {
+                var pos = tile.position;
                 DrawCube(pos, 2f, 1f);
                 Handles.Label(pos, FormatPos(pos), style);
             }

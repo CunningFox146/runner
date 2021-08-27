@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1941215628815960785, guid: aeda3f5f3a2dfbf4699dc768faa6f2e2, type: 3}
       propertyPath: m_Name
-      value: BasePiece
+      value: Test1
       objectReference: {fileID: 0}
     - target: {fileID: 3606636398886939701, guid: aeda3f5f3a2dfbf4699dc768faa6f2e2, type: 3}
       propertyPath: m_RootOrder
@@ -55,5 +55,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7571208015124678739, guid: aeda3f5f3a2dfbf4699dc768faa6f2e2, type: 3}
+      propertyPath: _grass.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7571208015124678739, guid: aeda3f5f3a2dfbf4699dc768faa6f2e2, type: 3}
+      propertyPath: _grass.Array.data[0]
+      value: 
+      objectReference: {fileID: 370082855509372928, guid: dbb0d75820f3fa94f954d7038a06abf7, type: 3}
+    - target: {fileID: 7571208015124678739, guid: aeda3f5f3a2dfbf4699dc768faa6f2e2, type: 3}
+      propertyPath: _grass.Array.data[1]
+      value: 
+      objectReference: {fileID: 8431081219574416766, guid: 43882d360e8a6c34fa114645e3037580, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aeda3f5f3a2dfbf4699dc768faa6f2e2, type: 3}

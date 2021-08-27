@@ -22,13 +22,16 @@ namespace Runner.Managers.World
         void Awake()
         {
             _cache = new Queue<SetPiece>();
-            
+
+            SetPiece.OnSetPieceExit += OnSetPieceExitHandler;
+        }
+
+        void Start()
+        {
             for (int i = 0; i < _warmCount; i++)
             {
                 ReleaseSet();
             }
-
-            SetPiece.OnSetPieceExit += OnSetPieceExitHandler;
         }
 
         void Update()
@@ -50,7 +53,8 @@ namespace Runner.Managers.World
 
         private void ReleaseSet()
         {
-            var piece = ObjectPooler.Inst.GetObject(ArrayUtil.GetRandomItem(_setPieces));
+            var prefab = ArrayUtil.GetRandomItem(_setPieces);
+            var piece = ObjectPooler.Inst.GetObject(prefab);
             var setPiece = piece.GetComponent<SetPiece>();
             var pieceLength = setPiece.Length;
             float lastPos = _lastPiece ? _lastPiece.transform.position.z : _startPos;
