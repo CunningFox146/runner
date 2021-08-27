@@ -118,8 +118,8 @@ namespace Runner.Player
         }
 
         private bool CanChangeSide(Vector3 direction) => !Physics.Raycast(
-            transform.position + new Vector3(0f, 0.1f, 0f),
-            direction, out RaycastHit hit, 4f, WalkableMask);
+            transform.position + new Vector3(0f, 1f, 0f),
+            direction, out RaycastHit hit, 4f);
 
         private void ChangeSide(int sideDelta)
         {

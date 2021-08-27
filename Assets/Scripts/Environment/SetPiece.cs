@@ -22,7 +22,7 @@ namespace Runner.Environment
         [SerializeField] private GameObject _warmingPrefab;
 
         [SerializeField] private float _grassChance = 0.5f;
-        [SerializeField] private GameObject[] _grass;
+        [SerializeField] private GameObject _grass;
         
         private bool _isExitPushed;
         
@@ -34,7 +34,7 @@ namespace Runner.Environment
                 WarmTiles();
             }
 
-            if (_grass != null && _grass.Length > 0)
+            if (_grass != null)
             {
                 Decorate();
             }
@@ -115,7 +115,7 @@ namespace Runner.Environment
             {
                 if (!RandomUtil.RandomBool(_grassChance)) continue;
 
-                var grass = Instantiate(ArrayUtil.GetRandomItem(_grass), tile);
+                var grass = Instantiate(_grass, tile);
                 grass.transform.localPosition = new Vector3(Random.Range(-spacing, spacing), 0f, Random.Range(-spacing, spacing));
             }
         }

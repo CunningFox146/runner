@@ -5,21 +5,27 @@ namespace Runner.Environment.Decor
 {
     public class Grass : MonoBehaviour
     {
-        [SerializeField] private Transform _model;
         private Tween _tween;
+        private float _startScale;
+
+        void Start()
+        {
+            transform.rotation = Quaternion.AngleAxis(Random.Range(-360f, 360f), Vector3.up);
+            _startScale = transform.localScale.y;
+        }
 
         void OnTriggerEnter(Collider collider)
         {
             CancelTween();
 
-            _tween = _model.DOScaleY(0.2f, 0.25f).SetEase(Ease.OutCubic);
+            _tween = transform.DOScaleY(_startScale * 0.2f, 0.25f).SetEase(Ease.OutCubic);
         }
 
         void OnTriggerExit(Collider collider)
         {
             CancelTween();
 
-            _tween = _model.DOScaleY(1f, 0.25f).SetEase(Ease.InBounce);
+            _tween = transform.DOScaleY(_startScale, 0.25f).SetEase(Ease.InBounce);
         }
 
         private void CancelTween()
