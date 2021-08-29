@@ -10,7 +10,7 @@ namespace Runner.Util
         /// <param name="baseVal">Minimum value</param>
         /// <param name="randomVal">Maximum delta</param>
         /// <returns></returns>
-        public static float WithVariance(float baseVal, float randomVal)
+        public static float Variance(float baseVal, float randomVal)
         {
             return baseVal + (Random.Range(0f, 1f) * randomVal);
         }

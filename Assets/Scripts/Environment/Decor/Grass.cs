@@ -25,7 +25,7 @@ namespace Runner.Environment.Decor
         {
             CancelTween();
 
-            _tween = transform.DOScaleY(_startScale, 0.25f).SetEase(Ease.InBounce);
+            _tween = transform.DOScaleY(_startScale, 0.25f).SetEase(Ease.OutBounce);
         }
 
         private void CancelTween()

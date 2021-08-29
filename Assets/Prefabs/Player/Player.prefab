@@ -139,9 +139,9 @@ MonoBehaviour:
   _TEMP_progress: 0
   _debugText: {fileID: 0}
   _lanes:
-  - -4
+  - -2
   - 0
-  - 4
+  - 2
   _lane: 1
   _laneChangeTime: 0.25
   _fallingCurve:
@@ -168,8 +168,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _jumpTime: 0.5
-  _jumpHeight: 4
+  _jumpTime: 0.65
+  _jumpHeight: 3
   _jumpingCurve:
     serializedVersion: 2
     m_Curve:
@@ -229,7 +229,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _fallSpeed: 15
+  _fallSpeed: 12
 --- !u!1001 &1849234077359805200
 PrefabInstance:
   m_ObjectHideFlags: 0
