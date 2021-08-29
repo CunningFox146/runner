@@ -15,6 +15,7 @@ namespace Runner.Managers.World
         [SerializeField] private float warmCount = 3f;
 
         private Queue<GameObject> _cache;
+        private bool isRight;
 
         protected virtual void Awake()
         {
@@ -34,7 +35,7 @@ namespace Runner.Managers.World
             if (_cache.Count > 0)
             {
                 var obj = _cache.Peek();
-                if (obj.transform.position.z < -10f)
+                if (obj.transform.position.z < -5f)
                 {
                     DestroyLast();
                     Spawn();
@@ -68,7 +69,8 @@ namespace Runner.Managers.World
         protected virtual GameObject Spawn(float idx)
         {
             var obj = ObjectPooler.Inst.GetObject(ArrayUtil.GetRandomItem(_items));
-            float mult = RandomUtil.RandomBool() ? -1f : 1f;
+            isRight = !isRight;
+            float mult = (isRight) ? -1f : 1f;
             var pos = new Vector3(
                 RandomUtil.Variance(_spawnOffset.x * mult, _spawnRng.x),
                 RandomUtil.Variance(_spawnOffset.y, _spawnRng.y), 

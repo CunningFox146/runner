@@ -190,8 +190,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _items:
   - {fileID: 7959238190850117287, guid: 0a8efcd9e4c7eeb49949b805ca37a4ff, type: 3}
+  - {fileID: 5209520100767208415, guid: 146f68ca8374acd4d9e4502dd7f43541, type: 3}
+  - {fileID: 8319661031481059334, guid: 6249be7df6fd2c542b63733f913a9fb7, type: 3}
   _spawnSpacing: 50
-  _spawnOffset: {x: 15, y: 0}
+  _spawnOffset: {x: 20, y: -5}
   _spawnRng: {x: 5, y: 5, z: 0}
   _spawnRotation: {x: 0, y: 45, z: 0}
   warmCount: 5
@@ -269,7 +271,11 @@ MonoBehaviour:
   - prefab: {fileID: 6592165480147569640, guid: 7a00f043de9bbd74cb7bc9f439390810, type: 3}
     count: 10
   - prefab: {fileID: 7959238190850117287, guid: 0a8efcd9e4c7eeb49949b805ca37a4ff, type: 3}
-    count: 10
+    count: 4
+  - prefab: {fileID: 8319661031481059334, guid: 6249be7df6fd2c542b63733f913a9fb7, type: 3}
+    count: 4
+  - prefab: {fileID: 5209520100767208415, guid: 146f68ca8374acd4d9e4502dd7f43541, type: 3}
+    count: 4
 --- !u!1 &494760799
 GameObject:
   m_ObjectHideFlags: 0
