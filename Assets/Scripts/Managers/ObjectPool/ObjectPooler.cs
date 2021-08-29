@@ -11,7 +11,7 @@ namespace Runner.Managers.ObjectPool
         [SerializeField] private Dictionary<GameObject, Queue<GameObject>> _pool; // Prefab-Instance
         [SerializeField] private Dictionary<GameObject, GameObject> _prefabLookup; // Instance-Prefab
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 

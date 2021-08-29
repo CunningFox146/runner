@@ -6,7 +6,7 @@ namespace Runner
     {
         public static T Inst { get; private set; }
 
-        public virtual void Awake()
+        protected virtual void Awake()
         {
             if (Inst != null)
             {

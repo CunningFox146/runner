@@ -14,7 +14,7 @@ namespace Runner.Managers
 
         public static float SpeedMultiplier { get; private set; }
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 

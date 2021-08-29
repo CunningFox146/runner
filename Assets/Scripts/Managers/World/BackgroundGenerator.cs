@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Runner.Managers.ObjectPool;
 using Runner.Util;
 using UnityEngine;
@@ -8,22 +7,21 @@ namespace Runner.Managers.World
 {
     public class BackgroundGenerator : MonoBehaviour
     {
-        [SerializeField] private GameObject[] _islands;
-        [SerializeField] private float _spawnOffset;
+        [SerializeField] private GameObject[] _items;
+        [SerializeField] private float _spawnSpacing;
+        [SerializeField] private Vector2 _spawnOffset;
         [SerializeField] private Vector3 _spawnRng;
         [SerializeField] private Vector3 _spawnRotation;
         [SerializeField] private float warmCount = 3f;
 
         private Queue<GameObject> _cache;
-        private Transform _rotationTarget;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _cache = new Queue<GameObject>();
-            _rotationTarget = Camera.main.transform;
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             if (warmCount > 0f)
             {
@@ -31,7 +29,7 @@ namespace Runner.Managers.World
             }
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if (_cache.Count > 0)
             {
@@ -50,38 +48,32 @@ namespace Runner.Managers.World
             }
         }
 
-        private void DestroyLast()
+        protected virtual void DestroyLast()
         {
             var obj = _cache.Peek();
             _cache.Dequeue();
             ObjectPooler.Inst.ReturnObject(obj);
         }
 
-        private void Warm()
+        protected virtual void Warm()
         {
             for (float i = 0f; i < warmCount; i++)
             {
                 Spawn(i);
             }
         }
+        
+        protected virtual GameObject Spawn() => Spawn(_cache.Count);
 
-        private Vector3 GetSpawnPos(float idx = 1f)
+        protected virtual GameObject Spawn(float idx)
         {
-            var offset = new Vector3(RandomUtil.Variance(0f, _spawnRng.x),
-                RandomUtil.Variance(0f, _spawnRng.y), RandomUtil.Variance(0f, _spawnRng.z));
-            return offset + new Vector3(_spawnOffset * (RandomUtil.RandomBool() ? -1f : 1f), 0f, 35f * idx);
-        }
-
-        private GameObject Spawn() => Spawn(_cache.Count);
-
-        private GameObject Spawn(float idx)
-        {
+            var obj = ObjectPooler.Inst.GetObject(ArrayUtil.GetRandomItem(_items));
             float mult = RandomUtil.RandomBool() ? -1f : 1f;
-            var offset = new Vector3(RandomUtil.Variance(0f, _spawnRng.x),
-                RandomUtil.Variance(0f, _spawnRng.y), RandomUtil.Variance(0f, _spawnRng.z));
-            var pos = offset + new Vector3(_spawnOffset * mult, 0f, 35f * idx);
+            var pos = new Vector3(
+                RandomUtil.Variance(_spawnOffset.x * mult, _spawnRng.x),
+                RandomUtil.Variance(_spawnOffset.y, _spawnRng.y), 
+                RandomUtil.Variance(_spawnSpacing * idx, _spawnRng.z));
 
-            var obj = ObjectPooler.Inst.GetObject(ArrayUtil.GetRandomItem(_islands));
             obj.transform.position = pos;
             obj.transform.rotation = Quaternion.Euler(_spawnRotation * mult);
             obj.transform.parent = transform;

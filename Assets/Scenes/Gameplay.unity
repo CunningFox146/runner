@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 22286651}
   - component: {fileID: 22286652}
   - component: {fileID: 22286653}
+  - component: {fileID: 22286654}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -184,15 +185,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 22286650}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8b5d3c991d05d849985bdc42f838a44, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e4ad83f3b0dbd346906adf8ac435f37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _islands:
+  _items:
   - {fileID: 7959238190850117287, guid: 0a8efcd9e4c7eeb49949b805ca37a4ff, type: 3}
-  _spawnOffset: 14
-  _spawnRng: {x: 1, y: 1, z: 1}
+  _spawnSpacing: 50
+  _spawnOffset: {x: 15, y: 0}
+  _spawnRng: {x: 5, y: 5, z: 0}
   _spawnRotation: {x: 0, y: 45, z: 0}
   warmCount: 5
+--- !u!114 &22286654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22286650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e4ad83f3b0dbd346906adf8ac435f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _items:
+  - {fileID: 6592165480147569640, guid: 7a00f043de9bbd74cb7bc9f439390810, type: 3}
+  _spawnSpacing: 10
+  _spawnOffset: {x: -20, y: 8}
+  _spawnRng: {x: 10, y: 2, z: 0}
+  _spawnRotation: {x: 0, y: 0, z: 0}
+  warmCount: 10
 --- !u!1 &385813057
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,9 +267,9 @@ MonoBehaviour:
   - prefab: {fileID: 4484439710422990938, guid: 56b5d89cd5655ec46a83c693b90beb6f, type: 3}
     count: 6
   - prefab: {fileID: 6592165480147569640, guid: 7a00f043de9bbd74cb7bc9f439390810, type: 3}
-    count: 6
+    count: 10
   - prefab: {fileID: 7959238190850117287, guid: 0a8efcd9e4c7eeb49949b805ca37a4ff, type: 3}
-    count: 20
+    count: 10
 --- !u!1 &494760799
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,7 +577,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1143252082}
-  _offset: {x: 0, y: 4.5, z: -6.5}
+  _offset: {x: 0, y: 4.5, z: -5.5}
   _moveSpeed: 5
   isFollowing: 1
 --- !u!81 &1777598421
@@ -576,8 +597,8 @@ Camera:
   m_GameObject: {fileID: 1777598419}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.495283, g: 1, b: 0.96013504, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -592,7 +613,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 63
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -618,7 +639,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1777598419}
   m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 4.59, z: -6.4}
+  m_LocalPosition: {x: 0, y: 4.5, z: -5.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
