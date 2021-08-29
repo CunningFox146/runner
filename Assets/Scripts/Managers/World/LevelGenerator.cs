@@ -41,7 +41,7 @@ namespace Runner.Managers.World
         {
             foreach (SetPiece piece in _cache)
             {
-                piece.transform.Translate(-Vector3.forward * Time.deltaTime * 5f);
+                piece.transform.Translate(-Vector3.forward * Time.deltaTime * GameManager.GameSpeed);
             }
         }
 
