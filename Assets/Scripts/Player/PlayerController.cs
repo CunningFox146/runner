@@ -379,7 +379,6 @@ namespace Runner.Player
             }
 
             State = PlayerState.Death;
-            test.Inst.speed = 0f;
             enabled = false;
         }
     }

@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1206343840727342070, guid: c880be9784a2757499dc5b6d39decfe4, type: 3}
+      propertyPath: _grass
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4152991267084297929, guid: c880be9784a2757499dc5b6d39decfe4, type: 3}
       propertyPath: m_Name
       value: BlockRock

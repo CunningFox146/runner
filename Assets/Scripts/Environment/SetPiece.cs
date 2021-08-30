@@ -20,23 +20,14 @@ namespace Runner.Environment
 
         [SerializeField] private bool _isWarmingTiles;
         [SerializeField] private GameObject _warmingPrefab;
-
-        [SerializeField] private float _grassChance = 0.5f;
-        [SerializeField] private GameObject _grass;
         
         private bool _isExitPushed;
         
         void Awake()
         {
-
             if (_isWarmingTiles)
             {
                 WarmTiles();
-            }
-
-            if (_grass != null)
-            {
-                Decorate();
             }
         }
 
@@ -105,18 +96,6 @@ namespace Runner.Environment
             foreach (Vector3 pos in GetMissingTiles())
             {
                 Instantiate(_warmingPrefab, _tilesContainer).transform.position = pos;
-            }
-        }
-
-        private void Decorate()
-        {
-            const float spacing = 0.9f; // tile scale is 2f
-            foreach (Transform tile in GetCachedTiles())
-            {
-                if (!RandomUtil.RandomBool(_grassChance)) continue;
-
-                var grass = Instantiate(_grass, tile);
-                grass.transform.localPosition = new Vector3(Random.Range(-spacing, spacing), 0f, Random.Range(-spacing, spacing));
             }
         }
     }

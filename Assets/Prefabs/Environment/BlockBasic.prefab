@@ -90,6 +90,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6213832868441301539}
+  - component: {fileID: 1206343840727342070}
   m_Layer: 6
   m_Name: BlockBasic
   m_TagString: Untagged
@@ -113,6 +114,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1206343840727342070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4152991267084297929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c1dcb6936ed9d142be7733535b6f6a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _grassChance: 1
+  _grass: {fileID: 370082855509372928, guid: dbb0d75820f3fa94f954d7038a06abf7, type: 3}
+  _spacing: 0.85
 --- !u!1 &6235376195818337249
 GameObject:
   m_ObjectHideFlags: 0
