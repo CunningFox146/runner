@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Runner.Interactable;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace Runner.Player
@@ -14,7 +16,7 @@ namespace Runner.Player
         private BoxCollider _collider;
         private Vector3 _sizeStart;
         private Vector3 _centerStart;
-
+        
         void Awake()
         {
             _collider = GetComponent<BoxCollider>();
@@ -27,6 +29,30 @@ namespace Runner.Player
 
             var min = _collider.center - _collider.size;
             var max = _collider.center + _collider.size;
+        }
+
+        void OnTriggerEnter(Collider collider)
+        {
+            if (collider.CompareTag("Evaluation") ||
+                (collider.gameObject.layer == (int)Layers.Walkable &&
+                 Vector3.Distance(transform.position, collider.transform.position) >= 1.5f)) // If distance is far then we landed on the ground and ignore hit
+                return;
+            
+            if (collider.TryGetComponent(out IInteractable interactable))
+            {
+                interactable.OnInteractStart(gameObject);
+                return;
+            }
+            
+            _controller.OnHitObstacle(collider.gameObject);
+        }
+
+        void OnTriggerExit(Collider collider)
+        {
+            if (collider.TryGetComponent(out IInteractable interactable))
+            {
+                interactable.OnInteractStop(gameObject);
+            }
         }
         
         public void StartSliding()

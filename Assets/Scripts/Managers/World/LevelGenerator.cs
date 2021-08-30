@@ -12,11 +12,11 @@ namespace Runner.Managers.World
         public static readonly float TileSize = 2f;
 
         [SerializeField] private GameObject[] _setPieces;
+        [SerializeField] private SetPiece _lastPiece;
         [SerializeField] private int _warmCount;
         [SerializeField] private int _maxCacheSize;
         [SerializeField] private int _startPos;
-
-        private SetPiece _lastPiece;
+        
         private GameObject _lastPrefab;
 
         private bool _isWarming;
@@ -25,6 +25,11 @@ namespace Runner.Managers.World
         void Awake()
         {
             _cache = new Queue<SetPiece>();
+
+            if (_lastPiece != null)
+            {
+                _cache.Enqueue(_lastPiece);
+            }
 
             SetPiece.OnSetPieceExit += OnSetPieceExitHandler;
         }

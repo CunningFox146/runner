@@ -71,6 +71,12 @@ namespace Runner.Managers.ObjectPool
             }
 
             var prefab = _prefabLookup[obj];
+            if (!prefab)
+            {
+                Debug.Log($"[ObjectPooler] There was no lookup for {obj} in _prefabLookup. Destroying object.");
+                Destroy(obj);
+                return;
+            }
             _pool[prefab].Enqueue(obj);
             obj.SetActive(false);
             obj.transform.parent = transform;

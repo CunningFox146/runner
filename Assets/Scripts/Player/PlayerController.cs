@@ -10,8 +10,6 @@ namespace Runner.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        private readonly int WalkableMask = 1 << 6;
-
         [SerializeField] private PlayerCollider _collider;
         [SerializeField] private float _TEMP_progress = 0f;
         [SerializeField] private Text _debugText;
@@ -94,6 +92,7 @@ namespace Runner.Player
         void FixedUpdate()
         {
             _groundPos = CheckGround();
+            //CheckObstacleHit();
         }
 
         private void UpdateInput()
@@ -213,7 +212,7 @@ namespace Runner.Player
             float minDist = 0.1f;
             var rayStart = transform.position + new Vector3(0f, rayLength, 0f);
 
-            if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 20f, WalkableMask))
+            if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 20f, 1 << (int)Layers.Walkable))
             {
                 Debug.DrawLine(rayStart, hit.point, Color.red);
                 _isGrounded = Vector3.Distance(rayStart, hit.point) < rayLength + minDist;
@@ -246,7 +245,7 @@ namespace Runner.Player
 
             while (true)
             {
-                Debug.Log("JUMP");
+                //Debug.Log("JUMP");
                 timer = Mathf.Min(timer + Time.deltaTime, _jumpTime);
                 float delta = _jumpingCurve.Evaluate(timer / _jumpTime);
 
@@ -278,7 +277,7 @@ namespace Runner.Player
 
             while (true)
             {
-                Debug.Log("FALL");
+                //Debug.Log("FALL");
                 float endHeight = _groundPos.y;
                 timer = Mathf.Clamp(timer + Time.deltaTime, 0f, fallTime);
                 float delta = _fallingCurve.Evaluate(timer / fallTime);
@@ -309,8 +308,7 @@ namespace Runner.Player
 
             while (true)
             {
-
-                Debug.Log("SIDE");
+                //Debug.Log("SIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _laneChangeTime);
                 float delta = _slidingCurve.Evaluate(timer / _laneChangeTime);
 
@@ -336,7 +334,7 @@ namespace Runner.Player
                 {
                     State = PlayerState.Slide;
                 }
-                Debug.Log("SLIDE");
+                //Debug.Log("SLIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _slideTime);
                 if (Mathf.Approximately(timer, _slideTime)) break;
 
@@ -348,11 +346,24 @@ namespace Runner.Player
             _slideCoroutine = null;
         }
         
+        //private void CheckObstacleHit()
+        //{
+        //    var start = transform.position + Vector3.up * 0.25f;
+        //    Debug.DrawLine(start, transform.forward * 0.5f, Color.red);
+        //    if (Physics.Raycast(start, Vector3.forward, out RaycastHit hit, 0.5f))
+        //    {
+        //        if (hit.transform.root.CompareTag("Evaluation") || hit.transform.gameObject.layer == InteractableMask) return;
 
+        //        if (hit.point.z -start.z <= 0.1f)
+        //        {
+        //            OnHitObstacle(hit);
+        //        }
+        //    }
+        //}
+        
         public void OnHitObstacle(GameObject obstacle)
         {
-
-            Debug.Log("DEATH");
+            Debug.Log($"DEATH: {obstacle.transform.parent}");
             if (_sideCoroutine != null)
             {
                 StopCoroutine(_sideCoroutine);

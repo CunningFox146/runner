@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 811784432041190827}
   m_Layer: 6
   m_Name: Collider
-  m_TagString: Untagged
+  m_TagString: Evaluation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 3735325800622447528}
   m_Layer: 6
   m_Name: Evaluation
-  m_TagString: Untagged
+  m_TagString: Evaluation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -90,6 +90,10 @@ PrefabInstance:
     - target: {fileID: 1456910657315934, guid: 38fa18ea33367784c891567389fdfb7a, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1456910657315934, guid: 38fa18ea33367784c891567389fdfb7a, type: 3}
+      propertyPath: m_TagString
+      value: Evaluation
       objectReference: {fileID: 0}
     - target: {fileID: 4406857631982146, guid: 38fa18ea33367784c891567389fdfb7a, type: 3}
       propertyPath: m_RootOrder

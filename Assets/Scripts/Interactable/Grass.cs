@@ -1,9 +1,9 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-namespace Runner.Environment.Decor
+namespace Runner.Interactable
 {
-    public class Grass : MonoBehaviour
+    public class Grass : MonoBehaviour, IInteractable
     {
         private Tween _tween;
         private float _startScale;
@@ -13,15 +13,15 @@ namespace Runner.Environment.Decor
             transform.rotation = Quaternion.AngleAxis(Random.Range(-360f, 360f), Vector3.up);
             _startScale = transform.localScale.y;
         }
-
-        void OnTriggerEnter(Collider collider)
+        
+        public void OnInteractStart(GameObject player)
         {
             CancelTween();
 
             _tween = transform.DOScaleY(_startScale * 0.2f, 0.25f).SetEase(Ease.OutCubic);
         }
 
-        void OnTriggerExit(Collider collider)
+        public void OnInteractStop(GameObject player)
         {
             CancelTween();
 
@@ -35,6 +35,6 @@ namespace Runner.Environment.Decor
                 _tween.Kill();
                 _tween = null;
             }
-        }
+        }   
     }
 }
