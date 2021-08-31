@@ -6,6 +6,7 @@ namespace Runner.Managers
     {
         public static readonly float BaseGameSpeed = 5f;
         public static float GameSpeed;
+        public static bool IsPlaying = true;
 
         [SerializeField] private AnimationCurve _gameSpeedCurve;
         
@@ -13,6 +14,12 @@ namespace Runner.Managers
         [HideInInspector] public float gameTime;
 
         public static float SpeedMultiplier { get; private set; }
+
+        public static void EndGame()
+        {
+            IsPlaying = false;
+            GameSpeed = 0f;
+        }
 
         protected override void Awake()
         {
@@ -30,8 +37,12 @@ namespace Runner.Managers
 
         private void Update()
         {
+            if (!IsPlaying) return;
+
             gameTime += Time.deltaTime;
             GameSpeed = _gameSpeedCurve.Evaluate(gameTime);
         }
+
+        
     }
 }

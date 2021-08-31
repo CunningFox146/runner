@@ -364,6 +364,9 @@ namespace Runner.Player
         public void OnHitObstacle(GameObject obstacle)
         {
             Debug.Log($"DEATH: {obstacle.transform.parent}");
+
+            GameManager.EndGame();
+
             if (_sideCoroutine != null)
             {
                 StopCoroutine(_sideCoroutine);
