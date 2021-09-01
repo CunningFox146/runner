@@ -1,6 +1,7 @@
 using Runner.Managers.World;
 using Runner.Util;
 using Runner.World;
+using Runner.World.LevelTemplates;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,12 +12,7 @@ namespace Runner.Environment
         [SerializeField] public Transform pointStart;
         [SerializeField] public Transform pointEnd;
         [SerializeField] private Transform _tilesContainer;
-        [SerializeField] private GameObject _fillTile;
-        [Space]
-        [Header("Decor")]
-        [SerializeField] private GameObject _decorPrefab;
-        [SerializeField] private float _decorChance = 0.5f;
-        [SerializeField] private float _spacing = 0.8f;
+        [SerializeField] private LevelTemplate _template;
 
         private Dictionary<Vector3, Transform> _tiles;
 
@@ -24,12 +20,12 @@ namespace Runner.Environment
         {
             _tiles = new Dictionary<Vector3, Transform>();
 
-            if (_fillTile != null)
+            if (_template.tilePrefab != null)
             {
                 GenerateTiles();
             }
 
-            if (_decorPrefab != null)
+            if (_template.decorPrefab != null)
             {
                 DecorateBlocks();
             }
@@ -64,7 +60,7 @@ namespace Runner.Environment
 
             foreach (Vector3 pos in GetTilesPos())
             {
-                GameObject obj = Instantiate(_fillTile, _tilesContainer);
+                GameObject obj = Instantiate(_template.tilePrefab, _tilesContainer);
                 obj.transform.position = pos;
                 _tiles[pos] = obj.transform;
             }
@@ -72,14 +68,14 @@ namespace Runner.Environment
 
         private void DecorateBlocks()
         {
-            float spacing = _spacing * LevelGenerator.TileSize * 0.5f;
+            float spacing = _template.spacing * LevelGenerator.TileSize * 0.5f;
             foreach (KeyValuePair<Vector3, Transform> pair in _tiles)
             {
                 if (_tiles.ContainsKey(pair.Key + Vector3.up * LevelGenerator.TileSize)) continue; // If there's a tile above
 
-                if (RandomUtil.Bool(_decorChance))
+                if (RandomUtil.Bool(_template.decorChance))
                 {
-                    BlockDecor.Decorate(pair.Value, _decorPrefab, spacing);
+                    BlockDecor.Decorate(pair.Value, _template.decorPrefab, spacing);
                 }
             }
         }
