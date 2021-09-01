@@ -12,7 +12,7 @@ namespace Runner.Managers.World
         public static readonly float TileSize = 2f;
 
         [SerializeField] private GameObject[] _setPieces;
-        [SerializeField] private SetPiece _lastPiece;
+        [SerializeField] private LevelPart _lastPiece;
         [SerializeField] private int _warmCount;
         [SerializeField] private int _maxCacheSize;
         [SerializeField] private int _startPos;
@@ -20,18 +20,18 @@ namespace Runner.Managers.World
         private GameObject _lastPrefab;
 
         private bool _isWarming;
-        private Queue<SetPiece> _cache;
+        private Queue<LevelPart> _cache;
 
         void Awake()
         {
-            _cache = new Queue<SetPiece>();
+            _cache = new Queue<LevelPart>();
 
             if (_lastPiece != null)
             {
                 _cache.Enqueue(_lastPiece);
             }
 
-            SetPiece.OnSetPieceExit += OnSetPieceExitHandler;
+            LevelPart.OnLevelPartExit += OnSetPieceExitHandler;
         }
 
         void Start()
@@ -44,13 +44,13 @@ namespace Runner.Managers.World
 
         void Update()
         {
-            foreach (SetPiece piece in _cache)
+            foreach (LevelPart piece in _cache)
             {
                 piece.transform.Translate(-Vector3.forward * Time.deltaTime * GameManager.GameSpeed);
             }
         }
 
-        private void OnSetPieceExitHandler(SetPiece setPiece)
+        private void OnSetPieceExitHandler(LevelPart levelPart)
         {
             if (_cache.Count > _maxCacheSize)
             {
@@ -68,7 +68,7 @@ namespace Runner.Managers.World
             } while (prefab == _lastPrefab);
 
             var obj = ObjectPooler.Inst.GetObject(prefab);
-            var setPiece = obj.GetComponent<SetPiece>();
+            var setPiece = obj.GetComponent<LevelPart>();
 
             float offset = _lastPiece ? _lastPiece.pointEnd.position.z : _startPos;
 

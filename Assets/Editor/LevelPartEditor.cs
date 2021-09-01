@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace Runner.Editor
 {
-    [CustomEditor(typeof(SetPiece))]
-    public class SetPieceEditor : UnityEditor.Editor
+    [CustomEditor(typeof(LevelPart))]
+    public class LevelPieceEditor : UnityEditor.Editor
     {
-        private SetPiece _target;
+        private LevelPart _target;
 
         public void OnEnable()
         {
-            _target = target as SetPiece;
+            _target = target as LevelPart;
         }
 
         private void DrawCube(Vector3 pos, float size, float thickness = 2f)

@@ -396,6 +396,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7571208015124678739, guid: aeda3f5f3a2dfbf4699dc768faa6f2e2, type: 3}
+      propertyPath: _fillTile
+      value: 
+      objectReference: {fileID: 6910366329127553998, guid: 300bb52e1a9d54e4db4fd0831677dc9f, type: 3}
+    - target: {fileID: 7571208015124678739, guid: aeda3f5f3a2dfbf4699dc768faa6f2e2, type: 3}
       propertyPath: _warmingPrefab
       value: 
       objectReference: {fileID: 6910366329127553998, guid: 300bb52e1a9d54e4db4fd0831677dc9f, type: 3}

@@ -9,25 +9,23 @@ using Random = UnityEngine.Random;
 
 namespace Runner.Environment
 {
-    public class SetPiece : MonoBehaviour, IPoolReaction
+    public class LevelPart : MonoBehaviour, IPoolReaction
     {
-        public static Action<SetPiece> OnSetPieceExit;
+        public static Action<LevelPart> OnLevelPartExit;
 
         [SerializeField] public Transform pointStart;
         [SerializeField] public Transform pointEnd;
-
         [SerializeField] private Transform _tilesContainer;
-
-        [SerializeField] private bool _isWarmingTiles;
-        [SerializeField] private GameObject _warmingPrefab;
+        
+        [SerializeField] private GameObject _fillTile;
         
         private bool _isExitPushed;
         
         void Awake()
         {
-            if (_isWarmingTiles)
+            if (_fillTile != null)
             {
-                WarmTiles();
+                FillTiles();
             }
         }
 
@@ -35,7 +33,7 @@ namespace Runner.Environment
         {
             if (pointEnd.position.z <= 0f && !_isExitPushed)
             {
-                OnSetPieceExit?.Invoke(this);
+                OnLevelPartExit?.Invoke(this);
                 _isExitPushed = true;
             }
         }
@@ -91,11 +89,11 @@ namespace Runner.Environment
             return list;
         }
         
-        private void WarmTiles()
+        private void FillTiles()
         {
             foreach (Vector3 pos in GetMissingTiles())
             {
-                Instantiate(_warmingPrefab, _tilesContainer).transform.position = pos;
+                Instantiate(_fillTile, _tilesContainer).transform.position = pos;
             }
         }
     }

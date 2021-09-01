@@ -80,10 +80,7 @@ MonoBehaviour:
   pointStart: {fileID: 1418350409406049648}
   pointEnd: {fileID: 1355210291233052249}
   _tilesContainer: {fileID: 7583546557550177665}
-  _isWarmingTiles: 1
-  _warmingPrefab: {fileID: 4152991267084297929, guid: c880be9784a2757499dc5b6d39decfe4, type: 3}
-  _grassChance: 1
-  _grass: {fileID: 370082855509372928, guid: dbb0d75820f3fa94f954d7038a06abf7, type: 3}
+  _fillTile: {fileID: 4152991267084297929, guid: c880be9784a2757499dc5b6d39decfe4, type: 3}
 --- !u!1 &4056370230632578169
 GameObject:
   m_ObjectHideFlags: 0
