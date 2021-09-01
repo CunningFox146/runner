@@ -15,11 +15,11 @@ namespace Runner.Util
             return baseVal + (Random.Range(0f, 1f) * randomVal);
         }
 
-        public static bool RandomBool(float trueChance)
+        public static bool Bool(float trueChance)
         {
             return Random.Range(0f, 1f) <= trueChance;
         }
 
-        public static bool RandomBool() => RandomBool(0.5f);
+        public static bool Bool() => Bool(0.5f);
     }
 }

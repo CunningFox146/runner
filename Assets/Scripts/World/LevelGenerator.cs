@@ -50,7 +50,6 @@ namespace Runner.Managers.World
                 }
             }
 
-            Debug.Log(_piecesToRemove.Count);
             if (_piecesToRemove.Count > _pieceLimit)
             {
                 RemoveLastPart();
@@ -60,7 +59,7 @@ namespace Runner.Managers.World
 
         private void GeneratePart()
         {
-            GameObject prefab = null;
+            GameObject prefab;
             do
             {
                 prefab = ArrayUtil.GetRandomItem(_partsPrefabs);

@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Runner.Managers.ObjectPool;
 using Runner.Managers.World;
 using Runner.Util;
+using Runner.World;
+using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Runner.Environment
 {
@@ -14,71 +11,76 @@ namespace Runner.Environment
         [SerializeField] public Transform pointStart;
         [SerializeField] public Transform pointEnd;
         [SerializeField] private Transform _tilesContainer;
-        
         [SerializeField] private GameObject _fillTile;
-        
+        [Space]
+        [Header("Decor")]
+        [SerializeField] private GameObject _decorPrefab;
+        [SerializeField] private float _decorChance = 0.5f;
+        [SerializeField] private float _spacing = 0.8f;
+
+        private Dictionary<Vector3, Transform> _tiles;
+
         void Awake()
         {
+            _tiles = new Dictionary<Vector3, Transform>();
+
             if (_fillTile != null)
             {
-                FillTiles();
+                GenerateTiles();
             }
-        }
-        
-        public List<Transform> GetCachedTiles()
-        {
-            var cache = new List<Transform>();
-            foreach (Transform child in _tilesContainer)
+
+            if (_decorPrefab != null)
             {
-                cache.Add(child);
+                DecorateBlocks();
             }
-
-            return cache;
         }
 
-        // Round positions to properly check tiles
-        private bool IsTileCached(List<Transform> cache, Vector3 pos)
+        public List<Vector3> GetTilesPos()
         {
-            pos = new Vector3(Mathf.Round(pos.x), 0f, Mathf.Round(pos.z));
+            float tileSize = LevelGenerator.TileSize;
+            List<Vector3> list = new List<Vector3>();
 
-            foreach (Transform tile in cache)
-            {
-                var rounded = new Vector3(Mathf.Round(tile.position.x), 0f, Mathf.Round(tile.position.z));
-                if (rounded == pos)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public List<Vector3> GetMissingTiles()
-        {
-            float tileSize = 2f;
-            var list = new List<Vector3>();
-            var cache = GetCachedTiles();
-            
-            for (float x = -tileSize; x <= tileSize; x+= tileSize)
+            for (float x = -tileSize; x <= tileSize; x += tileSize)
             {
                 for (float z = pointStart.position.z + tileSize * 0.5f; z < pointEnd.position.z; z += tileSize)
                 {
-                    var pos = new Vector3(x, 0f, z);
-                    if (!IsTileCached(cache, pos))
-                    {
-                        list.Add(pos);
-                    }
+                    list.Add(new Vector3(x, 0f, z));
                 }
             }
 
             return list;
         }
-        
-        private void FillTiles()
+
+        private void GenerateTiles()
         {
-            foreach (Vector3 pos in GetMissingTiles())
+            // Iterate through children before we generate tiles bc we'll already know generated positions
+            foreach (Transform obj in _tilesContainer)
             {
-                Instantiate(_fillTile, _tilesContainer).transform.position = pos;
+                if (obj.CompareTag("Block"))
+                {
+                    _tiles[obj.position] = obj;
+                }
+            }
+
+            foreach (Vector3 pos in GetTilesPos())
+            {
+                GameObject obj = Instantiate(_fillTile, _tilesContainer);
+                obj.transform.position = pos;
+                _tiles[pos] = obj.transform;
+            }
+        }
+
+        private void DecorateBlocks()
+        {
+            float spacing = _spacing * LevelGenerator.TileSize * 0.5f;
+            foreach (KeyValuePair<Vector3, Transform> pair in _tiles)
+            {
+                if (_tiles.ContainsKey(pair.Key + Vector3.up * LevelGenerator.TileSize)) continue; // If there's a tile above
+
+                if (RandomUtil.Bool(_decorChance))
+                {
+                    BlockDecor.Decorate(pair.Value, _decorPrefab, spacing);
+                }
             }
         }
     }

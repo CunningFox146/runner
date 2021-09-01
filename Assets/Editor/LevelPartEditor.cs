@@ -34,20 +34,19 @@ namespace Runner.Editor
             style.normal.textColor = Color.black;
 
             Handles.color = Color.red;
-            foreach (Vector3 pos in _target.GetMissingTiles())
+            foreach (Vector3 pos in _target.GetTilesPos())
             {
                 DrawCube(pos, 2f, 3f);
                 Handles.Label(pos, FormatPos(pos), style);
             }
 
-            Handles.color = Color.yellow;
-            foreach (Transform tile in _target.GetCachedTiles())
-            {
-                var pos = tile.position;
-                DrawCube(pos, 2f, 1f);
-                Handles.Label(pos, FormatPos(pos), style);
-            }
-
+            //Handles.color = Color.yellow;
+            //foreach (Transform tile in _target.GetCachedTiles())
+            //{
+            //    var pos = tile.position;
+            //    DrawCube(pos, 2f, 1f);
+            //    Handles.Label(pos, FormatPos(pos), style);
+            //}
         }
     }
 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Evaluation
   - Interactable
+  - Block
   layers:
   - Default
   - TransparentFX
