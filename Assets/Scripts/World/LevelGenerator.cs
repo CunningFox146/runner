@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using Runner.Environment;
 using Runner.Managers.ObjectPool;
 using Runner.Util;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Runner.Managers.World
@@ -11,78 +10,77 @@ namespace Runner.Managers.World
     {
         public static readonly float TileSize = 2f;
 
-        [SerializeField] private GameObject[] _setPieces;
+        [SerializeField] private GameObject[] _partsPrefabs;
         [SerializeField] private LevelPart _lastPiece;
-        [SerializeField] private int _warmCount;
-        [SerializeField] private int _maxCacheSize;
-        [SerializeField] private int _startPos;
-        
-        private GameObject _lastPrefab;
+        [SerializeField] private int _startPieceCount;
+        [SerializeField] private int _pieceLimit;
 
-        private bool _isWarming;
-        private Queue<LevelPart> _cache;
+        private Queue<LevelPart> _piecesToRemove;
+        private List<LevelPart> _parts;
+        private GameObject _lastPrefab;
 
         void Awake()
         {
-            _cache = new Queue<LevelPart>();
+            _parts = new List<LevelPart>();
+            _piecesToRemove = new Queue<LevelPart>();
 
             if (_lastPiece != null)
             {
-                _cache.Enqueue(_lastPiece);
+                _parts.Add(_lastPiece);
             }
-
-            LevelPart.OnLevelPartExit += OnSetPieceExitHandler;
         }
 
         void Start()
         {
-            for (int i = 0; i < _warmCount; i++)
+            for (int i = 0; i < _startPieceCount; i++)
             {
-                ReleaseSet();
+                GeneratePart();
             }
         }
 
         void Update()
         {
-            foreach (LevelPart piece in _cache)
+            foreach (LevelPart piece in _parts)
             {
                 piece.transform.Translate(-Vector3.forward * Time.deltaTime * GameManager.GameSpeed);
-            }
-        }
 
-        private void OnSetPieceExitHandler(LevelPart levelPart)
-        {
-            if (_cache.Count > _maxCacheSize)
+                if (piece.pointEnd.position.z < 0f && !_piecesToRemove.Contains(piece))
+                {
+                    _piecesToRemove.Enqueue(piece);
+                }
+            }
+
+            Debug.Log(_piecesToRemove.Count);
+            if (_piecesToRemove.Count > _pieceLimit)
             {
-                RemoveLastSet();
+                RemoveLastPart();
+                GeneratePart();
             }
-            ReleaseSet();
         }
 
-        private void ReleaseSet()
+        private void GeneratePart()
         {
             GameObject prefab = null;
             do
             {
-                prefab = ArrayUtil.GetRandomItem(_setPieces);
+                prefab = ArrayUtil.GetRandomItem(_partsPrefabs);
             } while (prefab == _lastPrefab);
 
             var obj = ObjectPooler.Inst.GetObject(prefab);
-            var setPiece = obj.GetComponent<LevelPart>();
+            var part = obj.GetComponent<LevelPart>();
 
-            float offset = _lastPiece ? _lastPiece.pointEnd.position.z : _startPos;
-
-            obj.transform.position = new Vector3(0f, 0f, offset - setPiece.pointStart.position.z);
+            obj.transform.position = new Vector3(0f, 0f, _lastPiece.pointEnd.position.z - part.pointStart.position.z);
             obj.transform.parent = transform;
 
-            _cache.Enqueue(setPiece);
-            _lastPiece = setPiece;
+            _parts.Add(part);
+            _lastPiece = part;
             _lastPrefab = prefab;
         }
 
-        private void RemoveLastSet()
+        private void RemoveLastPart()
         {
-            var piece = _cache.Dequeue();
+            var piece = _piecesToRemove.Dequeue();
+            _parts.Remove(piece);
             ObjectPooler.Inst.ReturnObject(piece.gameObject);
         }
     }

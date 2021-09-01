@@ -65,14 +65,15 @@ namespace Runner.Managers.ObjectPool
 
         public void ReturnObject(GameObject obj)
         {
-            var prefab = _prefabLookup[obj];
-            Debug.Log($"Returning {obj} to pool {prefab.ToString()}");
-            if (prefab == null)
+            if (!_prefabLookup.ContainsKey(obj))
             {
                 Debug.Log($"[ObjectPooler] There was no lookup for {obj} in _prefabLookup. Destroying object.");
                 Destroy(obj);
                 return;
             }
+
+            var prefab = _prefabLookup[obj];
+            Debug.Log($"[ObjectPooler] Returning {obj} to pool {prefab.ToString()}");
 
             if (obj.TryGetComponent(out IPoolReaction reaction))
             {

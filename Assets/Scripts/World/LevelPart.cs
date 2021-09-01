@@ -9,17 +9,13 @@ using Random = UnityEngine.Random;
 
 namespace Runner.Environment
 {
-    public class LevelPart : MonoBehaviour, IPoolReaction
+    public class LevelPart : MonoBehaviour
     {
-        public static Action<LevelPart> OnLevelPartExit;
-
         [SerializeField] public Transform pointStart;
         [SerializeField] public Transform pointEnd;
         [SerializeField] private Transform _tilesContainer;
         
         [SerializeField] private GameObject _fillTile;
-        
-        private bool _isExitPushed;
         
         void Awake()
         {
@@ -28,18 +24,7 @@ namespace Runner.Environment
                 FillTiles();
             }
         }
-
-        void Update()
-        {
-            if (pointEnd.position.z <= 0f && !_isExitPushed)
-            {
-                OnLevelPartExit?.Invoke(this);
-                _isExitPushed = true;
-            }
-        }
-
-        public void ObjectPooled(bool inPool) =>_isExitPushed = false;
-
+        
         public List<Transform> GetCachedTiles()
         {
             var cache = new List<Transform>();
