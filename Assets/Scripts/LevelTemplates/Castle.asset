@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   biome: 1
   tilePrefab: {fileID: 6910366329127553998, guid: 300bb52e1a9d54e4db4fd0831677dc9f, type: 3}
-  skyColor: {r: 0.22107512, g: 0.3833075, b: 0.6792453, a: 0}
+  skyColor: {r: 0.34020114, g: 0.40359905, b: 0.5188679, a: 0}
   decorPrefab: {fileID: 0}
   decorChance: 0.5
   spacing: 0.8

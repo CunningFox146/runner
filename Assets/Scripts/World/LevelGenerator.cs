@@ -15,7 +15,11 @@ namespace Runner.World
         public static event Action<LevelTemplate, LevelTemplate> OnTemplateChanged;
 
         [SerializeField] private GameObject[] _partsPrefabs;
-        [SerializeField] private GameObject _transitionPrefab;
+
+        [SerializeField] private GameObject[] _transitionPrefabs;
+        [SerializeField] private GameObject _transitionBridge;
+        [SerializeField] private float _bridgeChance = 0.25f;
+
         [SerializeField] private LevelPart _lastPiece;
         [SerializeField] private int _startPieceCount;
         [SerializeField] private int _pieceLimit;
@@ -118,7 +122,9 @@ namespace Runner.World
 
         private LevelTransfer GenerateTransition(LevelTemplate oldTemplate, LevelTemplate newTemplate)
         {
-            GameObject transition = ObjectPooler.Inst.GetObject(_transitionPrefab);
+            var prefab = RandomUtil.Bool(_bridgeChance) ? _transitionBridge : ArrayUtil.GetRandomItem(_transitionPrefabs);
+
+            GameObject transition = ObjectPooler.Inst.GetObject(prefab);
             LevelTransfer transfer = transition.GetComponent<LevelTransfer>();
             transfer.GenerateTiles(oldTemplate, newTemplate);
 
