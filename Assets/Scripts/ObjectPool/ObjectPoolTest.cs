@@ -1,6 +1,5 @@
+using Runner.ObjectPool;
 using System.Collections;
-using System.Collections.Generic;
-using Runner.Managers.ObjectPool;
 using UnityEngine;
 
 public class ObjectPoolTest : MonoBehaviour
@@ -16,7 +15,7 @@ public class ObjectPoolTest : MonoBehaviour
     {
         while (true)
         {
-            var o = ObjectPooler.Inst.GetObject(obj);
+            GameObject o = ObjectPooler.Inst.GetObject(obj);
             yield return new WaitForSeconds(.1f);
             ObjectPooler.Inst.ReturnObject(o);
         }

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using Runner.Managers.ObjectPool;
+﻿using Runner.Managers;
+using Runner.ObjectPool;
 using Runner.Util;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace Runner.Managers.World
+namespace Runner.World
 {
     public class BackgroundGenerator : MonoBehaviour
     {
@@ -34,7 +35,7 @@ namespace Runner.Managers.World
         {
             if (_queue.Count > 0)
             {
-                var obj = _queue.Peek();
+                GameObject obj = _queue.Peek();
                 if (obj.transform.position.z < -5f)
                 {
                     DestroyLast();
@@ -51,7 +52,7 @@ namespace Runner.Managers.World
 
         protected virtual void DestroyLast()
         {
-            var obj = _queue.Peek();
+            GameObject obj = _queue.Peek();
             _queue.Dequeue();
             ObjectPooler.Inst.ReturnObject(obj);
         }
@@ -63,17 +64,17 @@ namespace Runner.Managers.World
                 Spawn(i);
             }
         }
-        
+
         protected virtual GameObject Spawn() => Spawn(_queue.Count);
 
         protected virtual GameObject Spawn(float idx)
         {
-            var obj = ObjectPooler.Inst.GetObject(ArrayUtil.GetRandomItem(_items));
+            GameObject obj = ObjectPooler.Inst.GetObject(ArrayUtil.GetRandomItem(_items));
             _isRight = !_isRight;
             float mult = (_isRight) ? -1f : 1f;
-            var pos = new Vector3(
+            Vector3 pos = new Vector3(
                 RandomUtil.Variance(_spawnOffset.x * mult, _spawnRng.x),
-                RandomUtil.Variance(_spawnOffset.y, _spawnRng.y), 
+                RandomUtil.Variance(_spawnOffset.y, _spawnRng.y),
                 RandomUtil.Variance(_spawnSpacing * idx, _spawnRng.z));
 
             obj.transform.position = pos;

@@ -1,10 +1,7 @@
-using Runner.Environment;
 using Runner.Managers;
-using Runner.Managers.ObjectPool;
+using Runner.ObjectPool;
 using Runner.Util;
-using Runner.World;
 using Runner.World.LevelTemplates;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -57,7 +54,7 @@ namespace Runner.World
 
             if (_piecesToRemove.Count > _pieceLimit)
             {
-                var part = _piecesToRemove.Dequeue();
+                LevelItem part = _piecesToRemove.Dequeue();
                 RemovePart(part);
                 if ((part as LevelPart) != null)
                 {
@@ -74,14 +71,14 @@ namespace Runner.World
                 prefab = ArrayUtil.GetRandomItem(_partsPrefabs);
             } while (prefab == _lastPrefab);
 
-            var obj = ObjectPooler.Inst.GetObject(prefab);
-            var part = obj.GetComponent<LevelPart>();
+            GameObject obj = ObjectPooler.Inst.GetObject(prefab);
+            LevelPart part = obj.GetComponent<LevelPart>();
 
             float offset;
 
             if (part.template != _lastPiece.template)
             {
-                var transition = GenerateTransition(_lastPiece.template, part.template);
+                LevelTransfer transition = GenerateTransition(_lastPiece.template, part.template);
                 transition.transform.position = new Vector3(0f, 0f, _lastPiece.pointEnd.position.z - transition.pointStart.position.z);
 
                 offset = transition.pointEnd.position.z - part.pointStart.position.z;
@@ -90,7 +87,7 @@ namespace Runner.World
             }
             else
             {
-                 offset = _lastPiece.pointEnd.position.z - part.pointStart.position.z;
+                offset = _lastPiece.pointEnd.position.z - part.pointStart.position.z;
             }
 
             obj.transform.position = new Vector3(0f, 0f, offset);
@@ -103,8 +100,8 @@ namespace Runner.World
 
         private LevelTransfer GenerateTransition(LevelTemplate oldTemplate, LevelTemplate newTemplate)
         {
-            var transition = ObjectPooler.Inst.GetObject(_transitionPrefab);
-            var transfer = transition.GetComponent<LevelTransfer>();
+            GameObject transition = ObjectPooler.Inst.GetObject(_transitionPrefab);
+            LevelTransfer transfer = transition.GetComponent<LevelTransfer>();
             transfer.GenerateTiles(oldTemplate, newTemplate);
 
             return transfer;

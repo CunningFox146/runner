@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Runner.Managers.ObjectPool
+﻿namespace Runner.ObjectPool
 {
     public interface IPoolReaction
     {

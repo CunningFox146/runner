@@ -1,6 +1,4 @@
-using Runner.Managers.World;
 using Runner.Util;
-using Runner.World;
 using Runner.World.LevelTemplates;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +6,7 @@ using UnityEngine;
 namespace Runner.World
 {
     public class LevelPart : LevelItem
-    {        
+    {
         [SerializeField] public LevelTemplate template;
         [SerializeField] protected Transform _tilesContainer;
 

@@ -13,7 +13,7 @@ namespace Runner.Interactable
             transform.rotation = Quaternion.AngleAxis(Random.Range(-360f, 360f), Vector3.up);
             _startScale = transform.localScale.y;
         }
-        
+
         public void OnInteractStart(GameObject player)
         {
             CancelTween();
@@ -35,6 +35,6 @@ namespace Runner.Interactable
                 _tween.Kill();
                 _tween = null;
             }
-        }   
+        }
     }
 }

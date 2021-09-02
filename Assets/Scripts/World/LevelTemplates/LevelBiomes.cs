@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-
-namespace Runner.World.LevelTemplates
+﻿namespace Runner.World.LevelTemplates
 {
     [System.Serializable]
     public enum LevelBiomes

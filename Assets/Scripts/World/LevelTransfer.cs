@@ -1,9 +1,6 @@
-﻿using Runner.Environment;
-using Runner.Managers.ObjectPool;
-using Runner.Managers.World;
+﻿using Runner.ObjectPool;
 using Runner.Util;
 using Runner.World.LevelTemplates;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +21,7 @@ namespace Runner.World
             if (!_isGeneratingTiles || !isInPool) return;
 
             List<Transform> toRemove = new List<Transform>();
-            foreach(Transform child in transform)
+            foreach (Transform child in transform)
             {
                 if (child.CompareTag("Block"))
                 {
@@ -43,10 +40,10 @@ namespace Runner.World
             {
                 for (int z = 0; z < _pattern[x].Length; z++)
                 {
-                    var pos = new Vector3(-tileSize + tileSize * (float)x, 0f, pointStart.position.z + tileSize * 0.5f + tileSize * (float)z);
-                    var template = _pattern[x][z] ? oldLevel : newLevel;
-                    var prefab = template.tilePrefab;
-                    var block = Instantiate(prefab, transform);
+                    Vector3 pos = new Vector3(-tileSize + tileSize * (float)x, 0f, pointStart.position.z + tileSize * 0.5f + tileSize * (float)z);
+                    LevelTemplate template = _pattern[x][z] ? oldLevel : newLevel;
+                    GameObject prefab = template.tilePrefab;
+                    GameObject block = Instantiate(prefab, transform);
                     block.transform.position = pos;
                     if (template.decorPrefab != null && RandomUtil.Bool(template.decorChance))
                     {

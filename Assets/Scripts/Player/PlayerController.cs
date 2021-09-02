@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Runner.Managers;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -128,9 +125,9 @@ namespace Runner.Player
                 //TODO Hit player
                 return;
             };
-            
+
             _lane = lane;
-            
+
             if (_sideCoroutine != null)
             {
                 StopCoroutine(_sideCoroutine);
@@ -210,7 +207,7 @@ namespace Runner.Player
         {
             float rayLength = 1f;
             float minDist = 0.1f;
-            var rayStart = transform.position + new Vector3(0f, rayLength, 0f);
+            Vector3 rayStart = transform.position + new Vector3(0f, rayLength, 0f);
 
             if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 20f, 1 << (int)Layers.Walkable))
             {
@@ -233,7 +230,7 @@ namespace Runner.Player
                 return;
             }
 
-            var pos = transform.position;
+            Vector3 pos = transform.position;
             transform.position = new Vector3(pos.x, Mathf.MoveTowards(pos.y, _groundPos.y, Time.deltaTime * 10f), pos.z);
         }
 
@@ -345,7 +342,7 @@ namespace Runner.Player
             _collider.StopSliding();
             _slideCoroutine = null;
         }
-        
+
         //private void CheckObstacleHit()
         //{
         //    var start = transform.position + Vector3.up * 0.25f;
@@ -360,7 +357,7 @@ namespace Runner.Player
         //        }
         //    }
         //}
-        
+
         public void OnHitObstacle(GameObject obstacle)
         {
             Debug.Log($"DEATH: {obstacle.transform.parent}");
@@ -386,7 +383,7 @@ namespace Runner.Player
             if (!_isGrounded)
             {
                 CameraManager.Inst.isFollowing = false;
-                var dir = (Camera.main.transform.position - transform.position).normalized;
+                Vector3 dir = (Camera.main.transform.position - transform.position).normalized;
                 _rb.constraints = RigidbodyConstraints.None;
                 _rb.AddForce(dir * 15f, ForceMode.VelocityChange);
                 _rb.AddTorque(dir * 10f, ForceMode.VelocityChange);

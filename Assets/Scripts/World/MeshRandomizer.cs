@@ -1,7 +1,7 @@
 ﻿using Runner.Util;
 using UnityEngine;
 
-namespace Runner.Environment
+namespace Runner.World
 {
     public class MeshRandomizer : MonoBehaviour
     {

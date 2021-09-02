@@ -1,6 +1,4 @@
-﻿using Runner.World.LevelTemplates;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Runner.World
 {

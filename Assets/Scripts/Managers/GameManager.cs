@@ -9,7 +9,7 @@ namespace Runner.Managers
         public static bool IsPlaying = true;
 
         [SerializeField] private AnimationCurve _gameSpeedCurve;
-        
+
         [HideInInspector] public float maxGameSpeed;
         [HideInInspector] public float gameTime;
 
@@ -43,6 +43,6 @@ namespace Runner.Managers
             GameSpeed = _gameSpeedCurve.Evaluate(gameTime);
         }
 
-        
+
     }
 }

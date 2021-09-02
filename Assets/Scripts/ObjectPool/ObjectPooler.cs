@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using UnityEngine;
 
-namespace Runner.Managers.ObjectPool
+namespace Runner.ObjectPool
 {
     public class ObjectPooler : Singleton<ObjectPooler>
     {
@@ -28,7 +27,7 @@ namespace Runner.Managers.ObjectPool
                 _pool[data.prefab] = new Queue<GameObject>();
                 for (int i = 0; i < data.count; i++)
                 {
-                    var obj = Instantiate(data.prefab);
+                    GameObject obj = Instantiate(data.prefab);
                     obj.SetActive(false);
                     obj.transform.parent = transform;
 
@@ -54,7 +53,7 @@ namespace Runner.Managers.ObjectPool
             _prefabLookup[obj] = prefab;
             obj.transform.parent = null;
             obj.SetActive(true);
-            
+
             if (obj.TryGetComponent(out IPoolReaction reaction))
             {
                 reaction.ObjectPooled(false);
@@ -72,7 +71,7 @@ namespace Runner.Managers.ObjectPool
                 return;
             }
 
-            var prefab = _prefabLookup[obj];
+            GameObject prefab = _prefabLookup[obj];
             Debug.Log($"[ObjectPooler] Returning {obj} to pool {prefab.ToString()}");
 
             if (obj.TryGetComponent(out IPoolReaction reaction))
@@ -85,7 +84,7 @@ namespace Runner.Managers.ObjectPool
             obj.transform.parent = transform;
             obj.transform.position = Vector3.zero;
         }
-        
+
     }
 
     [Serializable]
