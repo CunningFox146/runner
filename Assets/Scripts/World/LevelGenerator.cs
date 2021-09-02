@@ -1,28 +1,33 @@
 using Runner.Environment;
+using Runner.Managers;
 using Runner.Managers.ObjectPool;
 using Runner.Util;
+using Runner.World;
+using Runner.World.LevelTemplates;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Runner.Managers.World
+namespace Runner.World
 {
     public class LevelGenerator : MonoBehaviour
     {
         public static readonly float TileSize = 2f;
 
         [SerializeField] private GameObject[] _partsPrefabs;
+        [SerializeField] private GameObject _transitionPrefab;
         [SerializeField] private LevelPart _lastPiece;
         [SerializeField] private int _startPieceCount;
         [SerializeField] private int _pieceLimit;
 
-        private Queue<LevelPart> _piecesToRemove;
-        private List<LevelPart> _parts;
+        private Queue<LevelItem> _piecesToRemove;
+        private List<LevelItem> _parts;
         private GameObject _lastPrefab;
 
         void Awake()
         {
-            _parts = new List<LevelPart>();
-            _piecesToRemove = new Queue<LevelPart>();
+            _parts = new List<LevelItem>();
+            _piecesToRemove = new Queue<LevelItem>();
 
             if (_lastPiece != null)
             {
@@ -40,7 +45,7 @@ namespace Runner.Managers.World
 
         void Update()
         {
-            foreach (LevelPart piece in _parts)
+            foreach (LevelItem piece in _parts)
             {
                 piece.transform.Translate(-Vector3.forward * Time.deltaTime * GameManager.GameSpeed);
 
@@ -52,8 +57,12 @@ namespace Runner.Managers.World
 
             if (_piecesToRemove.Count > _pieceLimit)
             {
-                RemoveLastPart();
-                GeneratePart();
+                var part = _piecesToRemove.Dequeue();
+                RemovePart(part);
+                if ((part as LevelPart) != null)
+                {
+                    GeneratePart();
+                }
             }
         }
 
@@ -68,7 +77,23 @@ namespace Runner.Managers.World
             var obj = ObjectPooler.Inst.GetObject(prefab);
             var part = obj.GetComponent<LevelPart>();
 
-            obj.transform.position = new Vector3(0f, 0f, _lastPiece.pointEnd.position.z - part.pointStart.position.z);
+            float offset;
+
+            if (part.template != _lastPiece.template)
+            {
+                var transition = GenerateTransition(_lastPiece.template, part.template);
+                transition.transform.position = new Vector3(0f, 0f, _lastPiece.pointEnd.position.z - transition.pointStart.position.z);
+
+                offset = transition.pointEnd.position.z - part.pointStart.position.z;
+
+                _parts.Add(transition);
+            }
+            else
+            {
+                 offset = _lastPiece.pointEnd.position.z - part.pointStart.position.z;
+            }
+
+            obj.transform.position = new Vector3(0f, 0f, offset);
             obj.transform.parent = transform;
 
             _parts.Add(part);
@@ -76,11 +101,19 @@ namespace Runner.Managers.World
             _lastPrefab = prefab;
         }
 
-        private void RemoveLastPart()
+        private LevelTransfer GenerateTransition(LevelTemplate oldTemplate, LevelTemplate newTemplate)
         {
-            var piece = _piecesToRemove.Dequeue();
-            _parts.Remove(piece);
-            ObjectPooler.Inst.ReturnObject(piece.gameObject);
+            var transition = ObjectPooler.Inst.GetObject(_transitionPrefab);
+            var transfer = transition.GetComponent<LevelTransfer>();
+            transfer.GenerateTiles(oldTemplate, newTemplate);
+
+            return transfer;
+        }
+
+        private void RemovePart(LevelItem item)
+        {
+            _parts.Remove(item);
+            ObjectPooler.Inst.ReturnObject(item.gameObject);
         }
     }
 }
