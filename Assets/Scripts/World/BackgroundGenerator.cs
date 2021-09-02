@@ -12,29 +12,29 @@ namespace Runner.Managers.World
         [SerializeField] private Vector2 _spawnOffset;
         [SerializeField] private Vector3 _spawnRng;
         [SerializeField] private Vector3 _spawnRotation;
-        [SerializeField] private float warmCount = 3f;
+        [SerializeField] private float _startCount = 3f;
 
-        private Queue<GameObject> _cache;
+        private Queue<GameObject> _queue;
         private bool _isRight;
 
         protected virtual void Awake()
         {
-            _cache = new Queue<GameObject>();
+            _queue = new Queue<GameObject>();
         }
 
         protected virtual void Start()
         {
-            if (warmCount > 0f)
+            if (_startCount > 0f)
             {
-                Warm();
+                SpawnStartItems();
             }
         }
 
         protected virtual void Update()
         {
-            if (_cache.Count > 0)
+            if (_queue.Count > 0)
             {
-                var obj = _cache.Peek();
+                var obj = _queue.Peek();
                 if (obj.transform.position.z < -5f)
                 {
                     DestroyLast();
@@ -43,7 +43,7 @@ namespace Runner.Managers.World
             }
 
             float speed = GameManager.GameSpeed;
-            foreach (GameObject island in _cache)
+            foreach (GameObject island in _queue)
             {
                 island.transform.Translate(-Vector3.forward * speed * Time.deltaTime, Space.World);
             }
@@ -51,20 +51,20 @@ namespace Runner.Managers.World
 
         protected virtual void DestroyLast()
         {
-            var obj = _cache.Peek();
-            _cache.Dequeue();
+            var obj = _queue.Peek();
+            _queue.Dequeue();
             ObjectPooler.Inst.ReturnObject(obj);
         }
 
-        protected virtual void Warm()
+        protected virtual void SpawnStartItems()
         {
-            for (float i = 0f; i < warmCount; i++)
+            for (float i = 0f; i < _startCount; i++)
             {
                 Spawn(i);
             }
         }
         
-        protected virtual GameObject Spawn() => Spawn(_cache.Count);
+        protected virtual GameObject Spawn() => Spawn(_queue.Count);
 
         protected virtual GameObject Spawn(float idx)
         {
@@ -80,7 +80,7 @@ namespace Runner.Managers.World
             obj.transform.rotation = Quaternion.Euler(_spawnRotation * mult);
             obj.transform.parent = transform;
 
-            _cache.Enqueue(obj);
+            _queue.Enqueue(obj);
 
             return obj;
         }
