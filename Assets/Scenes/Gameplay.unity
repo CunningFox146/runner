@@ -174,7 +174,7 @@ MonoBehaviour:
   - {fileID: 1151930541777538971, guid: d1ebf29b812c5a5478f95e327d9bd471, type: 3}
   - {fileID: 1486213526641536484, guid: 6444c1e5b216f2a4d9437c82c94ac18b, type: 3}
   - {fileID: 4484439710422990938, guid: 56b5d89cd5655ec46a83c693b90beb6f, type: 3}
-  _transitionPrefab: {fileID: 5360298932005210793, guid: 2975919ab15c3074aa4394a08d740f8a, type: 3}
+  _transitionPrefab: {fileID: 8689404757301208379, guid: 5ad16f0318d98cf4596d9fd8f7935f4c, type: 3}
   _lastPiece: {fileID: 794162784}
   _startPieceCount: 5
   _pieceLimit: 1
@@ -279,6 +279,8 @@ MonoBehaviour:
   - prefab: {fileID: 5209520100767208415, guid: 146f68ca8374acd4d9e4502dd7f43541, type: 3}
     count: 4
   - prefab: {fileID: 5360298932005210793, guid: 2975919ab15c3074aa4394a08d740f8a, type: 3}
+    count: 10
+  - prefab: {fileID: 8689404757301208379, guid: 5ad16f0318d98cf4596d9fd8f7935f4c, type: 3}
     count: 10
 --- !u!1 &494760799
 GameObject:
@@ -583,7 +585,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9025042204114240311, guid: 251b87e6199adb04897fc1f9c59e6327, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 251b87e6199adb04897fc1f9c59e6327, type: 3}

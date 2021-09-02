@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 5141454190357158860}
   - component: {fileID: 5798387038753252219}
   m_Layer: 0
-  m_Name: LevelTransition
+  m_Name: BaseLevelTransition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

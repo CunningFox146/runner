@@ -11,6 +11,7 @@ namespace Runner.World
 {
     public class LevelTransfer : LevelItem, IPoolReaction
     {
+        [SerializeField] private bool _isGeneratingTiles = true;
         private bool[][] _pattern = new bool[][]
         {
             new bool[] { true, false, true },
@@ -20,7 +21,7 @@ namespace Runner.World
 
         public void ObjectPooled(bool isInPool)
         {
-            if (!isInPool) return;
+            if (!_isGeneratingTiles || !isInPool) return;
 
             List<Transform> toRemove = new List<Transform>();
             foreach(Transform child in transform)
@@ -35,6 +36,8 @@ namespace Runner.World
 
         public void GenerateTiles(LevelTemplate oldLevel, LevelTemplate newLevel)
         {
+            if (!_isGeneratingTiles) return;
+
             float tileSize = LevelGenerator.TileSize;
             for (int x = 0; x < _pattern.Length; x++)
             {
