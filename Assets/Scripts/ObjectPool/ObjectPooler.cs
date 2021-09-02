@@ -72,7 +72,7 @@ namespace Runner.ObjectPool
             }
 
             GameObject prefab = _prefabLookup[obj];
-            Debug.Log($"[ObjectPooler] Returning {obj} to pool {prefab.ToString()}");
+            //Debug.Log($"[ObjectPooler] Returning {obj} to pool {prefab.ToString()}");
 
             if (obj.TryGetComponent(out IPoolReaction reaction))
             {

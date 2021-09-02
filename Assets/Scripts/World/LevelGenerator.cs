@@ -2,6 +2,7 @@ using Runner.Managers;
 using Runner.ObjectPool;
 using Runner.Util;
 using Runner.World.LevelTemplates;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,12 +12,15 @@ namespace Runner.World
     {
         public static readonly float TileSize = 2f;
 
+        public static event Action<LevelTemplate, LevelTemplate> OnTemplateChanged;
+
         [SerializeField] private GameObject[] _partsPrefabs;
         [SerializeField] private GameObject _transitionPrefab;
         [SerializeField] private LevelPart _lastPiece;
         [SerializeField] private int _startPieceCount;
         [SerializeField] private int _pieceLimit;
 
+        public LevelTemplate currentTemplate;
         private Queue<LevelItem> _piecesToRemove;
         private List<LevelItem> _parts;
         private GameObject _lastPrefab;
@@ -46,6 +50,11 @@ namespace Runner.World
             {
                 piece.transform.Translate(-Vector3.forward * Time.deltaTime * GameManager.GameSpeed);
 
+                if (piece.pointStart.position.z <= 0f && piece.pointEnd.position.z > 0f)
+                {
+                    UpdateCurrentBiome(piece);
+                }
+
                 if (piece.pointEnd.position.z < 0f && !_piecesToRemove.Contains(piece))
                 {
                     _piecesToRemove.Enqueue(piece);
@@ -60,6 +69,15 @@ namespace Runner.World
                 {
                     GeneratePart();
                 }
+            }
+        }
+
+        private void UpdateCurrentBiome(LevelItem piece)
+        {
+            if (piece.TryGetComponent(out LevelPart levelPart) && levelPart.template != currentTemplate)
+            {
+                OnTemplateChanged?.Invoke(currentTemplate, levelPart.template);
+                currentTemplate = levelPart.template;
             }
         }
 
