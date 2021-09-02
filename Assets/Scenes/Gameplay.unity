@@ -178,6 +178,7 @@ MonoBehaviour:
   _lastPiece: {fileID: 794162784}
   _startPieceCount: 5
   _pieceLimit: 1
+  currentTemplate: {fileID: 0}
 --- !u!114 &22286653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,7 +401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8005561390563153950, guid: 3170a881e7094cc4193abcdaff002ef4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 8005561390563153950, guid: 3170a881e7094cc4193abcdaff002ef4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -666,6 +667,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1143252082}
+  _camera: {fileID: 0}
   _offset: {x: 0, y: 4.5, z: -5.5}
   _moveSpeed: 5
   isFollowing: 1
