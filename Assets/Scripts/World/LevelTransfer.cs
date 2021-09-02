@@ -1,6 +1,7 @@
 ﻿using Runner.Environment;
 using Runner.Managers.ObjectPool;
 using Runner.Managers.World;
+using Runner.Util;
 using Runner.World.LevelTemplates;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,8 +41,14 @@ namespace Runner.World
                 for (int z = 0; z < _pattern[x].Length; z++)
                 {
                     var pos = new Vector3(-tileSize + tileSize * (float)x, 0f, pointStart.position.z + tileSize * 0.5f + tileSize * (float)z);
-                    var prefab = (_pattern[x][z] ? oldLevel : newLevel).tilePrefab;
-                    Instantiate(prefab, transform).transform.position = pos;
+                    var template = _pattern[x][z] ? oldLevel : newLevel;
+                    var prefab = template.tilePrefab;
+                    var block = Instantiate(prefab, transform);
+                    block.transform.position = pos;
+                    if (template.decorPrefab != null && RandomUtil.Bool(template.decorChance))
+                    {
+                        BlockDecor.Decorate(block.transform, template.decorPrefab, template.spacing * LevelGenerator.TileSize * 0.5f);
+                    }
                 }
             }
         }

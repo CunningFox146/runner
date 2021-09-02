@@ -198,7 +198,7 @@ MonoBehaviour:
   _spawnOffset: {x: 20, y: -5}
   _spawnRng: {x: 5, y: 5, z: 0}
   _spawnRotation: {x: 0, y: 45, z: 0}
-  warmCount: 5
+  _startCount: 5
 --- !u!114 &22286654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +217,7 @@ MonoBehaviour:
   _spawnOffset: {x: -20, y: 8}
   _spawnRng: {x: 10, y: 2, z: 0}
   _spawnRotation: {x: 0, y: 0, z: 0}
-  warmCount: 10
+  _startCount: 10
 --- !u!1 &385813057
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,7 +583,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9025042204114240311, guid: 251b87e6199adb04897fc1f9c59e6327, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 251b87e6199adb04897fc1f9c59e6327, type: 3}
