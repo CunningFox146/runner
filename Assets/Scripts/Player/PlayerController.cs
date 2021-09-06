@@ -1,7 +1,5 @@
-using System;
+using Runner.Managers;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +7,6 @@ namespace Runner.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        private readonly int WalkableMask = 1 << 6;
-
         [SerializeField] private PlayerCollider _collider;
         [SerializeField] private float _TEMP_progress = 0f;
         [SerializeField] private Text _debugText;
@@ -30,9 +26,12 @@ namespace Runner.Player
         [SerializeField] private AnimationCurve _slidingCurve;
         [Header("Fall")]
         [SerializeField] private float _fallSpeed = 4f;
-        
-        private PlayerState _state = PlayerState.Running;
-        
+
+        private Rigidbody _rb;
+        private PlayerAnimation _animation;
+
+        private PlayerState _state;
+
         private Coroutine _fallCoroutine;
         private Coroutine _jumpCoroutine;
         private Coroutine _slideCoroutine;
@@ -41,17 +40,35 @@ namespace Runner.Player
         private bool _isGrounded;
         private Vector3 _groundPos;
 
-        private string DebugString => $"State:{_state}\nIsGrounded:{_isGrounded.ToString()}\nGround:{_groundPos.ToString()}\nCurrentLane:{_lane}";
-        
+        private PlayerState State
+        {
+            get => _state;
+            set
+            {
+                _state = value;
+                _animation.SetState((int)_state);
+            }
+        }
+        private string DebugString => $"State:{State}\nIsGrounded:{_isGrounded.ToString()}\nGround:{_groundPos.ToString()}\nCurrentLane:{_lane}";
+
         public enum PlayerState
         {
             Running,
-            Falling,
             Jump,
+            Falling,
             Slide,
-            Death
+            Death,
+            SideChange,
         }
-        
+
+        void Awake()
+        {
+            _rb = GetComponent<Rigidbody>();
+            _animation = GetComponent<PlayerAnimation>();
+
+            State = PlayerState.Running;
+        }
+
         void Start()
         {
             _groundPos = CheckGround();
@@ -60,15 +77,19 @@ namespace Runner.Player
         void Update()
         {
             _TEMP_progress += Time.deltaTime;
-            _debugText.text = DebugString;
+            if (_debugText != null)
+            {
+                _debugText.text = DebugString;
+            }
 
             UpdateInput();
             UpdatePosition();
         }
-        
+
         void FixedUpdate()
         {
             _groundPos = CheckGround();
+            //CheckObstacleHit();
         }
 
         private void UpdateInput()
@@ -82,7 +103,7 @@ namespace Runner.Player
                 ChangeSide(1);
             }
 
-            if (Input.GetKey(KeyCode.W) || SwipeManager.SwipeUp)
+            if (Input.GetKeyDown(KeyCode.W) || SwipeManager.SwipeUp)
             {
                 Jump();
             }
@@ -92,20 +113,14 @@ namespace Runner.Player
             }
         }
 
-        private bool CanChangeSide(Vector3 direction)
-        {
-            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, 4f, WalkableMask))
-            {
-                return false;
-            }
-
-            return true;
-        }
+        private bool CanChangeSide(Vector3 direction) => !Physics.Raycast(
+            transform.position + new Vector3(0f, 1f, 0f),
+            direction, out RaycastHit hit, 4f);
 
         private void ChangeSide(int sideDelta)
         {
             int lane = _lane + sideDelta;
-            if (lane < 0 || lane + 1 > _lanes.Length || !CanChangeSide(new Vector3(sideDelta, 0, 0f)))
+            if (lane < 0 || lane + 1 > _lanes.Length || !CanChangeSide(new Vector3(sideDelta, 0f, 0f)))
             {
                 //TODO Hit player
                 return;
@@ -131,14 +146,14 @@ namespace Runner.Player
                 _collider.StopSliding();
             }
 
-            if (_state == PlayerState.Slide)
+            if (State == PlayerState.Slide)
             {
-                _state = PlayerState.Running;
+                State = PlayerState.Running;
             }
 
-            if (_state == PlayerState.Jump || !_isGrounded) return;
+            if (State == PlayerState.Jump || !_isGrounded) return;
             _isGrounded = false;
-            _state = PlayerState.Jump;
+            State = PlayerState.Jump;
 
             if (_fallCoroutine != null)
             {
@@ -158,25 +173,25 @@ namespace Runner.Player
 
         private void Slide()
         {
-            if (_state == PlayerState.Jump && _jumpCoroutine != null)
+            if (State == PlayerState.Jump && _jumpCoroutine != null)
             {
                 StopCoroutine(_jumpCoroutine);
                 _jumpCoroutine = null;
             }
 
-            if (_state == PlayerState.Slide) return;
-            _state = PlayerState.Slide;
+            if (State == PlayerState.Slide) return;
+            State = PlayerState.Slide;
 
             if (_slideCoroutine != null)
             {
                 StopCoroutine(_slideCoroutine);
                 _slideCoroutine = null;
             }
-            
+
             _slideCoroutine = StartCoroutine(SlidingCoroutine());
 
             _collider.StartSliding();
-            
+
             // Apply fall multiplier
             if (!_isGrounded)
             {
@@ -192,22 +207,22 @@ namespace Runner.Player
         {
             float rayLength = 1f;
             float minDist = 0.1f;
-            var rayStart = transform.position + new Vector3(0f, rayLength, 0f);
+            Vector3 rayStart = transform.position + new Vector3(0f, rayLength, 0f);
 
-            if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 20f, WalkableMask))
+            if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 20f, 1 << (int)Layers.Walkable))
             {
                 Debug.DrawLine(rayStart, hit.point, Color.red);
                 _isGrounded = Vector3.Distance(rayStart, hit.point) < rayLength + minDist;
-                
+
                 return hit.point;
             }
 
             throw new UnityException("Failed to get ground!");
         }
-        
+
         private void UpdatePosition()
         {
-            if (_state == PlayerState.Jump) return;
+            if (State == PlayerState.Jump) return;
 
             if (!_isGrounded)
             {
@@ -215,7 +230,7 @@ namespace Runner.Player
                 return;
             }
 
-            var pos = transform.position;
+            Vector3 pos = transform.position;
             transform.position = new Vector3(pos.x, Mathf.MoveTowards(pos.y, _groundPos.y, Time.deltaTime * 10f), pos.z);
         }
 
@@ -227,7 +242,7 @@ namespace Runner.Player
 
             while (true)
             {
-                Debug.Log("JUMP");
+                //Debug.Log("JUMP");
                 timer = Mathf.Min(timer + Time.deltaTime, _jumpTime);
                 float delta = _jumpingCurve.Evaluate(timer / _jumpTime);
 
@@ -240,7 +255,7 @@ namespace Runner.Player
                 if (Mathf.Approximately(timer, _jumpTime)) break;
             }
 
-            _state = PlayerState.Falling;
+            State = PlayerState.Falling;
             _jumpCoroutine = null;
         }
 
@@ -255,15 +270,15 @@ namespace Runner.Player
                 fallTime *= _slideFallMult;
             }
 
-            _state = PlayerState.Falling;
+            State = PlayerState.Falling;
 
             while (true)
             {
-                Debug.Log("FALL");
+                //Debug.Log("FALL");
                 float endHeight = _groundPos.y;
                 timer = Mathf.Clamp(timer + Time.deltaTime, 0f, fallTime);
                 float delta = _fallingCurve.Evaluate(timer / fallTime);
-                
+
                 transform.position = new Vector3(transform.position.x,
                     Mathf.Lerp(startHeight, endHeight, delta),
                     transform.position.z);
@@ -273,7 +288,7 @@ namespace Runner.Player
                 if (_isGrounded || Mathf.Approximately(timer, fallTime)) break;
             }
 
-            _state = PlayerState.Running;
+            State = PlayerState.Running;
             _fallCoroutine = null;
         }
 
@@ -283,9 +298,14 @@ namespace Runner.Player
             float endPos = _lanes[_lane];
             float timer = 0f;
 
+            if (_isGrounded)
+            {
+                State = PlayerState.SideChange;
+            }
+
             while (true)
             {
-                Debug.Log("SIDE");
+                //Debug.Log("SIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _laneChangeTime);
                 float delta = _slidingCurve.Evaluate(timer / _laneChangeTime);
 
@@ -298,7 +318,7 @@ namespace Runner.Player
                 if (Mathf.Approximately(timer, _laneChangeTime)) break;
             }
 
-            _state = PlayerState.Running;
+            State = PlayerState.Running;
             _sideCoroutine = null;
         }
 
@@ -309,24 +329,67 @@ namespace Runner.Player
             {
                 if (_isGrounded)
                 {
-                    _state = PlayerState.Slide;
+                    State = PlayerState.Slide;
                 }
-                Debug.Log("SLIDE");
+                //Debug.Log("SLIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _slideTime);
                 if (Mathf.Approximately(timer, _slideTime)) break;
 
                 yield return null;
             }
 
-            _state = PlayerState.Running;
+            State = PlayerState.Running;
             _collider.StopSliding();
             _slideCoroutine = null;
         }
-        
+
+        //private void CheckObstacleHit()
+        //{
+        //    var start = transform.position + Vector3.up * 0.25f;
+        //    Debug.DrawLine(start, transform.forward * 0.5f, Color.red);
+        //    if (Physics.Raycast(start, Vector3.forward, out RaycastHit hit, 0.5f))
+        //    {
+        //        if (hit.transform.root.CompareTag("Evaluation") || hit.transform.gameObject.layer == InteractableMask) return;
+
+        //        if (hit.point.z -start.z <= 0.1f)
+        //        {
+        //            OnHitObstacle(hit);
+        //        }
+        //    }
+        //}
+
         public void OnHitObstacle(GameObject obstacle)
         {
-            Debug.Log("DEATH");
+            Debug.Log($"DEATH: {obstacle.transform.parent}");
 
+            GameManager.EndGame();
+
+            if (_sideCoroutine != null)
+            {
+                StopCoroutine(_sideCoroutine);
+                _sideCoroutine = null;
+            }
+            if (_slideCoroutine != null)
+            {
+                StopCoroutine(_slideCoroutine);
+                _slideCoroutine = null;
+            }
+            if (_jumpCoroutine != null)
+            {
+                StopCoroutine(_jumpCoroutine);
+                _jumpCoroutine = null;
+            }
+
+            if (!_isGrounded)
+            {
+                CameraManager.Inst.isFollowing = false;
+                Vector3 dir = (Camera.main.transform.position - transform.position).normalized;
+                _rb.constraints = RigidbodyConstraints.None;
+                _rb.AddForce(dir * 15f, ForceMode.VelocityChange);
+                _rb.AddTorque(dir * 10f, ForceMode.VelocityChange);
+            }
+
+            State = PlayerState.Death;
             enabled = false;
         }
     }
