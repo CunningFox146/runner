@@ -14,20 +14,16 @@ namespace Runner.World
 
         public static event Action<LevelTemplate, LevelTemplate> OnTemplateChanged;
 
-        [SerializeField] private GameObject[] _partsPrefabs;
-
         [SerializeField] private GameObject[] _transitionPrefabs;
-        [SerializeField] private GameObject _transitionBridge;
-        [SerializeField] private float _bridgeChance = 0.25f;
 
         [SerializeField] private LevelPart _lastPiece;
         [SerializeField] private int _startPieceCount;
         [SerializeField] private int _pieceLimit;
+        [SerializeField] LevelPartsOrder _order;
 
         public LevelTemplate currentTemplate;
         private Queue<LevelItem> _piecesToRemove;
         private List<LevelItem> _parts;
-        private GameObject _lastPrefab;
 
         void Awake()
         {
@@ -87,11 +83,7 @@ namespace Runner.World
 
         private void GeneratePart()
         {
-            GameObject prefab;
-            do
-            {
-                prefab = ArrayUtil.GetRandomItem(_partsPrefabs);
-            } while (prefab == _lastPrefab);
+            GameObject prefab = _order.GetAndRemoveNextLevel();
 
             GameObject obj = ObjectPooler.Inst.GetObject(prefab);
             LevelPart part = obj.GetComponent<LevelPart>();
@@ -117,12 +109,11 @@ namespace Runner.World
 
             _parts.Add(part);
             _lastPiece = part;
-            _lastPrefab = prefab;
         }
 
         private LevelTransfer GenerateTransition(LevelTemplate oldTemplate, LevelTemplate newTemplate)
         {
-            var prefab = RandomUtil.Bool(_bridgeChance) ? _transitionBridge : ArrayUtil.GetRandomItem(_transitionPrefabs);
+            GameObject prefab = ArrayUtil.GetRandomItem(_transitionPrefabs);
 
             GameObject transition = ObjectPooler.Inst.GetObject(prefab);
             LevelTransfer transfer = transition.GetComponent<LevelTransfer>();

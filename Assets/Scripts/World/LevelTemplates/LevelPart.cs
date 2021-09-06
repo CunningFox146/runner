@@ -1,9 +1,8 @@
 using Runner.Util;
-using Runner.World.LevelTemplates;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Runner.World
+namespace Runner.World.LevelTemplates
 {
     public class LevelPart : LevelItem
     {

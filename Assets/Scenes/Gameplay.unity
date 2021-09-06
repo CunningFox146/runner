@@ -181,6 +181,7 @@ MonoBehaviour:
   _lastPiece: {fileID: 794162784}
   _startPieceCount: 5
   _pieceLimit: 1
+  _order: {fileID: 11400000, guid: 0a2562f9d1ab3c845b95fab1f3db0da2, type: 2}
   currentTemplate: {fileID: 0}
 --- !u!114 &22286653
 MonoBehaviour:

@@ -39,6 +39,11 @@ namespace Runner.ObjectPool
 
         public GameObject GetObject(GameObject prefab)
         {
+            if (!_pool.ContainsKey(prefab))
+            {
+                throw new UnityException($"{prefab}'s pool was not found.");
+            }
+
             GameObject obj = null;
             if (_pool[prefab].Count == 0)
             {
