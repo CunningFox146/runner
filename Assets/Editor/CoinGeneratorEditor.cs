@@ -17,7 +17,7 @@ namespace Assets.Editor
         public void OnSceneGUI()
         {
             float size = 0.5f;
-            Handles.color = Color.red;
+            Handles.color = Color.yellow;
             foreach (Vector3 pos in _target.GetSpawnPositions())
             {
                 Handles.DrawWireDisc(_target.transform.position + pos + Vector3.up * size, Vector3.forward, size, 5f);

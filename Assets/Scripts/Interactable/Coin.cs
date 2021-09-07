@@ -8,15 +8,18 @@ namespace Runner.Interactable
     {
         [SerializeField] private Transform _model;
 
+        private Tween _tween;
+
         void Start()
         {
-            transform.DORotate(new Vector3(0f, -360f, 0f), 1f, RotateMode.FastBeyond360)
+            _tween = transform.DORotate(new Vector3(0f, -360f, 0f), 1f, RotateMode.FastBeyond360)
                 .SetEase(Ease.Linear)
                 .SetLoops(-1);
         }
 
         public void OnInteractStart(GameObject player)
         {
+            _tween.Kill();
             Destroy(gameObject);
         }
 
