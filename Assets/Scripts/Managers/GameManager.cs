@@ -10,8 +10,8 @@ namespace Runner.Managers
 
         public static float CurrentScore = 0f;
         public static float MaxScore = 0f;
-        public static float CurrentCoins = 0f;
-        public static float Balance = 0f;
+        public static int CurrentCoins = 0;
+        public static int Balance = 0;
         public static float ScoreMult = 1f;
 
         public static bool IsPlaying = true;
@@ -27,6 +27,11 @@ namespace Runner.Managers
         {
             IsPlaying = false;
             GameSpeed = 0f;
+        }
+
+        public static void AddCoins(int coins = 1)
+        {
+            CurrentCoins += coins;
         }
 
         protected override void Awake()

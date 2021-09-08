@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Runner.Managers;
 using UnityEngine;
 
 namespace Runner.Interactable
@@ -23,7 +24,7 @@ namespace Runner.Interactable
             _model.DOMove(player.transform.position + Vector3.up * 0.5f, 0.25f)
                 .OnComplete(() =>
                 {
-                    //TODO Add coins and spawn fx?
+                    GameManager.AddCoins();
                     Destroy(gameObject);
                 });
         }
