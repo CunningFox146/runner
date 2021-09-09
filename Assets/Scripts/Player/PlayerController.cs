@@ -1,4 +1,5 @@
 using Runner.Managers;
+using Runner.UI;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -390,6 +391,7 @@ namespace Runner.Player
             }
 
             State = PlayerState.Death;
+            ViewManager.PushView<DeathView>();
             enabled = false;
         }
     }

@@ -12,7 +12,7 @@ namespace Runner.Managers
         [SerializeField] private View[] _views;
         private Stack<View> _viewStack;
         
-        public static View CurrentView {  get; private set; }
+        public static View CurrentView { get; private set; }
 
         protected override void Awake()
         {
@@ -30,7 +30,7 @@ namespace Runner.Managers
         public static View PushView(View view)
         {
             view.Show();
-            CurrentView.Hide();
+            CurrentView?.Hide();
             CurrentView = view;
 
             Inst._viewStack.Push(view);
