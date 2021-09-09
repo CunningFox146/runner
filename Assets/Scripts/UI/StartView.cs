@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Runner.UI
 {
-    public class DeathView : View
+    public class StartView : View
     {
         private void Update()
         {
             if (Input.anyKey)
             {
                 ViewManager.PopView();
-                GameManager.EndSession();
+                GameManager.StartSession();
             }
         }
     }

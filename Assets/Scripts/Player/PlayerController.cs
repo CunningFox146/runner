@@ -6,10 +6,9 @@ using UnityEngine.UI;
 
 namespace Runner.Player
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : Singleton<PlayerController>
     {
         [SerializeField] private PlayerCollider _collider;
-        [SerializeField] private float _TEMP_progress = 0f;
         [SerializeField] private Text _debugText;
         [Header("Lanes")]
         [SerializeField] private float[] _lanes;
@@ -62,22 +61,24 @@ namespace Runner.Player
             SideChange,
         }
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _rb = GetComponent<Rigidbody>();
             _animation = GetComponent<PlayerAnimation>();
-
-            State = PlayerState.Running;
         }
 
         void Start()
         {
             _groundPos = CheckGround();
+
+            State = PlayerState.Running;
         }
 
         void Update()
         {
-            _TEMP_progress += Time.deltaTime;
+            if (!GameManager.IsPlaying) return;
+
             if (_debugText != null)
             {
                 _debugText.text = DebugString;

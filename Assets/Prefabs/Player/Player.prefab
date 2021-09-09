@@ -136,7 +136,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 4657162425212425109}
-  _TEMP_progress: 0
   _debugText: {fileID: 0}
   _lanes:
   - -2

@@ -1,5 +1,4 @@
 ﻿using Runner.UI;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,15 +10,23 @@ namespace Runner.Managers
         [SerializeField] private View _startView;
         [SerializeField] private View[] _views;
         private Stack<View> _viewStack;
-        
+
         public static View CurrentView { get; private set; }
 
         protected override void Awake()
         {
             base.Awake();
             _viewStack = new Stack<View>();
+        }
 
+        private void Start()
+        {
             CurrentView = PushView(_startView);
+        }
+
+        void OnDestroy()
+        {
+            CurrentView = null;
         }
 
         public static View PushView<T>() where T : View
@@ -39,12 +46,16 @@ namespace Runner.Managers
 
         public static void PopView()
         {
-            var viewStack = Inst._viewStack;
+            Stack<View> viewStack = Inst._viewStack;
+            if (viewStack.Count == 0) return;
 
-            var view = viewStack.Pop();
+            View view = viewStack.Pop();
             view.Hide();
-            CurrentView = viewStack.Peek();
-            CurrentView.Show();
+            if (viewStack.Count > 0)
+            {
+                CurrentView = viewStack.Peek();
+                CurrentView.Show();
+            }
         }
     }
 }

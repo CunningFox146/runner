@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using Runner.Player;
+using Runner.UI;
+using System;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Runner.Managers
 {
@@ -6,15 +10,17 @@ namespace Runner.Managers
     {
         public static readonly float BaseGameSpeed = 5f;
         public static readonly float BaseScoreMult = 0.1f;
-        public static float GameSpeed;
+
+        public static float GameSpeed = 0f;
 
         public static float CurrentScore = 0f;
+
         public static float MaxScore = 0f;
         public static int CurrentCoins = 0;
         public static int Balance = 0;
         public static float ScoreMult = 1f;
 
-        public static bool IsPlaying = true;
+        public static bool IsPlaying = false;
 
         [SerializeField] private AnimationCurve _gameSpeedCurve;
 
@@ -23,6 +29,21 @@ namespace Runner.Managers
 
         public static float SpeedMultiplier { get; private set; }
 
+        public static void StartSession()
+        {
+            IsPlaying = true;
+            PlayerController.Inst.enabled = true;
+            ViewManager.PushView<PlayerHud>();
+        }
+
+        // When player leaved end game screen
+        public static void EndSession()
+        {
+            //TODO: Save data
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        // When player hits obstacle
         public static void EndGame()
         {
             IsPlaying = false;
