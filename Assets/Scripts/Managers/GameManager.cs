@@ -33,7 +33,8 @@ namespace Runner.Managers
         {
             IsPlaying = true;
             PlayerController.Inst.enabled = true;
-            ViewManager.PushView<PlayerHud>();
+            ViewManager.HideAllViews();
+            ViewManager.ShowView<PlayerHud>();
         }
 
         // When player leaved end game screen

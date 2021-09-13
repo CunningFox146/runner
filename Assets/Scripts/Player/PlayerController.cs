@@ -392,7 +392,7 @@ namespace Runner.Player
             }
 
             State = PlayerState.Death;
-            ViewManager.PushView<DeathView>();
+            ViewManager.ShowView<DeathView>();
             enabled = false;
         }
     }

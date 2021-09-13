@@ -9,7 +9,7 @@ namespace Runner.UI
         {
             if (Input.anyKey)
             {
-                ViewManager.PopView();
+                ViewManager.HideView<DeathView>();
                 GameManager.EndSession();
             }
         }

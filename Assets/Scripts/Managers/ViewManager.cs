@@ -8,54 +8,43 @@ namespace Runner.Managers
     public class ViewManager : Singleton<ViewManager>
     {
         [SerializeField] private View _startView;
-        [SerializeField] private View[] _views;
-        private Stack<View> _viewStack;
-
-        public static View CurrentView { get; private set; }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            _viewStack = new Stack<View>();
-        }
+        [SerializeField] private List<View> _views;
 
         private void Start()
         {
-            CurrentView = PushView(_startView);
+            ShowView(_startView);
         }
 
-        void OnDestroy()
+        public static View GetView<T>() where T : View
         {
-            CurrentView = null;
+            return Inst._views.Where(v => v is T).First();
         }
 
-        public static View PushView<T>() where T : View
+        public static View ShowView<T>() where T : View
         {
-            return PushView(Inst._views.Where(v => v is T).First());
+            return ShowView(GetView<T>());
         }
 
-        public static View PushView(View view)
+        public static View ShowView(View view)
         {
             view.Show();
-            CurrentView?.Hide();
-            CurrentView = view;
-
-            Inst._viewStack.Push(view);
             return view;
         }
 
-        public static void PopView()
+        public static View HideView<T>() where T : View
         {
-            Stack<View> viewStack = Inst._viewStack;
-            if (viewStack.Count == 0) return;
+            return HideView(GetView<T>());
+        }
 
-            View view = viewStack.Pop();
+        public static View HideView(View view)
+        {
             view.Hide();
-            if (viewStack.Count > 0)
-            {
-                CurrentView = viewStack.Peek();
-                CurrentView.Show();
-            }
+            return view;
+        }
+        
+        public static void HideAllViews()
+        {
+            Inst._views.ForEach((view) => HideView(view));
         }
     }
 }
