@@ -24,6 +24,8 @@ namespace Runner.Managers
 
         public static bool IsPlaying = false;
 
+        private static bool RestartGameplay = false;
+
         [SerializeField] private AnimationCurve _gameSpeedCurve;
 
         [HideInInspector] public float maxGameSpeed;
@@ -45,15 +47,18 @@ namespace Runner.Managers
         }
 
         // When player leaved end game screen
-        public static void EndSession()
+        public static void EndSession(bool restart = false)
         {
             //TODO: Save data
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            RestartGameplay = restart;
         }
 
         // When player hits obstacle
         public static void EndGame()
         {
+            ViewManager.HideAllViews();
+            ViewManager.ShowView<DeathView>();
             IsPlaying = false;
             GameSpeed = 0f;
         }
@@ -74,7 +79,11 @@ namespace Runner.Managers
 
         private void Start()
         {
-
+            if (RestartGameplay)
+            {
+                StartSession();
+            }
+            RestartGameplay = false;
         }
 
         private void Update()

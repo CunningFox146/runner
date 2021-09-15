@@ -7,13 +7,7 @@ namespace Runner.Managers
 {
     public class ViewManager : Singleton<ViewManager>
     {
-        [SerializeField] private View _startView;
         [SerializeField] private List<View> _views;
-
-        private void Start()
-        {
-            ShowView(_startView);
-        }
 
         public static View GetView<T>() where T : View
         {

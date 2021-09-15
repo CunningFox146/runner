@@ -2,7 +2,6 @@ using DG.Tweening;
 using Runner.Player;
 using Runner.World;
 using Runner.World.LevelTemplates;
-using System;
 using UnityEngine;
 
 namespace Runner.Managers
@@ -30,7 +29,7 @@ namespace Runner.Managers
                         _uiModeTween.Kill();
                         _uiModeTween = null;
                     }
-                    transform.DORotate(new Vector3(30f, 0f, 0f), 0.5f).SetEase(Ease.InOutCubic);   
+                    transform.DORotate(new Vector3(30f, 0f, 0f), 0.5f).SetEase(Ease.InOutCubic);
                 }
                 else
                 {
@@ -47,13 +46,12 @@ namespace Runner.Managers
 
             _camera = GetComponent<Camera>();
 
+
+            IsFollowing = false;
+
             LevelGenerator.OnTemplateChanged += OnTemplateChangedHandler;
         }
 
-        private void Start()
-        {
-            IsFollowing = false;
-        }
 
         private void OnTemplateChangedHandler(LevelTemplate oldTemplate, LevelTemplate newTemplate)
         {

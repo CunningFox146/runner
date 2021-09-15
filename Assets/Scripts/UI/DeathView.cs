@@ -1,17 +1,18 @@
 ﻿using Runner.Managers;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Runner.UI
 {
     public class DeathView : View
     {
-        private void Update()
+        private Button _button;
+
+        private void Awake()
         {
-            if (Input.anyKey)
-            {
-                ViewManager.HideView<DeathView>();
-                GameManager.EndSession();
-            }
+            _button = GetComponent<Button>();
+
+            _button.onClick.AddListener(()=> GameManager.EndSession(true));
         }
     }
 }
