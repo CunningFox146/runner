@@ -46,6 +46,8 @@ namespace Runner.World
 
         void Update()
         {
+            if (GameManager.Paused) return;
+
             foreach (LevelItem piece in _parts)
             {
                 piece.transform.Translate(-Vector3.forward * Time.deltaTime * GameManager.GameSpeed);

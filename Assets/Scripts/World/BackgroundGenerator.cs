@@ -33,6 +33,8 @@ namespace Runner.World
 
         protected virtual void Update()
         {
+            if (GameManager.Paused) return;
+
             if (_queue.Count > 0)
             {
                 GameObject obj = _queue.Peek();

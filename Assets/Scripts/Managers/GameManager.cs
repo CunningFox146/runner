@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using Runner.Player;
 using Runner.UI;
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Runner.Player.PlayerController;
@@ -31,19 +30,25 @@ namespace Runner.Managers
         [HideInInspector] public float maxGameSpeed;
         [HideInInspector] public float gameTime;
 
+        private bool _paused;
+
         public static float SpeedMultiplier { get; private set; }
+        public static bool Paused {
+            get => Inst._paused;
+            set => Inst._paused = value;
+        }
 
         public static void StartSession()
         {
             IsPlaying = true;
             ViewManager.HideAllViews();
             ViewManager.ShowView<PlayerHud>();
-            var player = PlayerController.Inst;
+            PlayerController player = PlayerController.Inst;
 
             CameraManager.Inst.IsFollowing = true;
 
             player.GetComponent<PlayerAnimation>().SetState((int)PlayerState.Running);
-            player.transform.DOMove(Vector3.zero, 0.5f).OnComplete(()=> PlayerController.Inst.enabled = true);
+            player.transform.DOMove(Vector3.zero, 0.5f).OnComplete(() => PlayerController.Inst.enabled = true);
         }
 
         // When player leaved end game screen
@@ -88,7 +93,7 @@ namespace Runner.Managers
 
         private void Update()
         {
-            if (!IsPlaying) return;
+            if (!IsPlaying || Paused) return;
 
             gameTime += Time.deltaTime;
             GameSpeed = _gameSpeedCurve.Evaluate(gameTime);
