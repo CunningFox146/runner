@@ -384,7 +384,7 @@ namespace Runner.Player
 
             if (!_isGrounded)
             {
-                CameraManager.Inst.isFollowing = false;
+                CameraManager.Inst.IsFollowing = false;
                 Vector3 dir = (Camera.main.transform.position - transform.position).normalized;
                 _rb.constraints = RigidbodyConstraints.None;
                 _rb.AddForce(dir * 15f, ForceMode.VelocityChange);

@@ -38,6 +38,8 @@ namespace Runner.Managers
             ViewManager.ShowView<PlayerHud>();
             var player = PlayerController.Inst;
 
+            CameraManager.Inst.IsFollowing = true;
+
             player.GetComponent<PlayerAnimation>().SetState((int)PlayerState.Running);
             player.transform.DOMove(Vector3.zero, 0.5f).OnComplete(()=> PlayerController.Inst.enabled = true);
         }
