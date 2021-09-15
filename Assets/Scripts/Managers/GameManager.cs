@@ -1,8 +1,10 @@
-﻿using Runner.Player;
+﻿using DG.Tweening;
+using Runner.Player;
 using Runner.UI;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Runner.Player.PlayerController;
 
 namespace Runner.Managers
 {
@@ -32,9 +34,12 @@ namespace Runner.Managers
         public static void StartSession()
         {
             IsPlaying = true;
-            PlayerController.Inst.enabled = true;
             ViewManager.HideAllViews();
             ViewManager.ShowView<PlayerHud>();
+            var player = PlayerController.Inst;
+
+            player.GetComponent<PlayerAnimation>().SetState((int)PlayerState.Running);
+            player.transform.DOMove(Vector3.zero, 0.5f).OnComplete(()=> PlayerController.Inst.enabled = true);
         }
 
         // When player leaved end game screen

@@ -42,12 +42,14 @@ namespace Runner.World
                 {
                     Vector3 pos = new Vector3(-tileSize + tileSize * (float)x, 0f, pointStart.position.z + tileSize * 0.5f + tileSize * (float)z);
                     LevelTemplate template = _pattern[x][z] ? oldLevel : newLevel;
-                    GameObject prefab = template.tilePrefab;
-                    GameObject block = Instantiate(prefab, transform);
-                    block.transform.position = pos;
-                    if (template.decorPrefab != null && RandomUtil.Bool(template.decorChance))
+                    if (template.tilePrefab != null)
                     {
-                        BlockDecor.Decorate(block.transform, template.decorPrefab, template.spacing * LevelGenerator.TileSize * 0.5f);
+                        GameObject block = Instantiate(template.tilePrefab, transform);
+                        block.transform.position = pos;
+                        if (template.decorPrefab != null && RandomUtil.Bool(template.decorChance))
+                        {
+                            BlockDecor.Decorate(block.transform, template.decorPrefab, template.spacing * LevelGenerator.TileSize * 0.5f);
+                        }
                     }
                 }
             }
