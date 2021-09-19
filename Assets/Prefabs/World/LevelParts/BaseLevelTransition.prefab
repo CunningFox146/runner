@@ -77,6 +77,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointStart: {fileID: 4957342327410240350}
   pointEnd: {fileID: 1120424982915896616}
+  _isGeneratingTiles: 1
 --- !u!1 &6769227425101255727
 GameObject:
   m_ObjectHideFlags: 0
