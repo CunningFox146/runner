@@ -17,6 +17,14 @@ namespace Runner.Interactable
                 .SetLoops(-1);
         }
 
+        void OnDestroy()
+        {
+            if (_tween != null)
+            {
+                _tween.Kill();
+            }
+        }
+
         public void OnInteractStart(GameObject player)
         {
             _tween.Kill();

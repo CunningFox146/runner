@@ -52,6 +52,13 @@ namespace Runner.Managers
             LevelGenerator.OnTemplateChanged += OnTemplateChangedHandler;
         }
 
+        void OnDestroy()
+        {
+            if (_uiModeTween != null)
+            {
+                _uiModeTween.Kill();
+            }
+        }
 
         private void OnTemplateChangedHandler(LevelTemplate oldTemplate, LevelTemplate newTemplate)
         {

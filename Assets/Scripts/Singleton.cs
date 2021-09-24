@@ -1,4 +1,4 @@
-using UnityEngine;
+ using UnityEngine;
 
 namespace Runner
 {
@@ -10,7 +10,8 @@ namespace Runner
         {
             if (Inst != null)
             {
-                Debug.LogWarning($"Tried to create new instance of singleton {typeof(T)}");
+                Debug.Log($"Tried to create new instance of singleton {typeof(T)}");
+                Destroy(gameObject);
                 return;
             }
             Inst = this as T;

@@ -16,7 +16,7 @@ namespace Runner.Managers
 
         public static float CurrentScore = 0f;
 
-        public static float MaxScore = 0f;
+        public static int HighScore = 0;
         public static int CurrentCoins = 0;
         public static int Balance = 0;
         public static float ScoreMult = 1f;
@@ -51,10 +51,16 @@ namespace Runner.Managers
             player.transform.DOMove(Vector3.zero, 0.5f).OnComplete(() => PlayerController.Inst.enabled = true);
         }
 
-        // When player leaved end game screen
+        // When player left end game screen
         public static void EndSession(bool restart = false)
         {
-            //TODO: Save data
+            var save = SaveManager.CurrentSave;
+
+            save.coins = Balance + CurrentCoins;
+            save.highScore = HighScore;
+
+            SaveManager.SaveCurrent();
+
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             RestartGameplay = restart;
         }
@@ -66,6 +72,12 @@ namespace Runner.Managers
             ViewManager.ShowView<DeathView>();
             IsPlaying = false;
             GameSpeed = 0f;
+
+            int score = (int)CurrentScore;
+            if (score > SaveManager.CurrentSave.highScore)
+            {
+                HighScore = score;
+            }
         }
 
         public static void AddCoins(int coins = 1)
@@ -76,6 +88,16 @@ namespace Runner.Managers
         protected override void Awake()
         {
             base.Awake();
+
+            DOTween.SetTweensCapacity(500, 50);
+
+            SaveManager.LoadSave();
+            var save = SaveManager.CurrentSave;
+            Debug.Log(save);
+            HighScore = save.highScore;
+            Balance = save.coins;
+            CurrentCoins = 0;
+            CurrentScore = 0;
 
             maxGameSpeed = _gameSpeedCurve[_gameSpeedCurve.length - 1].value;
 
