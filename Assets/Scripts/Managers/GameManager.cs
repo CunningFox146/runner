@@ -51,6 +51,7 @@ namespace Runner.Managers
                 BalanceChanged?.Invoke(Coins);
             }
         }
+        public static string SelectedItem => SaveManager.CurrentSave.selectedItem;
 
         public static void StartSession()
         {
@@ -65,8 +66,8 @@ namespace Runner.Managers
             player.transform.DOMove(Vector3.zero, 0.5f).OnComplete(() => PlayerController.Inst.enabled = true);
         }
 
-        // When player left end game screen
-        public static void EndSession(bool restart = false)
+        //Called at the end of the game and when buying/selecting something
+        public static void Save()
         {
             var save = SaveManager.CurrentSave;
 
@@ -74,6 +75,12 @@ namespace Runner.Managers
             save.highScore = HighScore;
 
             SaveManager.SaveCurrent();
+        }
+
+        // When player left end game screen
+        public static void EndSession(bool restart = false)
+        {
+            Save();
 
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             RestartGameplay = restart;
@@ -107,9 +114,19 @@ namespace Runner.Managers
             }
 
             Balance -= info.price;
+            SaveManager.CurrentSave.boughtItems.Add(info.itemName);
+            Save();
 
             return true;
         }
+
+        public static void SelectItem(ShopItemInfo info)
+        {
+            SaveManager.CurrentSave.selectedItem = info.itemName;
+            Save();
+        }
+
+        public static bool IsItemBought(string name) => SaveManager.CurrentSave.boughtItems.Contains(name);
 
         protected override void Awake()
         {
@@ -121,7 +138,7 @@ namespace Runner.Managers
             var save = SaveManager.CurrentSave;
             Debug.Log(save);
             HighScore = save.highScore;
-            Balance = save.coins;
+            Balance = 20;//save.coins;
             CurrentCoins = 0;
             CurrentScore = 0;
 

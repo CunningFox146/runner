@@ -14,10 +14,9 @@ namespace Runner.UI
         [SerializeField] private Image _pickedIcon;
         [SerializeField] private Transform _itemContainer;
 
-        public GameObject skinPrefab;
+        public ShopItemInfo info;
 
         private ShopGrid _shop;
-        private ShopItemInfo _info;
         private Button _button;
         private ItemStatus _status;
         public ItemStatus Status
@@ -49,12 +48,11 @@ namespace Runner.UI
             UpdateStatus();
         }
 
-        public void Init(ShopItemInfo info, ShopGrid shop)
+        public void Init(ShopItemInfo itemInfo, ShopGrid shop)
         {
             _shop = shop;
 
-            _info = info;
-            skinPrefab = info.skinPrefab;
+            info = itemInfo;
 
             _name.text = info.name;
             _priceText.text = info.price.ToString();
@@ -91,7 +89,7 @@ namespace Runner.UI
                     break;
 
                 case ItemStatus.Unlocked:
-                    SelectItem();
+                    _shop.SelectItem(this);
                     break;
 
                 default: break;
@@ -100,14 +98,22 @@ namespace Runner.UI
 
         private void BuyItem()
         {
-            if (GameManager.BuyShopItem(_info))
+            if (GameManager.BuyShopItem(info))
+            {
+                SetBought();
+            }
+        }
+
+        public void SetBought()
+        {
+            if (Status == ItemStatus.Locked)
             {
                 Status = ItemStatus.Unlocked;
             }
         }
-        private void SelectItem()
+
+        public void SelectItem()
         {
-            _shop.SelectItem(this);
             Status = ItemStatus.Picked;
         }
 

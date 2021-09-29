@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Runner.Shop;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -42,7 +43,6 @@ namespace Runner.Managers
             }
 
             CurrentSave = data ?? new GameSave();
-            Debug.LogWarning($"{data}; {data.highScore}");
 
             Debug.Log($"[SaveManager]: Loadded save: {CurrentSave.ToString()}; From: {FilePath}");
         }
@@ -73,7 +73,9 @@ namespace Runner.Managers
     {
         public int coins = 0;
         public int highScore = 0;
-        public List<string> upgrades = new List<string>();
-        public List<string> shopItems = new List<string>();
+
+        // Strings are names, so they have to be unique
+        public List<string> boughtItems = new List<string>();
+        public string selectedItem;
     }
 }
