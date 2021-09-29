@@ -1,4 +1,5 @@
 ﻿using Runner.Shop;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,15 +8,14 @@ namespace Runner.UI
     public class ShopItem : MonoBehaviour
     {
         [SerializeField] private Text _name;
-        [SerializeField] private Text _price;
-        [SerializeField] private Image _icon;
+        [SerializeField] private Text _priceText;
+        [SerializeField] private GameObject _price;
+        [SerializeField] private Image _pickedIcon;
         [SerializeField] private Transform _itemContainer;
-        [Space]
-        [SerializeField] private Sprite _lockSprite;
-        [SerializeField] private Sprite _pickedSprite;
 
         public GameObject skinPrefab;
 
+        private Button _button;
         private ItemStatus _status;
         public ItemStatus Status
         {
@@ -34,6 +34,13 @@ namespace Runner.UI
             Picked,
         }
 
+        private void Awake()
+        {
+            _button = GetComponent<Button>();
+
+            _button.onClick.AddListener(OnClick);
+        }
+
         private void Start()
         {
             UpdateStatus();
@@ -44,7 +51,7 @@ namespace Runner.UI
             skinPrefab = info.skinPrefab;
 
             _name.text = info.name;
-            _price.text = info.price.ToString();
+            _priceText.text = info.price.ToString();
             Instantiate(info.previewPrefab, _itemContainer);
         }
 
@@ -53,19 +60,45 @@ namespace Runner.UI
             switch (_status)
             {
                 case ItemStatus.Locked:
-                    _icon.gameObject.SetActive(true);
-                    _icon.sprite = _lockSprite;
+                    _pickedIcon.gameObject.SetActive(false);
+                    _price.SetActive(true);
                     break;
 
                 case ItemStatus.Unlocked:
-                    _icon.gameObject.SetActive(false);
+                    _pickedIcon.gameObject.SetActive(false);
+                    _price.SetActive(false);
                     break;
 
                 case ItemStatus.Picked:
-                    _icon.gameObject.SetActive(true);
-                    _icon.sprite = _pickedSprite;
+                    _pickedIcon.gameObject.SetActive(true);
+                    _price.SetActive(false);
                     break;
             }
+        }
+
+        private void OnClick()
+        {
+            switch (_status)
+            {
+                case ItemStatus.Locked:
+                    BuyItem();
+                    break;
+
+                case ItemStatus.Unlocked:
+                    PickItem();
+                    break;
+
+                default: break;
+            }
+        }
+
+        private void BuyItem()
+        {
+            Status = ItemStatus.Unlocked;
+        }
+        private void PickItem()
+        {
+            Status = ItemStatus.Picked;
         }
     }
 }
