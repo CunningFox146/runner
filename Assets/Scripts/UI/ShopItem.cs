@@ -1,4 +1,5 @@
-﻿using Runner.Shop;
+﻿using Runner.Managers;
+using Runner.Shop;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,8 @@ namespace Runner.UI
 
         public GameObject skinPrefab;
 
+        private ShopGrid _shop;
+        private ShopItemInfo _info;
         private Button _button;
         private ItemStatus _status;
         public ItemStatus Status
@@ -46,8 +49,11 @@ namespace Runner.UI
             UpdateStatus();
         }
 
-        public void Init(ShopItemInfo info)
+        public void Init(ShopItemInfo info, ShopGrid shop)
         {
+            _shop = shop;
+
+            _info = info;
             skinPrefab = info.skinPrefab;
 
             _name.text = info.name;
@@ -94,7 +100,10 @@ namespace Runner.UI
 
         private void BuyItem()
         {
-            Status = ItemStatus.Unlocked;
+            if (GameManager.BuyShopItem(_info))
+            {
+                Status = ItemStatus.Unlocked;
+            }
         }
         private void PickItem()
         {

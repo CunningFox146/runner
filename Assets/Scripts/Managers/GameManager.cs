@@ -1,6 +1,8 @@
 ﻿using DG.Tweening;
 using Runner.Player;
+using Runner.Shop;
 using Runner.UI;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Runner.Player.PlayerController;
@@ -18,12 +20,14 @@ namespace Runner.Managers
 
         public static int HighScore = 0;
         public static int CurrentCoins = 0;
-        public static int Balance = 0;
         public static float ScoreMult = 1f;
 
         public static bool IsPlaying = false;
 
         private static bool RestartGameplay = false;
+        private static int Coins = 0;
+
+        public static event Action<int> BalanceChanged;
 
         [SerializeField] private AnimationCurve _gameSpeedCurve;
 
@@ -36,6 +40,16 @@ namespace Runner.Managers
         public static bool Paused {
             get => Inst._paused;
             set => Inst._paused = value;
+        }
+
+        public static int Balance
+        {
+            get => Coins;
+            set
+            {
+                Coins = value;
+                BalanceChanged?.Invoke(Coins);
+            }
         }
 
         public static void StartSession()
@@ -83,6 +97,18 @@ namespace Runner.Managers
         public static void AddCoins(int coins = 1)
         {
             CurrentCoins += coins;
+        }
+
+        public static bool BuyShopItem(ShopItemInfo info)
+        {
+            if (Balance < info.price)
+            {
+                return false;
+            }
+
+            Balance -= info.price;
+
+            return true;
         }
 
         protected override void Awake()

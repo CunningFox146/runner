@@ -7,7 +7,7 @@ namespace Runner.Shop
     public class ShopItemInfo : ScriptableObject
     {
         public string itemName;
-        public uint price;
+        public int price;
         public GameObject previewPrefab;
         public GameObject skinPrefab;
     }

@@ -12,9 +12,9 @@ namespace Runner.UI
 
         private void Start()
         {
-            for (uint i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
-                Instantiate(_itemPrefab, transform).GetComponent<ShopItem>().Init(_itemsInfo[0]);
+                Instantiate(_itemPrefab, transform).GetComponent<ShopItem>().Init(_itemsInfo[0], this);
             }
         }
     }
