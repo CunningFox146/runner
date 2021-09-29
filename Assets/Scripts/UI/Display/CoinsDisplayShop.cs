@@ -27,7 +27,6 @@ namespace Runner.UI.Display
         }
         private void BalanceChangedHandler(int balance, bool isNotAnimating = false)
         {
-            //isNotAnimating = true;
             if (isNotAnimating)
             {
                 _text.text = balance.ToString();
@@ -37,7 +36,8 @@ namespace Runner.UI.Display
                 int current = _lastBalance;
                 DOTween.To(
                     () => current,
-                    (val) => {
+                    (val) =>
+                    {
                         current = val;
                         _text.text = current.ToString();
                     },

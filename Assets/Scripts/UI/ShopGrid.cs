@@ -1,5 +1,4 @@
 using Runner.Shop;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,12 +9,28 @@ namespace Runner.UI
         [SerializeField] private GameObject _itemPrefab;
         [SerializeField] private List<ShopItemInfo> _itemsInfo;
 
+        private List<ShopItem> _shopItems;
+        private ShopItem _selectedItem;
+
+        private void Awake()
+        {
+            _shopItems = new List<ShopItem>();
+        }
+
         private void Start()
         {
             for (int i = 0; i < 10; i++)
             {
-                Instantiate(_itemPrefab, transform).GetComponent<ShopItem>().Init(_itemsInfo[0], this);
+                ShopItem item = Instantiate(_itemPrefab, transform).GetComponent<ShopItem>();
+                item.Init(_itemsInfo[0], this);
+                _shopItems.Add(item);
             }
+        }
+
+        public void SelectItem(ShopItem item)
+        {
+            _selectedItem?.DeselectItem();
+            _selectedItem = item;
         }
     }
 }

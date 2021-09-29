@@ -91,7 +91,7 @@ namespace Runner.UI
                     break;
 
                 case ItemStatus.Unlocked:
-                    PickItem();
+                    SelectItem();
                     break;
 
                 default: break;
@@ -105,9 +105,15 @@ namespace Runner.UI
                 Status = ItemStatus.Unlocked;
             }
         }
-        private void PickItem()
+        private void SelectItem()
         {
+            _shop.SelectItem(this);
             Status = ItemStatus.Picked;
+        }
+
+        public void DeselectItem()
+        {
+            Status = ItemStatus.Unlocked;
         }
     }
 }
