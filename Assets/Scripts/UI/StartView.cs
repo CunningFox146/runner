@@ -1,5 +1,4 @@
 ﻿using Runner.Managers;
-using UnityEngine;
 
 namespace Runner.UI
 {

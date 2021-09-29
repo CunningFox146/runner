@@ -149,7 +149,7 @@ namespace Runner.Managers
             var save = SaveManager.CurrentSave;
             Debug.Log(save);
             HighScore = save.highScore;
-            Balance = 20;//save.coins;
+            Balance = save.coins;
             CurrentCoins = 0;
             CurrentScore = 0;
 
@@ -165,6 +165,15 @@ namespace Runner.Managers
                 StartSession();
             }
             RestartGameplay = false;
+
+            // Auto-add to bought items that cost 0
+            foreach (var item in _shopItems.items)
+            {
+                if (item.price <= 0)
+                {
+                    BuyShopItem(item);
+                }
+            }
         }
 
         private void Update()
