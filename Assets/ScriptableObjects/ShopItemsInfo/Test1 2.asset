@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Test2
   price: 10
-  previewPrefab: {fileID: 8221651541792901735, guid: b9319ba79a90b5f4b9328bcedc671618, type: 3}
-  skinPrefab: {fileID: 1948535115976630, guid: f7902c99c75cad34f934860c6b6ddd9e, type: 3}
+  previewPrefab: {fileID: 6159579771791768945, guid: bcfc19e2d01ae9246ba35c95639efa93, type: 3}
+  skinPrefab: {fileID: 6159579771791768945, guid: ade423b7a0335674a91e9c0920f4a1e9, type: 3}
