@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Runner.ExtentionClasses;
 
 namespace Runner.UI
 {
@@ -14,6 +15,7 @@ namespace Runner.UI
         [SerializeField] private Vector3 _startRotation;
 
         private Transform _model;
+        private Sequence _changeSequence;
 
         public void ChangeSkin(GameObject newModel)
         {
@@ -22,7 +24,8 @@ namespace Runner.UI
                 Destroy(_model.gameObject);
             }
             _model = Instantiate(newModel, transform).transform;
-            _model.gameObject.layer = (int)Layers.UI;
+
+            _model.SetLayerRecursively((int)Layers.UI);
 
             Destroy(_model.GetComponent<Animator>());
 
@@ -30,8 +33,15 @@ namespace Runner.UI
             _model.localScale = Vector3.zero;
             _model.rotation = new Quaternion();
 
+            if (_changeSequence != null)
+            {
+                _changeSequence.Kill();
+                _changeSequence = null;
+            }
+
             float duration = 0.5f;
-            DOTween.Sequence()
+
+            _changeSequence = DOTween.Sequence()
             .Append(_model.DOScale(_startScale, duration).SetEase(Ease.OutCubic))
             .Join(_model.DORotate(_startRotation, duration).SetEase(Ease.OutCubic));
         }

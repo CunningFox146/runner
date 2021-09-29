@@ -20,7 +20,7 @@ namespace Runner.Player
 
         private void Start()
         {
-            GameManager.SelectedItemChanged += UpdateSkin;
+            GameManager.Inst.SelectedItemChanged += UpdateSkin;
             UpdateSkin(GameManager.GetSelectedItem());
         }
 

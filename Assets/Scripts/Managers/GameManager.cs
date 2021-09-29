@@ -27,8 +27,8 @@ namespace Runner.Managers
         private static bool RestartGameplay = false;
         private static int Coins = 0;
 
-        public static event Action<int> BalanceChanged;
-        public static event Action<string> SelectedItemChanged;
+        public event Action<int> BalanceChanged;
+        public event Action<string> SelectedItemChanged;
 
         [SerializeField] private ShopItems _shopItems;
         [SerializeField] private AnimationCurve _gameSpeedCurve;
@@ -50,7 +50,7 @@ namespace Runner.Managers
             set
             {
                 Coins = value;
-                BalanceChanged?.Invoke(Coins);
+                Inst.BalanceChanged?.Invoke(Coins);
             }
         }
         public static string GetSelectedItem()
@@ -133,7 +133,7 @@ namespace Runner.Managers
         public static void SelectItem(ShopItemInfo info)
         {
             SaveManager.CurrentSave.selectedItem = info.itemName;
-            SelectedItemChanged?.Invoke(info.itemName);
+            Inst.SelectedItemChanged?.Invoke(info.itemName);
             Save();
         }
 
@@ -176,5 +176,6 @@ namespace Runner.Managers
 
             CurrentScore += gameTime * GameSpeed * ScoreMult * BaseScoreMult;
         }
+
     }
 }

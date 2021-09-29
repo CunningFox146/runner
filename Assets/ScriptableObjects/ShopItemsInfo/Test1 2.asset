@@ -15,4 +15,4 @@ MonoBehaviour:
   itemName: Test2
   price: 10
   previewPrefab: {fileID: 6159579771791768945, guid: bcfc19e2d01ae9246ba35c95639efa93, type: 3}
-  skinPrefab: {fileID: 6159579771791768945, guid: ade423b7a0335674a91e9c0920f4a1e9, type: 3}
+  skinPrefab: {fileID: 3331659047174518106, guid: 2d8e5a6fb8bfbd1498e95f61ee9e7325, type: 3}

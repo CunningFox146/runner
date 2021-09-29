@@ -17,7 +17,7 @@ namespace Runner.UI.Display
 
         private void Start()
         {
-            GameManager.BalanceChanged += BalanceChangedHandler;
+            GameManager.Inst.BalanceChanged += BalanceChangedHandler;
             BalanceChangedHandler(GameManager.Balance, true);
         }
 
