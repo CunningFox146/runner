@@ -10,7 +10,6 @@ namespace Runner.Shop
         public string itemName;
 
         public int price;
-        public GameObject previewPrefab;
         public GameObject skinPrefab;
     }
 }

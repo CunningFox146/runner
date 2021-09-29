@@ -1,4 +1,5 @@
-﻿using Runner.Managers;
+﻿using Runner.ExtentionClasses;
+using Runner.Managers;
 using Runner.Shop;
 using System;
 using UnityEngine;
@@ -56,7 +57,12 @@ namespace Runner.UI
 
             _name.text = info.name;
             _priceText.text = info.price.ToString();
-            Instantiate(info.previewPrefab, _itemContainer);
+            var preview = Instantiate(info.skinPrefab, _itemContainer);
+            preview.transform.localScale = Vector3.one * 135f;
+            preview.transform.localPosition = new Vector3(0, -150f, -150f);
+            preview.transform.eulerAngles = new Vector3(0, 180f, 0f);
+            preview.transform.SetLayerRecursively((int)Layers.UI);
+            Destroy(preview.GetComponent<Animator>());
         }
 
         private void UpdateStatus()
