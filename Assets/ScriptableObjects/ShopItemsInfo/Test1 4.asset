@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf9750969e71024a9e2ce92e85a5ef4, type: 3}
   m_Name: Test1 4
   m_EditorClassIdentifier: 
-  itemName: Test
+  itemName: Test4
   price: 10
   previewPrefab: {fileID: 8221651541792901735, guid: b9319ba79a90b5f4b9328bcedc671618, type: 3}
   skinPrefab: {fileID: 1948535115976630, guid: f7902c99c75cad34f934860c6b6ddd9e, type: 3}

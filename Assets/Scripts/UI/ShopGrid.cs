@@ -8,7 +8,7 @@ namespace Runner.UI
     public class ShopGrid : MonoBehaviour
     {
         [SerializeField] private GameObject _itemPrefab;
-        [SerializeField] private List<ShopItemInfo> _itemsInfo;
+        [SerializeField] private ShopItems _items;
 
         private List<ShopItem> _shopItems;
         private ShopItem _selectedItem;
@@ -20,7 +20,7 @@ namespace Runner.UI
 
         private void Start()
         {
-            foreach (ShopItemInfo info in _itemsInfo) 
+            foreach (ShopItemInfo info in _items.items)
             {
                 ShopItem item = Instantiate(_itemPrefab, transform).GetComponent<ShopItem>();
                 item.Init(info, this);

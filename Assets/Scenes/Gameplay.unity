@@ -4013,11 +4013,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemPrefab: {fileID: 9021737289847409058, guid: a679a93c3cfad28438990f6d3677e46e, type: 3}
-  _itemsInfo:
-  - {fileID: 11400000, guid: c99eadea550e561438b04eec390cf4be, type: 2}
-  - {fileID: 11400000, guid: aaccb68d6b2e21545a21564c7b48c9ce, type: 2}
-  - {fileID: 11400000, guid: bc4f19670127bbf4fb9802b72f9bdd19, type: 2}
-  - {fileID: 11400000, guid: e3207fad05c15774fa015fa37762bdf0, type: 2}
+  _items: {fileID: 11400000, guid: 9eb48179e225faf4c8bb431e876511ad, type: 2}
 --- !u!1 &1777598419
 GameObject:
   m_ObjectHideFlags: 0
