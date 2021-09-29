@@ -9,37 +9,31 @@ namespace Runner.UI
 {
     public class SkinDisplay : MonoBehaviour
     {
-        [SerializeField] private Transform _model;
+        [SerializeField] private Vector3 _startPos;
+        [SerializeField] private Vector3 _startScale;
+        [SerializeField] private Vector3 _startRotation;
 
-        private Sequence _changeSequence;
-        private Vector3 _startScale;
-        private Vector3 _startRotation;
+        private Transform _model;
 
-        void Awake()
+        public void ChangeSkin(GameObject newModel)
         {
-            _startScale = _model.localScale;
-            _startRotation = _model.rotation.eulerAngles;
+            if (_model != null)
+            {
+                Destroy(_model.gameObject);
+            }
+            _model = Instantiate(newModel, transform).transform;
+            _model.gameObject.layer = (int)Layers.UI;
 
-            float duration = 0.5f;
+            Destroy(_model.GetComponent<Animator>());
 
-            _changeSequence = DOTween.Sequence()
-            .Append(_model.DOScale(_startScale, duration).SetEase(Ease.OutCubic))
-            .Join(_model.DORotate(_startRotation, duration).SetEase(Ease.OutCubic))
-            .Pause();
-        }
-
-        private void Start()
-        {
-            ChangeSkin();
-        }
-
-        public void ChangeSkin()
-        {
+            _model.localPosition = _startPos;
             _model.localScale = Vector3.zero;
             _model.rotation = new Quaternion();
 
-            _changeSequence.Restart();
-            _changeSequence.Play();
+            float duration = 0.5f;
+            DOTween.Sequence()
+            .Append(_model.DOScale(_startScale, duration).SetEase(Ease.OutCubic))
+            .Join(_model.DORotate(_startRotation, duration).SetEase(Ease.OutCubic));
         }
     }
 }

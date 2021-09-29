@@ -9,6 +9,7 @@ namespace Runner.UI
     {
         [SerializeField] private GameObject _itemPrefab;
         [SerializeField] private ShopItems _items;
+        [SerializeField] private SkinDisplay _skinDisplay;
 
         private List<ShopItem> _shopItems;
         private ShopItem _selectedItem;
@@ -45,6 +46,8 @@ namespace Runner.UI
             _selectedItem.SelectItem();
 
             GameManager.SelectItem(item.info);
+
+            _skinDisplay.ChangeSkin(item.info.skinPrefab);
         }
     }
 }

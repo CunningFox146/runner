@@ -28,6 +28,7 @@ namespace Runner.Managers
         private static int Coins = 0;
 
         public static event Action<int> BalanceChanged;
+        public static event Action<string> SelectedItemChanged;
 
         [SerializeField] private ShopItems _shopItems;
         [SerializeField] private AnimationCurve _gameSpeedCurve;
@@ -132,6 +133,7 @@ namespace Runner.Managers
         public static void SelectItem(ShopItemInfo info)
         {
             SaveManager.CurrentSave.selectedItem = info.itemName;
+            SelectedItemChanged?.Invoke(info.itemName);
             Save();
         }
 

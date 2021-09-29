@@ -1,5 +1,6 @@
 using Runner.Managers;
 using Runner.Shop;
+using System;
 using UnityEngine;
 
 namespace Runner.Player
@@ -19,7 +20,17 @@ namespace Runner.Player
 
         private void Start()
         {
-            var skin = _shopItems.GetItem(GameManager.GetSelectedItem()).skinPrefab;
+            GameManager.SelectedItemChanged += UpdateSkin;
+            UpdateSkin(GameManager.GetSelectedItem());
+        }
+
+        private void UpdateSkin(string infoName)
+        {
+            if (_animator != null)
+            {
+                Destroy(_animator.gameObject);
+            }
+            var skin = _shopItems.GetItem(infoName).skinPrefab;
             _animator = Instantiate(skin, transform).GetComponent<Animator>();
         }
 
