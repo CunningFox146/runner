@@ -29,6 +29,7 @@ namespace Runner.Managers
 
         public static event Action<int> BalanceChanged;
 
+        [SerializeField] private ShopItems _shopItems;
         [SerializeField] private AnimationCurve _gameSpeedCurve;
 
         [HideInInspector] public float maxGameSpeed;
@@ -51,7 +52,15 @@ namespace Runner.Managers
                 BalanceChanged?.Invoke(Coins);
             }
         }
-        public static string SelectedItem => SaveManager.CurrentSave.selectedItem;
+        public static string GetSelectedItem()
+        {
+            var save = SaveManager.CurrentSave;
+            if (save != null && !string.IsNullOrEmpty(save.selectedItem))
+            {
+                return SaveManager.CurrentSave.selectedItem;
+            }
+            return Inst._shopItems.defaultSelectedItem.itemName;
+        }
 
         public static void StartSession()
         {

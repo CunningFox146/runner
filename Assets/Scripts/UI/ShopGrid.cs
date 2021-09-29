@@ -30,7 +30,7 @@ namespace Runner.UI
                     item.SetBought();
                 }
 
-                if (info.itemName == GameManager.SelectedItem)
+                if (info.itemName == GameManager.GetSelectedItem())
                 {
                     SelectItem(item);
                 }

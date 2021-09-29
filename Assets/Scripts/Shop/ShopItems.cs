@@ -8,6 +8,7 @@ namespace Runner.Shop
     public class ShopItems : ScriptableObject
     {
         public List<ShopItemInfo> items;
+        public ShopItemInfo defaultSelectedItem;
 
         public ShopItemInfo GetItem(string name) => items.Find((item)=>item.itemName == name);
     }
