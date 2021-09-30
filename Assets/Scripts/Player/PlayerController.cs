@@ -1,4 +1,5 @@
 using Runner.Managers;
+using Runner.SoundSystem;
 using Runner.UI;
 using System.Collections;
 using UnityEngine;
@@ -73,6 +74,8 @@ namespace Runner.Player
             _groundPos = CheckGround();
 
             State = PlayerState.Running;
+
+            
         }
 
         void Update()
@@ -86,6 +89,8 @@ namespace Runner.Player
 
             UpdateInput();
             UpdatePosition();
+
+            GetComponent<SoundsEmitter>().Play("Test");
         }
 
         void FixedUpdate()

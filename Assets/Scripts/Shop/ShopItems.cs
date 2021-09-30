@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Runner.Shop
 {
-    [CreateAssetMenu(fileName = "ShopItems", menuName = "Scriptable Objects/ShopItems", order = 4)]
+    [CreateAssetMenu(fileName = "ShopItems", menuName = "Scriptable Objects/ShopItems")]
     public class ShopItems : ScriptableObject
     {
         public List<ShopItemInfo> items;

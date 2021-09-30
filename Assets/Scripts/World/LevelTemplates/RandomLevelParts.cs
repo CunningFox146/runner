@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Runner.World.LevelTemplates
 {
-    [CreateAssetMenu(fileName = "Parts", menuName = "Scriptable Objects/LevelParts", order = 2)]
+    [CreateAssetMenu(fileName = "Parts", menuName = "Scriptable Objects/LevelParts")]
     public class RandomLevelParts : LevelPartsOrder
     {
         public GameObject[] parts;
