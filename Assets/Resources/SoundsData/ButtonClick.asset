@@ -20,6 +20,6 @@ MonoBehaviour:
   pitch:
   - 0.9
   - 1.1
-  mixerGroup: {fileID: 0}
+  mixerGroup: {fileID: -5370948032776825701, guid: ca0ce639cf13bde49afe719a170d17bb, type: 2}
   minDistance: 1
   maxDistance: 30

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Runner.ExtentionClasses;
+using Runner.Managers;
 
 namespace Runner.UI
 {
@@ -19,6 +20,8 @@ namespace Runner.UI
 
         public void ChangeSkin(GameObject newModel)
         {
+            CameraManager.Inst.PlaySound("SkinSelected");
+
             if (_model != null)
             {
                 Destroy(_model.gameObject);

@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed5918c62ba97f044b8502127cec8907, type: 3}
-  m_Name: FireLP
+  m_Name: Land
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: fdd951082eb9ee34290397d77206a91f, type: 3}
+  - {fileID: 8300000, guid: 29a00b4e948e6324ca5edae738731aa5, type: 3}
   soundType: 1
-  looping: 1
+  looping: 0
   volume: 1
   pitch:
-  - 1
+  - 0.9
+  - 1.1
   mixerGroup: {fileID: -5370948032776825701, guid: ca0ce639cf13bde49afe719a170d17bb, type: 2}
   minDistance: 1
   maxDistance: 10

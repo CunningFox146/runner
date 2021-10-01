@@ -106,6 +106,7 @@ namespace Runner.UI
         {
             if (GameManager.BuyShopItem(info))
             {
+                CameraManager.Inst.PlaySound("ItemBought");
                 SetBought();
             }
         }
