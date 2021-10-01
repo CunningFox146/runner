@@ -1829,6 +1829,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541987118}
   m_CullTransparentMesh: 1
+--- !u!1 &611609727 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8637552015608192779, guid: 3170a881e7094cc4193abcdaff002ef4, type: 3}
+  m_PrefabInstance: {fileID: 794162782}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &611609728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611609727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cec486e394d422499e8b237105ef4bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundEmitterPrefab: {fileID: 452834399510071389, guid: b6fcedada8ae1dd479a033d4a36d3d27, type: 3}
+  _soundOnAwake: FireLP
 --- !u!1 &674074641
 GameObject:
   m_ObjectHideFlags: 0
@@ -4416,6 +4435,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _soundEmitterPrefab: {fileID: 452834399510071389, guid: b6fcedada8ae1dd479a033d4a36d3d27, type: 3}
+  _soundOnAwake: 
 --- !u!1 &1851007934
 GameObject:
   m_ObjectHideFlags: 0

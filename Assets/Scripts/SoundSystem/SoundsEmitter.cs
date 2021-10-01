@@ -9,11 +9,21 @@ namespace Runner.SoundSystem
     public class SoundsEmitter : MonoBehaviour
     {
         [SerializeField] private GameObject _soundEmitterPrefab;
+        [SerializeField] private string _soundOnAwake;
+
         private Dictionary<string, AudioSource> _playing;
 
         void Awake()
         {
             _playing = new Dictionary<string, AudioSource>();
+        }
+
+        private void Start()
+        {
+            if (!string.IsNullOrEmpty(_soundOnAwake))
+            {
+                Play(_soundOnAwake);
+            }
         }
 
         public AudioSource Play(string path, string soundName = null, float delay = 0f)
