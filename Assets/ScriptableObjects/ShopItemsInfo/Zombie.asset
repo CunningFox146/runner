@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Zombie
   m_EditorClassIdentifier: 
   itemName: Zombie
-  price: 300
+  price: 1
   skinPrefab: {fileID: 8906410483807535955, guid: 3db2aaf19b76d0a498a4f653365f7482, type: 3}
