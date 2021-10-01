@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cf9750969e71024a9e2ce92e85a5ef4, type: 3}
-  m_Name: Test1 2
+  m_Name: Girl
   m_EditorClassIdentifier: 
-  itemName: Test2
-  price: 10
-  previewPrefab: {fileID: 6159579771791768945, guid: bcfc19e2d01ae9246ba35c95639efa93, type: 3}
+  itemName: Girl
+  price: 150
   skinPrefab: {fileID: 3331659047174518106, guid: 2d8e5a6fb8bfbd1498e95f61ee9e7325, type: 3}

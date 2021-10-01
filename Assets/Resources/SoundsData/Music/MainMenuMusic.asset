@@ -15,7 +15,7 @@ MonoBehaviour:
   clips:
   - {fileID: 8300000, guid: e3dda616c1829c24890612830856ae72, type: 3}
   soundType: 0
-  looping: 0
+  looping: 1
   volume: 1
   pitch:
   - 1
