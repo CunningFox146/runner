@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using Runner.Player;
 using Runner.Shop;
+using Runner.SoundSystem;
 using Runner.UI;
 using System;
 using UnityEngine;
@@ -37,6 +38,7 @@ namespace Runner.Managers
         [HideInInspector] public float gameTime;
 
         private bool _paused;
+        private SoundsEmitter _sound;
 
         public static float SpeedMultiplier { get; private set; }
         public static bool Paused {
@@ -185,6 +187,5 @@ namespace Runner.Managers
 
             CurrentScore += gameTime * GameSpeed * ScoreMult * BaseScoreMult;
         }
-
     }
 }

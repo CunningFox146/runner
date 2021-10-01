@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Runner.Player;
+using Runner.SoundSystem;
 using Runner.World;
 using Runner.World.LevelTemplates;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace Runner.Managers
         [SerializeField] private Camera _camera;
         [SerializeField] private Vector3 _offset;
         [SerializeField] private float _moveSpeed;
+        [SerializeField] private SoundsEmitter _sound;
 
         private Tween _uiModeTween;
 
@@ -46,7 +48,6 @@ namespace Runner.Managers
 
             _camera = GetComponent<Camera>();
 
-
             IsFollowing = false;
 
             LevelGenerator.OnTemplateChanged += OnTemplateChangedHandler;
@@ -79,6 +80,11 @@ namespace Runner.Managers
         {
             transform.position = Vector3.Lerp(transform.position, _offset + _player.transform.position,
                     Time.deltaTime * _moveSpeed);
+        }
+
+        public void PlaySound(string name, string soundName = null, float delay = 0f)
+        {
+            _sound.Play(name, soundName, delay);
         }
     }
 }

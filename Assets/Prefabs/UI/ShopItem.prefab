@@ -367,6 +367,7 @@ GameObject:
   - component: {fileID: 9021737289847409056}
   - component: {fileID: 2333009334657143222}
   - component: {fileID: 1041467450770924655}
+  - component: {fileID: 5179464901599396970}
   m_Layer: 5
   m_Name: ShopItem
   m_TagString: Untagged
@@ -452,7 +453,7 @@ MonoBehaviour:
   _price: {fileID: 2050910734658637214}
   _pickedIcon: {fileID: 1402571846658238563}
   _itemContainer: {fileID: 4383431911340485847}
-  skinPrefab: {fileID: 1948535115976630, guid: f7902c99c75cad34f934860c6b6ddd9e, type: 3}
+  info: {fileID: 0}
 --- !u!114 &1041467450770924655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,6 +498,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5179464901599396970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9021737289847409058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af7b30d8dd89d8f42ad12448f55b4b0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6209992054282536368
 PrefabInstance:
   m_ObjectHideFlags: 0
