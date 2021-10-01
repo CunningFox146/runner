@@ -1,11 +1,7 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using Runner.ExtentionClasses;
 using Runner.Managers;
+using UnityEngine;
 
 namespace Runner.UI
 {

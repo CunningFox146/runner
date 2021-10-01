@@ -2,7 +2,7 @@
 using Runner.Player;
 using Runner.Shop;
 using Runner.SoundSystem;
-using Runner.UI;
+using Runner.UI.Views;
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -171,7 +171,7 @@ namespace Runner.Managers
         private void Start()
         {
             CameraManager.Inst.StopSound("BgMusic");
-            Inst._currentMixer.SetFloat("MusicPitch", 1f);
+            _currentMixer.SetFloat("MusicPitch", 1f);
 
             if (RestartGameplay)
             {

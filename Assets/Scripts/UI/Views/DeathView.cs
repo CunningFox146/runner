@@ -1,8 +1,7 @@
 ﻿using Runner.Managers;
-using UnityEngine;
 using UnityEngine.UI;
 
-namespace Runner.UI
+namespace Runner.UI.Views
 {
     public class DeathView : View
     {
@@ -12,7 +11,7 @@ namespace Runner.UI
         {
             _button = GetComponent<Button>();
 
-            _button.onClick.AddListener(()=> GameManager.EndSession(true));
+            _button.onClick.AddListener(() => GameManager.EndSession(true));
         }
     }
 }

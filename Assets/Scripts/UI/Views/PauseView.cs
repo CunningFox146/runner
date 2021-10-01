@@ -3,7 +3,7 @@ using Runner.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Runner.UI
+namespace Runner.UI.Views
 {
     public class PauseView : View
     {

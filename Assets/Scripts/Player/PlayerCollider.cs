@@ -31,7 +31,7 @@ namespace Runner.Player
         {
             if (collider.CompareTag("Evaluation") ||
                 (collider.gameObject.layer == (int)Layers.Walkable &&
-                 Vector3.Distance(transform.position, collider.transform.position) >= 1.5f)) // If distance is further then we landed on the ground and ignore hit
+                Vector3.Distance(transform.position, collider.transform.position) >= 1.5f)) // If distance is further then we landed on the ground and ignore hit
                 return;
 
             if (collider.TryGetComponent(out IInteractable interactable))

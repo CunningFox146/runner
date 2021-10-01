@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Runner.UI
+namespace Runner.UI.Views
 {
     public abstract class View : MonoBehaviour
     {
