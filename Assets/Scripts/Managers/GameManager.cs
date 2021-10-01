@@ -5,6 +5,7 @@ using Runner.SoundSystem;
 using Runner.UI;
 using System;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using static Runner.Player.PlayerController;
 
@@ -33,6 +34,7 @@ namespace Runner.Managers
 
         [SerializeField] private ShopItems _shopItems;
         [SerializeField] private AnimationCurve _gameSpeedCurve;
+        [SerializeField] private AudioMixer _currentMixer;
 
         [HideInInspector] public float maxGameSpeed;
         [HideInInspector] public float gameTime;
@@ -41,7 +43,8 @@ namespace Runner.Managers
         private SoundsEmitter _sound;
 
         public static float SpeedMultiplier { get; private set; }
-        public static bool Paused {
+        public static bool Paused
+        {
             get => Inst._paused;
             set => Inst._paused = value;
         }
@@ -57,7 +60,7 @@ namespace Runner.Managers
         }
         public static string GetSelectedItem()
         {
-            var save = SaveManager.CurrentSave;
+            GameSave save = SaveManager.CurrentSave;
             if (save != null && !string.IsNullOrEmpty(save.selectedItem))
             {
                 return SaveManager.CurrentSave.selectedItem;
@@ -76,12 +79,15 @@ namespace Runner.Managers
 
             player.GetComponent<PlayerAnimation>().SetState((int)PlayerState.Running);
             player.transform.DOMove(Vector3.zero, 0.5f).OnComplete(() => PlayerController.Inst.enabled = true);
+
+            CameraManager.Inst.StopSound("BgMusic");
+            CameraManager.Inst.PlaySound("Music/GameplayMusic", "BgMusic");
         }
 
         //Called at the end of the game and when buying/selecting something
         public static void Save()
         {
-            var save = SaveManager.CurrentSave;
+            GameSave save = SaveManager.CurrentSave;
 
             save.coins = Balance + CurrentCoins;
             save.highScore = HighScore;
@@ -111,6 +117,8 @@ namespace Runner.Managers
             {
                 HighScore = score;
             }
+
+            Inst._currentMixer.DOSetFloat("MusicPitch", 0.5f, 1f);
         }
 
         public static void AddCoins(int coins = 1)
@@ -148,7 +156,7 @@ namespace Runner.Managers
             DOTween.SetTweensCapacity(500, 50);
 
             SaveManager.LoadSave();
-            var save = SaveManager.CurrentSave;
+            GameSave save = SaveManager.CurrentSave;
             Debug.Log(save);
             HighScore = save.highScore;
             Balance = save.coins;
@@ -162,14 +170,21 @@ namespace Runner.Managers
 
         private void Start()
         {
+            CameraManager.Inst.StopSound("BgMusic");
+            Inst._currentMixer.SetFloat("MusicPitch", 1f);
+
             if (RestartGameplay)
             {
                 StartSession();
             }
+            else
+            {
+                CameraManager.Inst.PlaySound("Music/MainMenuMusic", "BgMusic");
+            }
             RestartGameplay = false;
 
             // Auto-add to bought items that cost 0
-            foreach (var item in _shopItems.items)
+            foreach (ShopItemInfo item in _shopItems.items)
             {
                 if (item.price <= 0)
                 {

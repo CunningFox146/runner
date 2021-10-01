@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Coin
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: de8c812651a5ab24fb13a1bc6bfe4b45, type: 3}
+  - {fileID: 8300000, guid: f2161125a60fe3c43a9c3babbf7d9b42, type: 3}
   soundType: 1
   looping: 0
   volume: 1

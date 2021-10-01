@@ -1834,7 +1834,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8637552015608192779, guid: 3170a881e7094cc4193abcdaff002ef4, type: 3}
   m_PrefabInstance: {fileID: 794162782}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &611609728
+--- !u!114 &611609731
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2536,6 +2536,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _currentMixer: {fileID: 24100000, guid: ca0ce639cf13bde49afe719a170d17bb, type: 2}
   maxGameSpeed: 0
   gameTime: 0
 --- !u!4 &1030415824

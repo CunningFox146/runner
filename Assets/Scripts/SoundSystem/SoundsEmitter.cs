@@ -68,6 +68,7 @@ namespace Runner.SoundSystem
                 DestroySource(source, delay);
                 return;
             }
+            _playing.Remove(soundName);
 
             DestroySource(source);
         }
@@ -100,23 +101,16 @@ namespace Runner.SoundSystem
             }
         }
 
-        private IEnumerator DestroySource(AudioSource source, float delay = 0f)
+        private void DestroySource(AudioSource source)
         {
-            void DestroyObj()
-            {
-                source.Stop();
-                ObjectPooler.Inst.ReturnObject(source.gameObject);
-            }
-
-            if (delay > 0f)
-            {
-                yield return new WaitForSeconds(delay);
-                DestroyObj();
-            }
-            else
-            {
-                DestroyObj();
-            }
+            source.Stop();
+            ObjectPooler.Inst.ReturnObject(source.gameObject);
+        }
+        private IEnumerator DestroySource(AudioSource source, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            source.Stop();
+            ObjectPooler.Inst.ReturnObject(source.gameObject);
         }
     }
 }

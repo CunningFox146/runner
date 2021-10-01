@@ -36,7 +36,10 @@ namespace Runner.Player
 
         public void SetState(int state)
         {
-            _animator.SetInteger(_stateHash, state);
+            if (_animator != null)
+            {
+                _animator.SetInteger(_stateHash, state);
+            }
         }
     }
 }

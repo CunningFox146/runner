@@ -389,6 +389,8 @@ namespace Runner.Player
 
         public void OnHitObstacle(GameObject obstacle)
         {
+            _sound.Play("Hit");
+
             Debug.Log($"DEATH: {obstacle.transform.parent}");
 
             GameManager.EndGame();

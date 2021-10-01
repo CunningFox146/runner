@@ -86,5 +86,9 @@ namespace Runner.Managers
         {
             _sound.Play(name, soundName, delay);
         }
+        public void StopSound(string soundName)
+        {
+            _sound.Stop(soundName);
+        }
     }
 }
