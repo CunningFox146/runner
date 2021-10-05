@@ -52,16 +52,6 @@ namespace Runner.Player
         }
         private string DebugString => $"State:{State}\nIsGrounded:{_isGrounded.ToString()}\nGround:{_groundPos.ToString()}\nCurrentLane:{_lane}";
 
-        public enum PlayerState
-        {
-            Running,
-            Jump,
-            Falling,
-            Slide,
-            Death,
-            SideChange,
-        }
-
         protected override void Awake()
         {
             base.Awake();

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Runner.Player;
+using UnityEngine;
 
 namespace Runner.Shop
 {
@@ -10,6 +11,6 @@ namespace Runner.Shop
 
         public int price;
         public GameObject skinPrefab;
-        public Animation shopAnimation;
+        public PlayerState shopAnimation;
     }
 }

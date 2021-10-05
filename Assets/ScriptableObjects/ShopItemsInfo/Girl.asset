@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Girl
   price: 1
   skinPrefab: {fileID: 3331659047174518106, guid: 2d8e5a6fb8bfbd1498e95f61ee9e7325, type: 3}
+  shopAnimation: 7

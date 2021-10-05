@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Default
   price: 0
   skinPrefab: {fileID: 5974606965494304099, guid: 57ae03c5a4e3d564eb63f1f98bb2ff84, type: 3}
+  shopAnimation: 6
