@@ -19,6 +19,14 @@ namespace Runner.UI
             _shopItems = new List<ShopItem>();
         }
 
+        private void OnEnable()
+        {
+            if (_selectedItem != null)
+            {
+                SelectItem(_selectedItem);
+            }
+        }
+
         private void Start()
         {
             foreach (ShopItemInfo info in _items.items)
@@ -47,7 +55,7 @@ namespace Runner.UI
 
             GameManager.SelectItem(item.info);
 
-            _skinDisplay.ChangeSkin(item.info.skinPrefab);
+            _skinDisplay.ChangeSkin(item.info);
         }
     }
 }

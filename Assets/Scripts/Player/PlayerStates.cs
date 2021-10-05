@@ -5,6 +5,7 @@ namespace Runner.Player
     [System.Serializable]
     public enum PlayerState
     {
+        Sitting = -1,
         Running,
         Jump,
         Falling,
