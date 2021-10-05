@@ -10,5 +10,6 @@ namespace Runner.Shop
 
         public int price;
         public GameObject skinPrefab;
+        public Animation shopAnimation;
     }
 }
