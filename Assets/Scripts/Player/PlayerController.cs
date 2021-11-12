@@ -1,14 +1,15 @@
 using Runner.Managers;
+using Runner.SoundSystem;
+using Runner.UI;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Runner.Player
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : Singleton<PlayerController>
     {
         [SerializeField] private PlayerCollider _collider;
-        [SerializeField] private float _TEMP_progress = 0f;
         [SerializeField] private Text _debugText;
         [Header("Lanes")]
         [SerializeField] private float[] _lanes;
@@ -61,22 +62,26 @@ namespace Runner.Player
             SideChange,
         }
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _rb = GetComponent<Rigidbody>();
             _animation = GetComponent<PlayerAnimation>();
-
-            State = PlayerState.Running;
         }
 
         void Start()
         {
             _groundPos = CheckGround();
+
+            State = PlayerState.Running;
+
+            
         }
 
         void Update()
         {
-            _TEMP_progress += Time.deltaTime;
+            if (GameManager.Paused) return;
+
             if (_debugText != null)
             {
                 _debugText.text = DebugString;
@@ -84,10 +89,14 @@ namespace Runner.Player
 
             UpdateInput();
             UpdatePosition();
+
+            GetComponent<SoundsEmitter>().Play("Test");
         }
 
         void FixedUpdate()
         {
+            if (GameManager.Paused) return;
+
             _groundPos = CheckGround();
             //CheckObstacleHit();
         }
@@ -242,6 +251,11 @@ namespace Runner.Player
 
             while (true)
             {
+                if (GameManager.Paused)
+                {
+                    yield return null;
+                }
+
                 //Debug.Log("JUMP");
                 timer = Mathf.Min(timer + Time.deltaTime, _jumpTime);
                 float delta = _jumpingCurve.Evaluate(timer / _jumpTime);
@@ -274,6 +288,11 @@ namespace Runner.Player
 
             while (true)
             {
+                if (GameManager.Paused)
+                {
+                    yield return null;
+                }
+
                 //Debug.Log("FALL");
                 float endHeight = _groundPos.y;
                 timer = Mathf.Clamp(timer + Time.deltaTime, 0f, fallTime);
@@ -305,6 +324,11 @@ namespace Runner.Player
 
             while (true)
             {
+                if (GameManager.Paused)
+                {
+                    yield return null;
+                }
+
                 //Debug.Log("SIDE");
                 timer = Mathf.Min(timer + Time.deltaTime, _laneChangeTime);
                 float delta = _slidingCurve.Evaluate(timer / _laneChangeTime);
@@ -327,6 +351,11 @@ namespace Runner.Player
             float timer = 0f;
             while (true)
             {
+                if (GameManager.Paused)
+                {
+                    yield return null;
+                }
+
                 if (_isGrounded)
                 {
                     State = PlayerState.Slide;
@@ -382,7 +411,7 @@ namespace Runner.Player
 
             if (!_isGrounded)
             {
-                CameraManager.Inst.isFollowing = false;
+                CameraManager.Inst.IsFollowing = false;
                 Vector3 dir = (Camera.main.transform.position - transform.position).normalized;
                 _rb.constraints = RigidbodyConstraints.None;
                 _rb.AddForce(dir * 15f, ForceMode.VelocityChange);

@@ -2,7 +2,7 @@
 
 namespace Runner.World.LevelTemplates
 {
-    [CreateAssetMenu(fileName = "Template", menuName = "Scriptable Objects/LevelTemplate", order = 1)]
+    [CreateAssetMenu(fileName = "Template", menuName = "Scriptable Objects/LevelTemplate")]
     public class LevelTemplate : ScriptableObject
     {
         public LevelBiomes biome;

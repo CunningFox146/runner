@@ -46,6 +46,8 @@ namespace Runner.World
 
         void Update()
         {
+            if (GameManager.Paused) return;
+
             foreach (LevelItem piece in _parts)
             {
                 piece.transform.Translate(-Vector3.forward * Time.deltaTime * GameManager.GameSpeed);
@@ -90,7 +92,7 @@ namespace Runner.World
 
             float offset;
 
-            if (part.template != _lastPiece.template)
+            if (part.template.biome != _lastPiece.template.biome && part.template.tilePrefab != null)
             {
                 LevelTransfer transition = GenerateTransition(_lastPiece.template, part.template);
                 transition.transform.position = new Vector3(0f, 0f, _lastPiece.pointEnd.position.z - transition.pointStart.position.z);

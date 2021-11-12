@@ -16,7 +16,7 @@ TagManager:
   - UI
   - Wakable
   - Player
-  - Interactable
+  - 
   - 
   - 
   - 
@@ -43,4 +43,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI Particles
+    uniqueID: 2812820837
     locked: 0
