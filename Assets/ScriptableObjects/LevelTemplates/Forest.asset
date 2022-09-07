@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a229b7946abbcfc41b703e9878e85b83, type: 3}
+  m_Name: Forest
+  m_EditorClassIdentifier: 
+  biome: 0
+  tilePrefab: {fileID: 4152991267084297929, guid: c880be9784a2757499dc5b6d39decfe4, type: 3}
+  skyColor: {r: 0.49411768, g: 1, b: 0.9607844, a: 0}
+  decorPrefab: {fileID: 370082855509372928, guid: dbb0d75820f3fa94f954d7038a06abf7, type: 3}
+  decorChance: 0.5
+  spacing: 0.8
