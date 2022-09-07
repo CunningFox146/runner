@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using Runner.Managers;
+using Runner.SoundSystem;
 using UnityEngine;
 
 namespace Runner.Interactable
@@ -27,6 +28,7 @@ namespace Runner.Interactable
 
         public void OnInteractStart(GameObject player)
         {
+            GetComponent<SoundsEmitter>().Play("Coin");
             _tween.Kill();
             _model.DOScale(Vector3.one * 0.5f, 0.25f);
             _model.DOMove(player.transform.position + Vector3.up * 0.5f, 0.25f)

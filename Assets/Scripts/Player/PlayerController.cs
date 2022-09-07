@@ -1,6 +1,5 @@
 using Runner.Managers;
 using Runner.SoundSystem;
-using Runner.UI;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,6 +29,7 @@ namespace Runner.Player
 
         private Rigidbody _rb;
         private PlayerAnimation _animation;
+        private SoundsEmitter _sound;
 
         private PlayerState _state;
 
@@ -52,21 +52,12 @@ namespace Runner.Player
         }
         private string DebugString => $"State:{State}\nIsGrounded:{_isGrounded.ToString()}\nGround:{_groundPos.ToString()}\nCurrentLane:{_lane}";
 
-        public enum PlayerState
-        {
-            Running,
-            Jump,
-            Falling,
-            Slide,
-            Death,
-            SideChange,
-        }
-
         protected override void Awake()
         {
             base.Awake();
             _rb = GetComponent<Rigidbody>();
             _animation = GetComponent<PlayerAnimation>();
+            _sound = GetComponent<SoundsEmitter>();
         }
 
         void Start()
@@ -74,8 +65,6 @@ namespace Runner.Player
             _groundPos = CheckGround();
 
             State = PlayerState.Running;
-
-            
         }
 
         void Update()
@@ -89,8 +78,6 @@ namespace Runner.Player
 
             UpdateInput();
             UpdatePosition();
-
-            GetComponent<SoundsEmitter>().Play("Test");
         }
 
         void FixedUpdate()
@@ -148,6 +135,8 @@ namespace Runner.Player
 
         private void Jump()
         {
+            _sound.Play("Jump");
+
             if (_slideCoroutine != null)
             {
                 StopCoroutine(_slideCoroutine);
@@ -306,7 +295,7 @@ namespace Runner.Player
 
                 if (_isGrounded || Mathf.Approximately(timer, fallTime)) break;
             }
-
+            _sound.Play("Land");
             State = PlayerState.Running;
             _fallCoroutine = null;
         }
@@ -389,7 +378,7 @@ namespace Runner.Player
 
         public void OnHitObstacle(GameObject obstacle)
         {
-            Debug.Log($"DEATH: {obstacle.transform.parent}");
+            _sound.Play("Hit");
 
             GameManager.EndGame();
 

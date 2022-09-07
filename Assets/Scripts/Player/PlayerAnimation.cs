@@ -1,6 +1,5 @@
 using Runner.Managers;
 using Runner.Shop;
-using System;
 using UnityEngine;
 
 namespace Runner.Player
@@ -10,7 +9,6 @@ namespace Runner.Player
         [SerializeField] private ShopItems _shopItems;
 
         private Animator _animator;
-
         private int _stateHash;
 
         void Awake()
@@ -20,23 +18,26 @@ namespace Runner.Player
 
         private void Start()
         {
-            GameManager.Inst.SelectedItemChanged += UpdateSkin;
-            UpdateSkin(GameManager.GetSelectedItem());
+            GameManager.Inst.SelectedItemChanged += SetSkin;
+            SetSkin(GameManager.GetSelectedItem());
         }
 
-        private void UpdateSkin(string infoName)
+        private void SetSkin(string infoName)
         {
             if (_animator != null)
             {
                 Destroy(_animator.gameObject);
             }
-            var skin = _shopItems.GetItem(infoName).skinPrefab;
+            GameObject skin = _shopItems.GetItem(infoName).skinPrefab;
             _animator = Instantiate(skin, transform).GetComponent<Animator>();
         }
 
         public void SetState(int state)
         {
-            _animator.SetInteger(_stateHash, state);
+            if (_animator != null)
+            {
+                _animator.SetInteger(_stateHash, state);
+            }
         }
     }
 }

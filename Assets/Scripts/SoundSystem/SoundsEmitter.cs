@@ -9,11 +9,21 @@ namespace Runner.SoundSystem
     public class SoundsEmitter : MonoBehaviour
     {
         [SerializeField] private GameObject _soundEmitterPrefab;
+        [SerializeField] private string _soundOnAwake;
+
         private Dictionary<string, AudioSource> _playing;
 
         void Awake()
         {
             _playing = new Dictionary<string, AudioSource>();
+        }
+
+        private void Start()
+        {
+            if (!string.IsNullOrEmpty(_soundOnAwake))
+            {
+                Play(_soundOnAwake);
+            }
         }
 
         public AudioSource Play(string path, string soundName = null, float delay = 0f)
@@ -58,6 +68,7 @@ namespace Runner.SoundSystem
                 DestroySource(source, delay);
                 return;
             }
+            _playing.Remove(soundName);
 
             DestroySource(source);
         }
@@ -90,23 +101,16 @@ namespace Runner.SoundSystem
             }
         }
 
-        private IEnumerator DestroySource(AudioSource source, float delay = 0f)
+        private void DestroySource(AudioSource source)
         {
-            void DestroyObj()
-            {
-                source.Stop();
-                ObjectPooler.Inst.ReturnObject(source.gameObject);
-            }
-
-            if (delay > 0f)
-            {
-                yield return new WaitForSeconds(delay);
-                DestroyObj();
-            }
-            else
-            {
-                DestroyObj();
-            }
+            source.Stop();
+            ObjectPooler.Inst.ReturnObject(source.gameObject);
+        }
+        private IEnumerator DestroySource(AudioSource source, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            source.Stop();
+            ObjectPooler.Inst.ReturnObject(source.gameObject);
         }
     }
 }

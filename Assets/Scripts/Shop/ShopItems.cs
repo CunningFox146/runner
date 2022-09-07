@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Runner.Shop
@@ -10,6 +9,6 @@ namespace Runner.Shop
         public List<ShopItemInfo> items;
         public ShopItemInfo defaultSelectedItem;
 
-        public ShopItemInfo GetItem(string name) => items.Find((item)=>item.itemName == name);
+        public ShopItemInfo GetItem(string name) => items.Find((item) => item.itemName == name);
     }
 }

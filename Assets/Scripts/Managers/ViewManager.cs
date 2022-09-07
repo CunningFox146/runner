@@ -1,4 +1,4 @@
-﻿using Runner.UI;
+﻿using Runner.UI.Views;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -35,7 +35,7 @@ namespace Runner.Managers
             view.Hide();
             return view;
         }
-        
+
         public static void HideAllViews()
         {
             Inst._views.ForEach((view) => HideView(view));
